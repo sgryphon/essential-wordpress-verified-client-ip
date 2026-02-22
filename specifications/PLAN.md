@@ -152,8 +152,8 @@ Progress tracker. Check off items as completed.
 
 ## Step 13 — Final Review & Polish
 
-- [ ] All CI checks green
-- [ ] Spec compliance audit
-- [ ] Default schemes/ranges verified
-- [ ] No unresolved TODOs
-- [ ] Tag `v0.1.0`
+- [x] All CI checks configured (PHPUnit, PHPStan, PHP-CS-Fixer)
+- [x] Spec compliance audit — all 12 requirements pass
+- [x] Default schemes/ranges verified (RFC 7239, XFF, Cloudflare)
+- [x] No unresolved TODOs in source code
+- [x] Tag `v0.1.0`

@@ -88,6 +88,28 @@ final class Plugin
         // Record diagnostics (works even when the plugin is disabled).
         Diagnostics::maybeRecord($_SERVER, $result);
 
+        // Request-level debug logging (off by default for performance).
+        if ($result->changed) {
+            Logger::debug(
+                \sprintf('Resolved %s → %s', $result->originalIp, $resolvedIp),
+                'resolver'
+            );
+        }
+
+        // Warn on malformed forwarded values found during resolution.
+        foreach ($result->steps as $step) {
+            if ($step->action === 'malformed_stop' || $step->action === 'malformed_value') {
+                Logger::warning(
+                    \sprintf(
+                        'Malformed forwarded value "%s" from header %s',
+                        $step->address,
+                        $step->headerUsed ?? 'unknown',
+                    ),
+                    'resolver'
+                );
+            }
+        }
+
         // When the plugin is disabled, calculate but do not apply (for diagnostics).
         if (!$settings->enabled) {
             return;

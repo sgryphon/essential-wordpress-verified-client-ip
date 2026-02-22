@@ -102,6 +102,8 @@ final class AdminPage
         // method always returns a usable Settings, clamping invalid values.
         $result['settings']->save();
 
+        Logger::info('Settings saved', 'admin');
+
         if ($result['errors'] === [] && \function_exists('add_settings_error')) {
             \add_settings_error(
                 'vcip_settings',
@@ -530,11 +532,15 @@ final class AdminPage
             $count = isset($_POST['vcip_diag_count']) ? (int) $_POST['vcip_diag_count'] : Diagnostics::DEFAULT_REQUEST_COUNT;
             Diagnostics::startRecording($count);
 
+            Logger::info(\sprintf('Diagnostics recording started (max %d requests)', $count), 'admin');
+
             if (\function_exists('add_settings_error')) {
                 \add_settings_error('vcip_settings', 'vcip_diag_started', __('Diagnostics recording started.', 'verified-client-ip'), 'success');
             }
         } elseif ($action === 'clear') {
             Diagnostics::clear();
+
+            Logger::info('Diagnostic data cleared', 'admin');
 
             if (\function_exists('add_settings_error')) {
                 \add_settings_error('vcip_settings', 'vcip_diag_cleared', __('Diagnostic data cleared.', 'verified-client-ip'), 'success');

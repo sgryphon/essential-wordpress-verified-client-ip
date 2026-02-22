@@ -108,11 +108,15 @@ Progress tracker. Check off items as completed.
 
 ## Step 9 — Logging
 
-- [ ] Add logging for admin actions (settings changes)
-- [ ] Add warnings for malformed/fake headers
-- [ ] Add error logging
-- [ ] Minimal request-level logging (optional)
-- [ ] Commit
+- [x] Create `src/Logger.php` with error/warning/info/debug levels
+  - [x] Consistent `[Verified Client IP]` prefix
+  - [x] Debug/request-level logging gated by WP_DEBUG / VCIP_LOG_REQUESTS
+  - [x] Context parameter for categorisation
+- [x] Add request-level debug logging in Plugin (resolver result)
+- [x] Add warnings for malformed forwarded values in resolver steps
+- [x] Add admin action logging (settings saved, diagnostics start/clear)
+- [x] Write tests in `tests/Unit/LoggerTest.php`
+- [x] Commit
 
 ## Step 10 — Uninstall & Deactivation
 

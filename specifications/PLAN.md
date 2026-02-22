@@ -120,11 +120,12 @@ Progress tracker. Check off items as completed.
 
 ## Step 10 — Uninstall & Deactivation
 
-- [ ] Create `uninstall.php` — delete `vcip_*` options + transients
-- [ ] Handle multisite (iterate sites)
-- [ ] Deactivation hook — flush caches only
-- [ ] Write tests
-- [ ] Commit
+- [x] Create `uninstall.php` — delete `vcip_*` options + diagnostic transients
+- [x] Handle multisite (iterate sites via `get_sites` / `switch_to_blog`)
+- [x] Deactivation hook — `wp_cache_flush()` only, no data removal
+- [x] Add stubs to bootstrap (delete_option, register_deactivation_hook, wp_cache_flush, plugin_dir_path)
+- [x] Write tests in `tests/Integration/UninstallTest.php`
+- [x] Commit
 
 ## Step 11 — Local Development Environment
 

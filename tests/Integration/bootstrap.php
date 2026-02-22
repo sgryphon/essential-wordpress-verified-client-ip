@@ -258,3 +258,32 @@ if (! function_exists('wp_json_encode')) {
         return json_encode($data, $options | JSON_UNESCAPED_UNICODE, $depth) ?: '""';
     }
 }
+
+if (! function_exists('delete_option')) {
+    function delete_option(string $option): bool
+    {
+        unset($GLOBALS['_vcip_test_options'][$option]);
+        return true;
+    }
+}
+
+if (! function_exists('register_deactivation_hook')) {
+    function register_deactivation_hook(string $file, callable $callback): void
+    {
+        // No-op in tests.
+    }
+}
+
+if (! function_exists('wp_cache_flush')) {
+    function wp_cache_flush(): bool
+    {
+        return true;
+    }
+}
+
+if (! function_exists('plugin_dir_path')) {
+    function plugin_dir_path(string $file): string
+    {
+        return dirname($file) . '/';
+    }
+}

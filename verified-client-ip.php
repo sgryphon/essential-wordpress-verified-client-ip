@@ -42,6 +42,13 @@ if (file_exists(VCIP_PLUGIN_DIR . 'vendor/autoload.php')) {
 // For must-use plugins, call VerifiedClientIp\Plugin::boot() directly instead.
 add_action('plugins_loaded', [VerifiedClientIp\Plugin::class, 'boot'], 0);
 
+// Deactivation hook — flush caches only, do NOT remove data.
+register_deactivation_hook(__FILE__, static function (): void {
+    if (function_exists('wp_cache_flush')) {
+        wp_cache_flush();
+    }
+});
+
 // Register admin settings page (only loaded in admin context).
 if (is_admin()) {
     VerifiedClientIp\AdminPage::register();

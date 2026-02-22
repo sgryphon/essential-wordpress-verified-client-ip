@@ -142,13 +142,13 @@ Progress tracker. Check off items as completed.
 
 ## Step 12 — Packaging & Documentation
 
-- [ ] Build script for distributable `.zip`
-- [ ] Expand `README.md` (overview, badge, links)
-- [ ] Development guide
-- [ ] Packaging guide
-- [ ] Examples guide
-- [ ] User documentation
-- [ ] Commit
+- [x] Build scripts (`build.sh`, `build.ps1`) for distributable `.zip`
+- [x] Expand `README.md` (overview, badges, features, quick start, links)
+- [x] Development guide (`docs/development.md`)
+- [x] Packaging guide (`docs/packaging.md`)
+- [x] Examples guide (`examples/README.md`) — done in Step 11
+- [x] User documentation (`docs/user-guide.md`)
+- [x] Commit
 
 ## Step 13 — Final Review & Polish
 

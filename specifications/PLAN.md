@@ -25,12 +25,12 @@ Progress tracker. Check off items as completed.
 
 ## Step 3 — Header Parsing
 
-- [ ] Create `src/HeaderParser.php`
-- [ ] Implement RFC 7239 `Forwarded` header parsing (token extraction, quoted values)
-- [ ] Implement `X-Forwarded-For` parsing (comma-separated, right-to-left)
-- [ ] Implement single-value header parsing (e.g. `CF-Connecting-IP`)
-- [ ] Handle multiple same-name headers (RFC 7230 §3.2.2 concatenation)
-- [ ] Write unit tests in `tests/Unit/HeaderParserTest.php`
+- [x] Create `src/HeaderParser.php`
+- [x] Implement RFC 7239 `Forwarded` header parsing (token extraction, quoted values)
+- [x] Implement `X-Forwarded-For` parsing (comma-separated, right-to-left)
+- [x] Implement single-value header parsing (e.g. `CF-Connecting-IP`)
+- [x] Handle multiple same-name headers (RFC 7230 §3.2.2 concatenation)
+- [x] Write unit tests in `tests/Unit/HeaderParserTest.php`
 - [ ] Verify all checks pass
 - [ ] Commit
 

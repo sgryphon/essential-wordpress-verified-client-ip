@@ -57,6 +57,13 @@ final class AdminPage
      */
     public static function handleFormSubmission(): void
     {
+        // --- Diagnostics actions ---
+        if (isset($_POST['vcip_diag_action'])) {
+            self::handleDiagnosticsAction();
+            return;
+        }
+
+        // --- Settings form ---
         // Only act on our form.
         if (!isset($_POST[self::NONCE_FIELD])) {
             return;
@@ -111,6 +118,7 @@ final class AdminPage
     public static function renderPage(): void
     {
         $settings = Settings::load();
+        $activeTab = isset($_GET['tab']) ? \sanitize_text_field($_GET['tab']) : 'settings';
         ?>
         <div class="wrap">
             <h1><?php echo \esc_html__('Verified Client IP', 'verified-client-ip'); ?></h1>
@@ -120,6 +128,21 @@ final class AdminPage
                 \settings_errors('vcip_settings');
             }
             ?>
+
+            <nav class="nav-tab-wrapper">
+                <a href="?page=<?php echo self::MENU_SLUG; ?>&tab=settings"
+                   class="nav-tab <?php echo $activeTab === 'settings' ? 'nav-tab-active' : ''; ?>">
+                    <?php echo \esc_html__('Settings', 'verified-client-ip'); ?>
+                </a>
+                <a href="?page=<?php echo self::MENU_SLUG; ?>&tab=diagnostics"
+                   class="nav-tab <?php echo $activeTab === 'diagnostics' ? 'nav-tab-active' : ''; ?>">
+                    <?php echo \esc_html__('Diagnostics', 'verified-client-ip'); ?>
+                </a>
+            </nav>
+
+            <?php if ($activeTab === 'diagnostics'): ?>
+                <?php self::renderDiagnosticsTab(); ?>
+            <?php else: ?>
 
             <form method="post" action="">
                 <?php
@@ -214,9 +237,13 @@ final class AdminPage
                 }
                 ?>
             </form>
+
+            <?php endif; ?>
         </div>
 
+        <?php if ($activeTab !== 'diagnostics'): ?>
         <?php self::renderInlineScript(); ?>
+        <?php endif; ?>
         <?php
     }
 
@@ -472,5 +499,211 @@ final class AdminPage
         }
 
         return $input;
+    }
+
+    // ------------------------------------------------------------------
+    // Diagnostics actions
+    // ------------------------------------------------------------------
+
+    /**
+     * Handle Start / Clear diagnostics form submissions.
+     */
+    private static function handleDiagnosticsAction(): void
+    {
+        if (!\function_exists('current_user_can') || !\current_user_can('manage_options')) {
+            return;
+        }
+
+        if (!\function_exists('wp_verify_nonce')
+            || !isset($_POST['vcip_diag_nonce'])
+            || !\wp_verify_nonce(\sanitize_text_field(\wp_unslash($_POST['vcip_diag_nonce'])), 'vcip_diagnostics')
+        ) {
+            if (\function_exists('add_settings_error')) {
+                \add_settings_error('vcip_settings', 'vcip_nonce_error', __('Security check failed.', 'verified-client-ip'), 'error');
+            }
+            return;
+        }
+
+        $action = \sanitize_text_field($_POST['vcip_diag_action']);
+
+        if ($action === 'start') {
+            $count = isset($_POST['vcip_diag_count']) ? (int) $_POST['vcip_diag_count'] : Diagnostics::DEFAULT_REQUEST_COUNT;
+            Diagnostics::startRecording($count);
+
+            if (\function_exists('add_settings_error')) {
+                \add_settings_error('vcip_settings', 'vcip_diag_started', __('Diagnostics recording started.', 'verified-client-ip'), 'success');
+            }
+        } elseif ($action === 'clear') {
+            Diagnostics::clear();
+
+            if (\function_exists('add_settings_error')) {
+                \add_settings_error('vcip_settings', 'vcip_diag_cleared', __('Diagnostic data cleared.', 'verified-client-ip'), 'success');
+            }
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // Diagnostics tab rendering
+    // ------------------------------------------------------------------
+
+    /**
+     * Render the diagnostics tab content.
+     */
+    public static function renderDiagnosticsTab(): void
+    {
+        $state = Diagnostics::getState();
+        $log   = Diagnostics::getLog();
+
+        ?>
+        <h2><?php echo \esc_html__('Diagnostics', 'verified-client-ip'); ?></h2>
+
+        <div class="notice notice-warning inline" style="margin:15px 0;">
+            <p>
+                <strong><?php echo \esc_html__('Privacy Notice:', 'verified-client-ip'); ?></strong>
+                <?php echo \esc_html__('Diagnostic data contains IP addresses and HTTP headers, which may be considered personal data under GDPR and similar regulations. Clear diagnostics promptly after use.', 'verified-client-ip'); ?>
+            </p>
+        </div>
+
+        <form method="post" action="">
+            <?php
+            if (\function_exists('wp_nonce_field')) {
+                \wp_nonce_field('vcip_diagnostics', 'vcip_diag_nonce');
+            }
+            ?>
+
+            <table class="form-table" role="presentation">
+                <tr>
+                    <th scope="row">
+                        <label for="vcip_diag_count"><?php echo \esc_html__('Requests to record', 'verified-client-ip'); ?></label>
+                    </th>
+                    <td>
+                        <input type="number" id="vcip_diag_count" name="vcip_diag_count"
+                               value="<?php echo \esc_attr((string) $state['max_requests']); ?>"
+                               min="1" max="<?php echo Diagnostics::MAX_REQUEST_COUNT; ?>"
+                               class="small-text"
+                               <?php echo $state['recording'] ? 'disabled' : ''; ?>>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row"><?php echo \esc_html__('Status', 'verified-client-ip'); ?></th>
+                    <td>
+                        <?php if ($state['recording']): ?>
+                            <span style="color:green;font-weight:bold;">&#9679; <?php echo \esc_html__('Recording', 'verified-client-ip'); ?></span>
+                            — <?php echo \esc_html(\sprintf(__('%d / %d requests recorded', 'verified-client-ip'), \count($log), $state['max_requests'])); ?>
+                        <?php else: ?>
+                            <span style="color:#999;">&#9679; <?php echo \esc_html__('Stopped', 'verified-client-ip'); ?></span>
+                            <?php if ($log !== []): ?>
+                                — <?php echo \esc_html(\sprintf(__('%d requests recorded', 'verified-client-ip'), \count($log))); ?>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+            </table>
+
+            <p>
+                <?php if (!$state['recording']): ?>
+                    <button type="submit" name="vcip_diag_action" value="start" class="button button-primary">
+                        <?php echo \esc_html__('Start Diagnostics', 'verified-client-ip'); ?>
+                    </button>
+                <?php else: ?>
+                    <button type="submit" name="vcip_diag_action" value="start" class="button button-primary" disabled>
+                        <?php echo \esc_html__('Start Diagnostics', 'verified-client-ip'); ?>
+                    </button>
+                <?php endif; ?>
+
+                <?php if ($log !== []): ?>
+                    <button type="submit" name="vcip_diag_action" value="clear" class="button"
+                            onclick="return confirm(<?php echo \esc_attr(\wp_json_encode(__('Clear all diagnostic data?', 'verified-client-ip'))); ?>);">
+                        <?php echo \esc_html__('Clear Diagnostics', 'verified-client-ip'); ?>
+                    </button>
+                <?php endif; ?>
+            </p>
+        </form>
+
+        <?php if ($log !== []): ?>
+            <h3><?php echo \esc_html__('Recorded Requests', 'verified-client-ip'); ?></h3>
+            <table class="wp-list-table widefat striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th><?php echo \esc_html__('Time', 'verified-client-ip'); ?></th>
+                        <th><?php echo \esc_html__('Method', 'verified-client-ip'); ?></th>
+                        <th><?php echo \esc_html__('URI', 'verified-client-ip'); ?></th>
+                        <th><?php echo \esc_html__('REMOTE_ADDR', 'verified-client-ip'); ?></th>
+                        <th><?php echo \esc_html__('Resolved IP', 'verified-client-ip'); ?></th>
+                        <th><?php echo \esc_html__('Changed', 'verified-client-ip'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($log as $i => $entry): ?>
+                        <tr class="vcip-diag-row" data-index="<?php echo $i; ?>" style="cursor:pointer;">
+                            <td><?php echo $i + 1; ?></td>
+                            <td><?php echo \esc_html($entry['timestamp'] ?? ''); ?></td>
+                            <td><?php echo \esc_html($entry['method'] ?? ''); ?></td>
+                            <td><?php echo \esc_html($entry['request_uri'] ?? ''); ?></td>
+                            <td><code><?php echo \esc_html($entry['remote_addr'] ?? ''); ?></code></td>
+                            <td><code><?php echo \esc_html($entry['resolved_ip'] ?? $entry['remote_addr'] ?? ''); ?></code></td>
+                            <td><?php echo !empty($entry['changed']) ? '&#10004;' : '—'; ?></td>
+                        </tr>
+                        <tr class="vcip-diag-detail" id="vcip-detail-<?php echo $i; ?>" style="display:none;">
+                            <td colspan="7">
+                                <?php self::renderDiagnosticDetail($entry); ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+
+            <script>
+            (function () {
+                document.querySelectorAll('.vcip-diag-row').forEach(function (row) {
+                    row.addEventListener('click', function () {
+                        var detail = document.getElementById('vcip-detail-' + row.dataset.index);
+                        detail.style.display = detail.style.display === 'none' ? '' : 'none';
+                    });
+                });
+            })();
+            </script>
+        <?php endif;
+    }
+
+    /**
+     * Render the expandable detail panel for a single diagnostic entry.
+     *
+     * @param array<string, mixed> $entry
+     */
+    private static function renderDiagnosticDetail(array $entry): void
+    {
+        // Step trace.
+        if (!empty($entry['steps']) && \is_array($entry['steps'])) {
+            echo '<h4>' . \esc_html__('Algorithm Steps', 'verified-client-ip') . '</h4>';
+            echo '<ol>';
+            foreach ($entry['steps'] as $step) {
+                echo '<li>';
+                echo \esc_html(($step['description'] ?? $step['action'] ?? '') . ' — ' . ($step['ip'] ?? ''));
+                if (!empty($step['scheme'])) {
+                    echo ' <em>(' . \esc_html($step['scheme']) . ')</em>';
+                }
+                echo '</li>';
+            }
+            echo '</ol>';
+        }
+
+        // Proto info.
+        if (!empty($entry['proto']) && \is_array($entry['proto'])) {
+            echo '<h4>' . \esc_html__('Proto / Host', 'verified-client-ip') . '</h4>';
+            echo '<pre>' . \esc_html((string) \wp_json_encode($entry['proto'], \JSON_PRETTY_PRINT)) . '</pre>';
+        }
+
+        // All headers.
+        if (!empty($entry['headers']) && \is_array($entry['headers'])) {
+            echo '<h4>' . \esc_html__('Headers', 'verified-client-ip') . '</h4>';
+            echo '<table class="widefat" style="max-width:800px;">';
+            foreach ($entry['headers'] as $key => $value) {
+                echo '<tr><td><code>' . \esc_html((string) $key) . '</code></td>';
+                echo '<td>' . \esc_html((string) $value) . '</td></tr>';
+            }
+            echo '</table>';
+        }
     }
 }

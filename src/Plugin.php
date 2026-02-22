@@ -85,6 +85,9 @@ final class Plugin
             $resolvedIp = \apply_filters('vcip_resolved_ip', $resolvedIp, $result->steps);
         }
 
+        // Record diagnostics (works even when the plugin is disabled).
+        Diagnostics::maybeRecord($_SERVER, $result);
+
         // When the plugin is disabled, calculate but do not apply (for diagnostics).
         if (!$settings->enabled) {
             return;

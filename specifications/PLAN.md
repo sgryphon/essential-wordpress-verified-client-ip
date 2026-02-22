@@ -86,17 +86,25 @@ Progress tracker. Check off items as completed.
 
 ## Step 8 — Diagnostics
 
-- [ ] Create `src/Diagnostics.php`
-- [ ] Add Diagnostics tab to admin page
-- [ ] Implement request recording (timestamp, URI, headers, step trace)
-- [ ] Transient storage with 24h expiry + locking
-- [ ] Start/Clear buttons, request count config
-- [ ] Work when main switch is off
-- [ ] Expandable request detail display
-- [ ] GDPR/privacy notice
-- [ ] Write tests in `tests/Unit/DiagnosticsTest.php`
+- [x] Create `src/Diagnostics.php`
+  - [x] Constants: transient keys, default/max request count, expiry, lock duration
+  - [x] `maybeRecord()` — records request if active + under limit, with locking
+  - [x] `startRecording()` / `stopRecording()` / `clear()` state management
+  - [x] `getState()` / `getLog()` / `isRecording()` read operations
+  - [x] `buildEntry()` — extracts headers, result data, step trace
+  - [x] Transient-based lock to prevent concurrent writes
+  - [x] Auto-stop when limit reached
+- [x] Add Diagnostics tab to admin page (tab navigation in `renderPage()`)
+- [x] Implement request recording (timestamp, URI, headers, step trace)
+- [x] Transient storage with 24h expiry + locking
+- [x] Start/Clear buttons, request count config
+- [x] Work when main switch is off (called after resolution, before enabled check)
+- [x] Expandable request detail display
+- [x] GDPR/privacy notice
+- [x] Add transient stubs to `tests/Integration/bootstrap.php`
+- [x] Write tests in `tests/Integration/DiagnosticsTest.php`
 - [ ] Verify all checks pass
-- [ ] Commit
+- [x] Commit
 
 ## Step 9 — Logging
 

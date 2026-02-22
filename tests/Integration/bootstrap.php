@@ -23,6 +23,9 @@ if (! defined('ABSPATH')) {
 /** @var array<string, mixed> Simulated wp_options storage. */
 $GLOBALS['_vcip_test_options'] = [];
 
+/** @var array<string, mixed> Simulated transient storage. */
+$GLOBALS['_vcip_test_transients'] = [];
+
 /** @var array<string, array{callback: callable, args: list<mixed>}> Last applied filter info. */
 $GLOBALS['_vcip_test_filters'] = [];
 
@@ -47,6 +50,35 @@ if (! function_exists('update_option')) {
     function update_option(string $option, $value): bool
     {
         $GLOBALS['_vcip_test_options'][$option] = $value;
+        return true;
+    }
+}
+
+if (! function_exists('get_transient')) {
+    /**
+     * @return mixed
+     */
+    function get_transient(string $transient)
+    {
+        return $GLOBALS['_vcip_test_transients'][$transient] ?? false;
+    }
+}
+
+if (! function_exists('set_transient')) {
+    /**
+     * @param mixed $value
+     */
+    function set_transient(string $transient, $value, int $expiration = 0): bool
+    {
+        $GLOBALS['_vcip_test_transients'][$transient] = $value;
+        return true;
+    }
+}
+
+if (! function_exists('delete_transient')) {
+    function delete_transient(string $transient): bool
+    {
+        unset($GLOBALS['_vcip_test_transients'][$transient]);
         return true;
     }
 }

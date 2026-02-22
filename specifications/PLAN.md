@@ -36,13 +36,13 @@ Progress tracker. Check off items as completed.
 
 ## Step 4 — Core Resolution Algorithm
 
-- [ ] Create `src/Resolver.php` with main resolution logic
-- [ ] Implement scheme-priority matching
-- [ ] Implement Forward Limit enforcement
-- [ ] Implement step-trace generation
-- [ ] Handle malformed values as untrusted
-- [ ] Handle all-trusted chains (use outermost address)
-- [ ] Write unit tests in `tests/Unit/ResolverTest.php` — no-op, single-hop, multi-hop, multi-scheme, Forward Limit, malformed, spoofing, IPv4/IPv6 mixed, IPv4-mapped IPv6
+- [x] Create `src/Resolver.php` with main resolution logic
+- [x] Implement scheme-priority matching (with header-presence check)
+- [x] Implement Forward Limit enforcement (limit = max proxy hops; return next address without checking when limit reached)
+- [x] Implement step-trace generation
+- [x] Handle malformed values as untrusted
+- [x] Handle all-trusted chains (use outermost address)
+- [x] Write unit tests in `tests/Unit/ResolverTest.php` — no-op, single-hop, multi-hop, multi-scheme, Forward Limit, malformed, spoofing, IPv4/IPv6 mixed, IPv4-mapped IPv6
 - [ ] Verify all checks pass
 - [ ] Commit
 

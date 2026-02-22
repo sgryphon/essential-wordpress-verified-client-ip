@@ -62,11 +62,12 @@ Progress tracker. Check off items as completed.
 
 ## Step 6 — Settings & Configuration Storage
 
-- [ ] Create `src/Settings.php` — data model, load/save via Options API
-- [ ] Define default schemes (RFC 7239, XFF, Cloudflare)
-- [ ] Include default proxy ranges per spec
-- [ ] Input validation for settings
-- [ ] Write tests in `tests/Unit/SettingsTest.php`
+- [x] Create `src/Settings.php` — data model, load/save via Options API
+- [x] Define default schemes (RFC 7239, XFF, Cloudflare) in Settings
+- [x] Include default proxy ranges per spec
+- [x] Input validation for settings (forward limit, proxies, header names, scheme limits)
+- [x] Refactor Plugin.php to delegate to Settings::load()
+- [x] Write tests in `tests/Unit/SettingsTest.php`
 - [ ] Verify all checks pass
 - [ ] Commit
 

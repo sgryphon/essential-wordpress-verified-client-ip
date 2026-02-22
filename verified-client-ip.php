@@ -37,3 +37,7 @@ define('VCIP_PLUGIN_DIR', plugin_dir_path(__FILE__));
 if (file_exists(VCIP_PLUGIN_DIR . 'vendor/autoload.php')) {
     require_once VCIP_PLUGIN_DIR . 'vendor/autoload.php';
 }
+
+// Register IP resolution at the earliest possible hook.
+// For must-use plugins, call VerifiedClientIp\Plugin::boot() directly instead.
+add_action('plugins_loaded', [VerifiedClientIp\Plugin::class, 'boot'], 0);

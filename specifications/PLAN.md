@@ -48,13 +48,15 @@ Progress tracker. Check off items as completed.
 
 ## Step 5 — WordPress Integration
 
-- [ ] Create `src/Plugin.php` — hook into `plugins_loaded` / `muplugins_loaded`
-- [ ] Replace `REMOTE_ADDR`, store original in `X-Original-Remote-Addr`
-- [ ] Implement Proto processing (`HTTPS`, `REQUEST_SCHEME`)
-- [ ] Implement Host processing (off by default)
-- [ ] Expose filters: `vcip_resolved_ip`, `vcip_trusted_proxies`
-- [ ] Expose action: `vcip_ip_resolved`
-- [ ] Write integration tests in `tests/Integration/PluginTest.php`
+- [x] Create `src/Plugin.php` — hook into `plugins_loaded` (priority 0); mu-plugin support documented
+- [x] Replace `REMOTE_ADDR`, store original in `X-Original-Remote-Addr`
+- [x] Implement Proto processing (`HTTPS`, `REQUEST_SCHEME`) with originals stored
+- [x] Implement Host processing (off by default) with original stored
+- [x] Expose filters: `vcip_resolved_ip`, `vcip_trusted_proxies`
+- [x] Expose action: `vcip_ip_resolved`
+- [x] Default schemes (RFC 7239, XFF, Cloudflare disabled) with `defaultSchemes()` helper
+- [x] Disabled mode: calculates but does not apply (for diagnostics)
+- [x] Write integration tests in `tests/Integration/PluginTest.php` (with WP function stubs)
 - [ ] Verify all checks pass
 - [ ] Commit
 

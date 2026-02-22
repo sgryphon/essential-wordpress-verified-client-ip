@@ -81,3 +81,148 @@ if (! function_exists('add_action')) {
         return true;
     }
 }
+
+// -------------------------------------------------------------------
+// Additional WordPress stubs for admin functionality
+// -------------------------------------------------------------------
+
+if (! function_exists('is_admin')) {
+    function is_admin(): bool
+    {
+        return $GLOBALS['_vcip_test_is_admin'] ?? false;
+    }
+}
+
+if (! function_exists('current_user_can')) {
+    /**
+     * @param mixed ...$args
+     */
+    function current_user_can(string $capability, ...$args): bool
+    {
+        return $GLOBALS['_vcip_test_user_can'] ?? true;
+    }
+}
+
+if (! function_exists('wp_verify_nonce')) {
+    function wp_verify_nonce(string $nonce, string $action = '-1'): bool
+    {
+        return true;
+    }
+}
+
+if (! function_exists('wp_nonce_field')) {
+    function wp_nonce_field(string $action = '-1', string $name = '_wpnonce', bool $referer = true, bool $display = true): string
+    {
+        $html = '<input type="hidden" name="' . $name . '" value="test_nonce">';
+        if ($display) {
+            echo $html;
+        }
+        return $html;
+    }
+}
+
+if (! function_exists('sanitize_text_field')) {
+    function sanitize_text_field(string $str): string
+    {
+        return trim(strip_tags($str));
+    }
+}
+
+if (! function_exists('wp_unslash')) {
+    /**
+     * @param string|array<mixed> $value
+     * @return string|array<mixed>
+     */
+    function wp_unslash($value)
+    {
+        return is_string($value) ? stripslashes($value) : $value;
+    }
+}
+
+if (! function_exists('add_options_page')) {
+    function add_options_page(string $page_title, string $menu_title, string $capability, string $menu_slug, callable $callback = null, int $position = null): string
+    {
+        return 'settings_page_' . $menu_slug;
+    }
+}
+
+if (! function_exists('add_settings_error')) {
+    /**
+     * @var array<array{setting: string, code: string, message: string, type: string}>
+     */
+    function add_settings_error(string $setting, string $code, string $message, string $type = 'error'): void
+    {
+        $GLOBALS['_vcip_test_settings_errors'][] = [
+            'setting' => $setting,
+            'code' => $code,
+            'message' => $message,
+            'type' => $type,
+        ];
+    }
+}
+
+if (! function_exists('settings_errors')) {
+    function settings_errors(string $setting = '', bool $sanitize = false, bool $hide_on_update = false): void
+    {
+        // No-op in tests.
+    }
+}
+
+if (! function_exists('submit_button')) {
+    function submit_button(string $text = 'Save Changes', string $type = 'primary', string $name = 'submit', bool $wrap = true, $other_attributes = null): void
+    {
+        echo '<input type="submit" class="button button-' . $type . '" value="' . $text . '">';
+    }
+}
+
+if (! function_exists('__')) {
+    function __(string $text, string $domain = 'default'): string
+    {
+        return $text;
+    }
+}
+
+if (! function_exists('esc_html__')) {
+    function esc_html__(string $text, string $domain = 'default'): string
+    {
+        return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+    }
+}
+
+if (! function_exists('esc_attr__')) {
+    function esc_attr__(string $text, string $domain = 'default'): string
+    {
+        return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+    }
+}
+
+if (! function_exists('esc_html')) {
+    function esc_html(string $text): string
+    {
+        return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+    }
+}
+
+if (! function_exists('esc_attr')) {
+    function esc_attr(string $text): string
+    {
+        return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+    }
+}
+
+if (! function_exists('esc_textarea')) {
+    function esc_textarea(string $text): string
+    {
+        return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+    }
+}
+
+if (! function_exists('wp_json_encode')) {
+    /**
+     * @param mixed $data
+     */
+    function wp_json_encode($data, int $options = 0, int $depth = 512): string
+    {
+        return json_encode($data, $options | JSON_UNESCAPED_UNICODE, $depth) ?: '""';
+    }
+}

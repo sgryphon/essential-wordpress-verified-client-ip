@@ -73,12 +73,14 @@ Progress tracker. Check off items as completed.
 
 ## Step 7 — Admin UI (Settings Page)
 
-- [ ] Create `src/AdminPage.php` — register settings sub-menu
-- [ ] Build main settings form (enable, Forward Limit, Proto, Host)
-- [ ] Build scheme list with priority reordering (up/down arrows)
-- [ ] Build scheme config panels (proxies, header, token, notes)
-- [ ] Support custom scheme add/delete
-- [ ] Nonce + capability checks
+- [x] Create `src/AdminPage.php` — register settings sub-menu
+- [x] Build main settings form (enable, Forward Limit, Proto, Host)
+- [x] Build scheme list with priority reordering (up/down arrows via JS)
+- [x] Build scheme config panels (proxies, header, token, notes)
+- [x] Support custom scheme add/delete (JS-powered)
+- [x] Nonce + capability checks
+- [x] Wire AdminPage::register() from plugin entry point (admin only)
+- [x] Write integration tests in `tests/Integration/AdminPageTest.php`
 - [ ] Verify all checks pass
 - [ ] Commit
 

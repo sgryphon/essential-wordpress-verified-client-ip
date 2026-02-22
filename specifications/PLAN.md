@@ -4,22 +4,22 @@ Progress tracker. Check off items as completed.
 
 ## Step 1 — Project Scaffolding & Tooling
 
-- [ ] Create `verified-client-ip.php` with standard WordPress plugin header
-- [ ] Create `composer.json` with PHPUnit, WP_Mock, PHPStan, PHP-CS-Fixer
-- [ ] Create `phpunit.xml.dist` configuration
-- [ ] Create `phpstan.neon` configuration
-- [ ] Create `.php-cs-fixer.dist.php` formatter config (PSR-12 strict)
-- [ ] Create GitHub Actions CI workflow (`.github/workflows/ci.yml`)
-- [ ] Verify everything runs locally (formatter, analysis, tests)
-- [ ] Commit
+- [x] Create `verified-client-ip.php` with standard WordPress plugin header
+- [x] Create `composer.json` with PHPUnit, PHPStan, PHP-CS-Fixer (WP_Mock deferred to Step 5)
+- [x] Create `phpunit.xml.dist` configuration
+- [x] Create `phpstan.neon` configuration
+- [x] Create `.php-cs-fixer.dist.php` formatter config (PSR-12 strict)
+- [x] Create GitHub Actions CI workflow (`.github/workflows/ci.yml`)
+- [ ] Verify everything runs locally (formatter, analysis, tests) — deferred to CI
+- [x] Commit
 
 ## Step 2 — Core IP Utilities (CIDR Matching, Normalisation)
 
-- [ ] Create `src/IpUtils.php` with CIDR matching (IPv4 + IPv6)
-- [ ] Add IPv4-mapped IPv6 normalisation
-- [ ] Add port stripping (including bracketed IPv6)
-- [ ] Add IP validation helper
-- [ ] Write unit tests in `tests/Unit/IpUtilsTest.php`
+- [x] Create `src/IpUtils.php` with CIDR matching (IPv4 + IPv6)
+- [x] Add IPv4-mapped IPv6 normalisation
+- [x] Add port stripping (including bracketed IPv6)
+- [x] Add IP validation helper
+- [x] Write unit tests in `tests/Unit/IpUtilsTest.php`
 - [ ] Verify all checks pass
 - [ ] Commit
 

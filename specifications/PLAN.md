@@ -129,16 +129,16 @@ Progress tracker. Check off items as completed.
 
 ## Step 11 — Local Development Environment
 
-- [ ] Create `compose.yaml` (Podman/Docker)
-- [ ] WordPress service on port 8100
-- [ ] RFC 7239 proxy chain (ports 8101–8103)
-- [ ] X-Forwarded-For proxy (port 8112)
-- [ ] Cloudflare-sim proxy (port 8122)
-- [ ] noVNC desktop (port 8180) for IPv6 testing
-- [ ] Enable IPv6 networking
-- [ ] Proxy configs (Caddy/Nginx)
-- [ ] Usage instructions
-- [ ] Commit
+- [x] Create `compose.yaml` (Podman/Docker)
+- [x] WordPress service on port 8100
+- [x] RFC 7239 proxy chain (ports 8101–8103) with Caddy
+- [x] X-Forwarded-For proxy (port 8112)
+- [x] Cloudflare-sim proxy (port 8122)
+- [x] noVNC desktop (port 8180) for IPv6 testing
+- [x] Enable IPv6 networking (`fd12:3456:789a::/48`)
+- [x] Proxy configs (Caddy) in `examples/` subdirectories
+- [x] Usage instructions in `examples/README.md`
+- [x] Commit
 
 ## Step 12 — Packaging & Documentation
 

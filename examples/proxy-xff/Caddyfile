@@ -1,0 +1,12 @@
+# Proxy XFF — X-Forwarded-For → Proxy A
+#
+# Listens on port 80, forwards to proxy-a:80.
+# Uses X-Forwarded-For headers (Caddy's default behaviour).
+# Explicitly removes any Forwarded header to keep the chain clean.
+
+:80 {
+	reverse_proxy proxy-a:80 {
+		# Remove RFC 7239 header — this proxy only uses XFF.
+		header_up -Forwarded
+	}
+}

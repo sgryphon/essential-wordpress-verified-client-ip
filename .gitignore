@@ -46,3 +46,38 @@ wp-config.php
 # Note: If you wish to whitelist themes,
 # uncomment the next line
 #/wp-content/themes
+
+# Composer
+/vendor/
+
+# PHPUnit
+.phpunit.result.cache
+.phpunit.cache/
+
+# PHP-CS-Fixer / Laravel Pint
+.php-cs-fixer.cache
+.php_cs.cache
+
+# PHPStan / Psalm
+/phpstan-cache/
+/psalm-cache/
+
+# Build / packaging output
+/build/
+/dist/
+*.zip
+
+# IDE / editor files
+/.idea/
+/.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Container / example environment data
+/examples/**/wordpress-data/
+/examples/**/db-data/

@@ -1,0 +1,65 @@
+{
+  "name": "Verified Client IP - Development",
+  "dockerComposeFile": [
+    "compose.yml"
+  ],
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "bmewburn.vscode-intelephense-client",
+        "dbaeumer.vscode-eslint",
+        "xdebug.php-debug"
+      ],
+      "settings": {
+        "php.suggest.basic": false,
+        "php.validate.executablePath": "/usr/local/bin/php",
+        "editor.formatOnSave": true,
+        "[php]": {
+          "editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
+        }
+      }
+    }
+  },
+  "postCreateCommand": "composer install --no-interaction --prefer-dist",
+  "portsAttributes": {
+    "8100": {
+      "label": "WordPress",
+      "onAutoForward": "notify"
+    },
+    "8101": {
+      "label": "Proxy A (RFC 7239)",
+      "onAutoForward": "notify"
+    },
+    "8102": {
+      "label": "Proxy B (RFC 7239)",
+      "onAutoForward": "notify"
+    },
+    "8103": {
+      "label": "Proxy C (RFC 7239)",
+      "onAutoForward": "notify"
+    },
+    "8112": {
+      "label": "Proxy XFF",
+      "onAutoForward": "notify"
+    },
+    "8122": {
+      "label": "Proxy CF",
+      "onAutoForward": "notify"
+    },
+    "8180": {
+      "label": "noVNC Desktop",
+      "onAutoForward": "notify"
+    }
+  },
+  "forwardPorts": [
+    8100,
+    8101,
+    8102,
+    8103,
+    8112,
+    8122,
+    8180
+  ]
+}

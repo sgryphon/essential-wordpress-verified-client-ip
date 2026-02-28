@@ -1,0 +1,155 @@
+# Docker Compose for VS Code Dev Containers
+#
+# This file brings up:
+# - PHP CLI development container (the dev container)
+# - WordPress + database + proxy chains for testing
+#
+# Usage with VS Code Dev Containers:
+#   1. Install the "Dev Containers" extension
+#   2. Open the project folder
+#   3. Click "Reopen in Container" (or press F1 -> "Dev Containers: Reopen")
+#
+# Manual usage:
+#   podman compose -f .devcontainer/compose.yml up -d
+#   podman compose -f .devcontainer/compose.yml exec app bash
+
+services:
+  # -----------------------------------------------------------------
+  # PHP CLI Development Container (the VS Code dev container)
+  # -----------------------------------------------------------------
+  app:
+    image: docker.io/library/php:8.3-cli
+    volumes:
+      - ..:/workspace:cached
+    working_dir: /workspace
+    command: sleep infinity
+    user: "${UID:-1000}:${GID:-1000}"
+    environment:
+      - COMPOSER_ALLOW_SUPERUSER=1
+    networks:
+      - vcip_net
+
+  # -----------------------------------------------------------------
+  # WordPress + MariaDB
+  # -----------------------------------------------------------------
+  db:
+    image: docker.io/library/mariadb:11
+    environment:
+      MARIADB_ROOT_PASSWORD: rootpass
+      MARIADB_DATABASE: wordpress
+      MARIADB_USER: wpuser
+      MARIADB_PASSWORD: wppass
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - vcip_net
+
+  wordpress:
+    image: docker.io/library/wordpress:6.7-php8.3-apache
+    depends_on:
+      - db
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wpuser
+      WORDPRESS_DB_PASSWORD: wppass
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DEBUG: "1"
+    ports:
+      - "8100:80"
+    volumes:
+      - wp_data:/var/www/html
+      # Mount the plugin source into the plugins directory.
+      - ./:/var/www/html/wp-content/plugins/verified-client-ip:ro
+    networks:
+      - vcip_net
+
+  # -----------------------------------------------------------------
+  # RFC 7239 Forwarded proxy chain (ports 8101–8103)
+  # Uses IPv6 between hops where possible.
+  # -----------------------------------------------------------------
+  proxy-a:
+    image: docker.io/library/caddy:2-alpine
+    depends_on:
+      - wordpress
+    ports:
+      - "8101:80"
+    volumes:
+      - ../examples/proxy-a/Caddyfile:/etc/caddy/Caddyfile:ro
+    networks:
+      - vcip_net
+
+  proxy-b:
+    image: docker.io/library/caddy:2-alpine
+    depends_on:
+      - proxy-a
+    ports:
+      - "8102:80"
+    volumes:
+      - ../examples/proxy-b/Caddyfile:/etc/caddy/Caddyfile:ro
+    networks:
+      - vcip_net
+
+  proxy-c:
+    image: docker.io/library/caddy:2-alpine
+    depends_on:
+      - proxy-b
+    ports:
+      - "8103:80"
+    volumes:
+      - ../examples/proxy-c/Caddyfile:/etc/caddy/Caddyfile:ro
+    networks:
+      - vcip_net
+
+  # -----------------------------------------------------------------
+  # X-Forwarded-For proxy (port 8112)
+  # -----------------------------------------------------------------
+  proxy-xff:
+    image: docker.io/library/caddy:2-alpine
+    depends_on:
+      - proxy-a
+    ports:
+      - "8112:80"
+    volumes:
+      - ../examples/proxy-xff/Caddyfile:/etc/caddy/Caddyfile:ro
+    networks:
+      - vcip_net
+
+  # -----------------------------------------------------------------
+  # Cloudflare-sim proxy (port 8122)
+  # -----------------------------------------------------------------
+  proxy-cf:
+    image: docker.io/library/caddy:2-alpine
+    depends_on:
+      - proxy-a
+    ports:
+      - "8122:80"
+    volumes:
+      - ../examples/proxy-cf/Caddyfile:/etc/caddy/Caddyfile:ro
+    networks:
+      - vcip_net
+
+  # -----------------------------------------------------------------
+  # noVNC Linux desktop for IPv6 browser testing (port 8180)
+  # -----------------------------------------------------------------
+  desktop:
+    image: docker.io/theasp/novnc:latest
+    ports:
+      - "8180:8080"
+    environment:
+      DISPLAY_WIDTH: 1280
+      DISPLAY_HEIGHT: 720
+    networks:
+      - vcip_net
+
+networks:
+  vcip_net:
+    driver: bridge
+    enable_ipv6: true
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+        - subnet: fd12:3456:789a::/48
+
+volumes:
+  db_data:
+  wp_data:

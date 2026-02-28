@@ -4,6 +4,7 @@
 
 - **Podman** (preferred) or Docker — for running tests in containers
 - **Git** — for version control
+- **VS Code** with Dev Containers extension (optional) — for integrated dev environment
 - No native PHP or Composer required on the host; everything runs in containers
 
 If you have PHP 8.1+ and Composer installed locally, you can run tests
@@ -11,20 +12,34 @@ directly. Otherwise, use the container commands below.
 
 ## Getting Started
 
-```bash
+### Option 1: VS Code Dev Containers (Recommended)
+
+If you use VS Code with the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers), you can open this project in a fully configured development environment:
+
+1. Install the "Dev Containers" extension in VS Code
+2. Open the project folder in VS Code
+3. Click "Reopen in Container" when prompted (or press `F1` → "Dev Containers: Reopen")
+
+This will:
+- Start a PHP 8.3 CLI container for development
+- Install Composer dependencies automatically
+
+### Option 2: Manual Container Setup
+
+```powershell
 git clone https://github.com/sgryphon/essential-wordpress-verified-client-ip.git
 cd essential-wordpress-verified-client-ip
 ```
 
 ### Install Dependencies (container)
 
-```bash
-podman run --rm -v "$PWD":/app -w /app docker.io/library/composer:2 install
+```powershell
+podman run --rm -v "$($PWD.Path):/app" -w /app docker.io/library/composer:2 install
 ```
 
 ### Install Dependencies (local)
 
-```bash
+```powershell
 composer install
 ```
 
@@ -32,19 +47,19 @@ composer install
 
 ### Via Container
 
-```bash
-podman run --rm -v "$PWD":/app -w /app docker.io/library/php:8.3-cli vendor/bin/phpunit
+```powershell
+podman run --rm -v "$($PWD.Path):/app" -w /app docker.io/library/php:8.3-cli vendor/bin/phpunit
 ```
 
 ### Via Local PHP
 
-```bash
+```powershell
 vendor/bin/phpunit
 ```
 
 ### Running Specific Tests
 
-```bash
+```powershell
 # Run only unit tests
 vendor/bin/phpunit tests/Unit
 
@@ -62,9 +77,9 @@ vendor/bin/phpunit --filter testSingleProxyXff tests/Unit/ResolverTest.php
 
 ### Static Analysis (PHPStan)
 
-```bash
+```powershell
 # Container
-podman run --rm -v "$PWD":/app -w /app docker.io/library/php:8.3-cli vendor/bin/phpstan analyse
+podman run --rm -v "$($PWD.Path):/app" -w /app docker.io/library/php:8.3-cli vendor/bin/phpstan analyse
 
 # Local
 vendor/bin/phpstan analyse
@@ -72,12 +87,24 @@ vendor/bin/phpstan analyse
 
 ### Code Formatting (PHP-CS-Fixer)
 
-```bash
+```powershell
 # Check formatting
 vendor/bin/php-cs-fixer fix --dry-run --diff
 
 # Fix formatting
 vendor/bin/php-cs-fixer fix
+```
+
+## Full Quality Check
+
+Run all quality checks (formatter, static analysis, tests) in one command:
+
+```powershell
+# Container
+podman run --rm -v "$($PWD.Path):/app" -w /app docker.io/library/composer:2 run-script check
+
+# Local
+composer run-script check
 ```
 
 ## Project Structure
@@ -149,5 +176,6 @@ All four must pass before merging.
 
 ## Local Testing with Proxy Chains
 
-See [examples/README.md](../examples/README.md) for instructions on running
-WordPress with proxy chains for end-to-end testing.
+For full end-to-end testing with WordPress and proxy chains, see the examples directory:
+
+- [examples/README.md](../examples/README.md) — setup instructions for local proxy chain testing

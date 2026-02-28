@@ -1,16 +1,16 @@
 # Local Development Environment
 
-This directory contains proxy configurations used by the `compose.yaml` file
-in the project root to set up a local testing environment for the Verified
-Client IP plugin.
+This directory contains proxy configurations and the Docker Compose file used to set up a local testing environment for the Verified Client IP plugin.
 
 ## Quick Start
 
 ```bash
-# Start all services (Podman preferred)
+# Start all services from the examples folder (Podman preferred)
+cd examples
 podman compose up -d
 
 # Or with Docker
+cd examples
 docker compose up -d
 ```
 

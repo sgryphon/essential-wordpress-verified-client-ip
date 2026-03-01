@@ -1,0 +1,13 @@
+# Proxy CF — Cloudflare-sim → Proxy A
+#
+# Listens on port 80, forwards to proxy-a:80.
+# Simulates Cloudflare by setting CF-Connecting-IP to the client's IP.
+
+:80 {
+	reverse_proxy proxy-a:80 {
+		header_up CF-Connecting-IP {http.request.remote.host}
+		# Remove XFF and Forwarded — Cloudflare uses its own header.
+		header_up -X-Forwarded-For
+		header_up -Forwarded
+	}
+}

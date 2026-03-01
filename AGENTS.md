@@ -110,6 +110,35 @@ Tests are split across multiple files by concern:
 
 ## Local Development / Examples
 
+### PHP / Composer Are Not Available on the Host
+
+PHP and Composer are **not** installed on the development machine. All PHP tooling (Composer, PHPUnit, PHPStan, PHP-CS-Fixer) must be run inside a container. Use a one-off container with the project mounted:
+
+```bash
+# Podman (preferred)
+podman run --rm -v "$PWD:/app" -w /app docker.io/library/composer:2 <command>
+
+# Docker
+docker run --rm -v "$PWD:/app" -w /app docker.io/library/composer:2 <command>
+```
+
+Common examples:
+
+```bash
+# Install / update dependencies
+podman run --rm -v "$PWD:/app" -w /app docker.io/library/composer:2 update --no-interaction --prefer-dist
+
+# Run the full check suite (format, analyse, test)
+podman run --rm -v "$PWD:/app" -w /app docker.io/library/composer:2 run-script check
+
+# Run tests only
+podman run --rm -v "$PWD:/app" -w /app docker.io/library/composer:2 run-script test
+```
+
+> **Do not** attempt to run `php`, `composer`, `phpunit`, or any other PHP command directly on the host — they will fail.
+
+### Container Compose Environment
+
 A container compose file provides a local test environment with:
 - WordPress on port 8100
 - Proxy chains on ports 8101–8103 (RFC 7239 `Forwarded` headers)

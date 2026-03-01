@@ -49,6 +49,7 @@ wp-config.php
 
 # Composer
 /vendor/
+composer.lock
 
 # PHPUnit
 .phpunit.result.cache
@@ -81,3 +82,12 @@ Thumbs.db
 # Container / example environment data
 /examples/**/wordpress-data/
 /examples/**/db-data/
+
+# Custom
+.vscode-server/
+.dotnet/
+.cache/
+.devcontainer/.onCreateCommandMarker
+.devcontainer/.postCreateCommandMarker
+.devcontainer/.updateContentCommandMarker
+.phpstan.cache/

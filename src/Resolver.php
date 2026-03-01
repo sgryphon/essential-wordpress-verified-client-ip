@@ -33,7 +33,8 @@ final class Resolver {
 	 * @return ResolverResult The resolution result with step trace.
 	 */
 	public function resolve( array $server_vars, array $schemes, int $forward_limit = 1 ): ResolverResult {
-		$remote_addr = (string) ( $server_vars['REMOTE_ADDR'] ?? '' );
+		$raw_addr    = $server_vars['REMOTE_ADDR'] ?? '';
+		$remote_addr = \is_array( $raw_addr ) ? (string) ( $raw_addr[0] ?? '' ) : (string) $raw_addr;
 		$steps       = [];
 		$proto_info  = [];
 
@@ -255,30 +256,19 @@ final class Resolver {
 
 		// All addresses exhausted and all were trusted.
 		// Return the outermost (leftmost in original header = last in rightmost-first list).
-		if ( null !== $last_trusted_address ) {
-			$steps[] = new ResolverStep(
-				step: \count( $steps ) + 1,
-				address: $last_trusted_address,
-				normalised_address: $last_trusted_address,
-				matched_scheme: null,
-				header_used: $current_scheme->header,
-				action: 'All addresses trusted — using outermost forwarded address',
-			);
+		$steps[] = new ResolverStep(
+			step: \count( $steps ) + 1,
+			address: $last_trusted_address,
+			normalised_address: $last_trusted_address,
+			matched_scheme: null,
+			header_used: $current_scheme->header,
+			action: 'All addresses trusted — using outermost forwarded address',
+		);
 
-			return new ResolverResult(
-				resolved_ip: $last_trusted_address,
-				original_ip: $remote_addr,
-				changed: true,
-				steps: $steps,
-				proto: $proto_info,
-			);
-		}
-
-		// Fallback: no change.
 		return new ResolverResult(
-			resolved_ip: $remote_addr,
+			resolved_ip: $last_trusted_address,
 			original_ip: $remote_addr,
-			changed: false,
+			changed: true,
 			steps: $steps,
 			proto: $proto_info,
 		);

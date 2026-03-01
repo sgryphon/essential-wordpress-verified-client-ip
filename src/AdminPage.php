@@ -475,7 +475,8 @@ final class AdminPage {
 
 				$proxies = $raw['proxies'] ?? '';
 				if ( \is_string( $proxies ) ) {
-					$proxies = \array_filter( \array_map( 'trim', \preg_split( '/[\r\n]+/', $proxies ) ) );
+					$split   = \preg_split( '/[\r\n]+/', $proxies );
+					$proxies = \array_filter( \array_map( 'trim', false !== $split ? $split : [] ) );
 					$proxies = \array_values( $proxies );
 				}
 
@@ -617,7 +618,7 @@ final class AdminPage {
 
 				<?php if ( [] !== $log ) : ?>
 					<button type="submit" name="vcip_diag_action" value="clear" class="button"
-							onclick="return confirm(<?php echo \esc_attr( \wp_json_encode( __( 'Clear all diagnostic data?', 'verified-client-ip' ) ) ); ?>);">
+							onclick="return confirm(<?php echo \esc_attr( (string) \wp_json_encode( __( 'Clear all diagnostic data?', 'verified-client-ip' ) ) ); ?>);">
 						<?php echo \esc_html__( 'Clear Diagnostics', 'verified-client-ip' ); ?>
 					</button>
 				<?php endif; ?>

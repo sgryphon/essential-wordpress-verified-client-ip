@@ -206,10 +206,9 @@ final class Diagnostics {
 		// known special keys).
 		$headers = [];
 		foreach ( $server_vars as $key => $value ) {
-			if ( \is_string( $key ) && (
-				\str_starts_with( $key, 'HTTP_' )
+			if ( \str_starts_with( $key, 'HTTP_' )
 				|| \in_array( $key, [ 'REMOTE_ADDR', 'HTTPS', 'REQUEST_SCHEME', 'SERVER_NAME', 'REQUEST_URI', 'REQUEST_METHOD', 'SERVER_PORT', 'SERVER_PROTOCOL' ], true )
-			) ) {
+			) {
 				$headers[ $key ] = $value;
 			}
 		}

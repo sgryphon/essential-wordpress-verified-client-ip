@@ -16,7 +16,6 @@ The full specification is in [specifications/Main Specification.md](specificatio
 - **Static analysis:** PHPStan or Psalm
 - **Formatter:** PHP_CodeSniffer (PHPCS) with WordPress Coding Standards (WPCS) — `WordPress-Core` standard
 - **CI:** GitHub Actions
-- **Container runtime:** Podman (preferred) or Docker
 
 ## Key Architecture Decisions
 
@@ -110,36 +109,24 @@ Tests are split across multiple files by concern:
 
 ## Local Development / Examples
 
-### PHP / Composer Are Not Available on the Host
+### Devcontainer
 
-PHP and Composer are **not** installed on the development machine. All PHP tooling (Composer, PHPUnit, PHPStan, PHPCS) must be run inside a container. Use a one-off container with the project mounted:
-
-```bash
-# Podman (preferred)
-podman run --rm -v "$PWD:/app" -w /app docker.io/library/composer:2 <command>
-
-# Docker
-docker run --rm -v "$PWD:/app" -w /app docker.io/library/composer:2 <command>
-```
-
-Common examples:
+The project runs in a devcontainer. PHP, Composer, PHPUnit, PHPStan, and PHPCS are all available directly in the terminal.
 
 ```bash
 # Install / update dependencies
-podman run --rm -v "$PWD:/app" -w /app docker.io/library/composer:2 update --no-interaction --prefer-dist
+composer update --no-interaction --prefer-dist
 
 # Run the full check suite (format, analyse, test)
-podman run --rm -v "$PWD:/app" -w /app docker.io/library/composer:2 run-script check
+composer run-script check
 
 # Run tests only
-podman run --rm -v "$PWD:/app" -w /app docker.io/library/composer:2 run-script test
+composer run-script test
 ```
 
-> **Do not** attempt to run `php`, `composer`, `phpunit`, or any other PHP command directly on the host — they will fail.
+### Container Compose Environment (Examples Only)
 
-### Container Compose Environment
-
-A container compose file provides a local test environment with:
+A container compose file under `examples/` provides a local example environment with:
 - WordPress on port 8100
 - Proxy chains on ports 8101–8103 (RFC 7239 `Forwarded` headers)
 - X-Forwarded-For proxy on port 8112

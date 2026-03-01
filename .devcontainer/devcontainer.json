@@ -13,7 +13,8 @@
 		"vscode": {
       	"extensions": [
     			"EditorConfig.EditorConfig",
-        	"kilo.code"
+        	"kilo.code",
+        	"wongjn.php-sniffer"
       	]
     }
 	},

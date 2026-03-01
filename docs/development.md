@@ -56,14 +56,14 @@ vendor/bin/phpunit --filter testSingleProxyXff tests/Unit/ResolverTest.php
 vendor/bin/phpstan analyse
 ```
 
-### Code Formatting (PHP-CS-Fixer)
+### Code Formatting (PHPCS / WPCS)
 
 ```powershell
-# Check formatting
-vendor/bin/php-cs-fixer fix --dry-run --diff
+# Check formatting (detect violations)
+vendor/bin/phpcs
 
-# Fix formatting
-vendor/bin/php-cs-fixer fix
+# Fix formatting automatically
+vendor/bin/phpcbf
 ```
 
 ## Full Quality Check
@@ -137,7 +137,7 @@ The GitHub Actions workflow runs:
 1. `composer install`
 2. PHPUnit tests
 3. PHPStan static analysis
-4. PHP-CS-Fixer formatting check
+4. PHPCS (WordPress Coding Standards) formatting check
 
 All four must pass before merging.
 

@@ -14,7 +14,7 @@ The full specification is in [specifications/Main Specification.md](specificatio
 - **Text domain:** `verified-client-ip`
 - **Testing:** PHPUnit (pure unit tests), WP_Mock (integration tests)
 - **Static analysis:** PHPStan or Psalm
-- **Formatter:** PHP-CS-Fixer (`@PSR12` + strict rules) or Laravel Pint
+- **Formatter:** PHP_CodeSniffer (PHPCS) with WordPress Coding Standards (WPCS) — `WordPress-Core` standard
 - **CI:** GitHub Actions
 - **Container runtime:** Podman (preferred) or Docker
 
@@ -112,7 +112,7 @@ Tests are split across multiple files by concern:
 
 ### PHP / Composer Are Not Available on the Host
 
-PHP and Composer are **not** installed on the development machine. All PHP tooling (Composer, PHPUnit, PHPStan, PHP-CS-Fixer) must be run inside a container. Use a one-off container with the project mounted:
+PHP and Composer are **not** installed on the development machine. All PHP tooling (Composer, PHPUnit, PHPStan, PHPCS) must be run inside a container. Use a one-off container with the project mounted:
 
 ```bash
 # Podman (preferred)

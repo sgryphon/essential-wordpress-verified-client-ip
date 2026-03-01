@@ -87,3 +87,6 @@ Thumbs.db
 .vscode-server/
 .dotnet/
 .cache/
+.devcontainer/.onCreateCommandMarker
+.devcontainer/.postCreateCommandMarker
+.devcontainer/.updateContentCommandMarker

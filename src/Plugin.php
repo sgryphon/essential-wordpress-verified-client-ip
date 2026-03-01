@@ -22,7 +22,7 @@ final class Plugin {
 	 * any effect.
 	 */
 	public static function boot(): void {
-		if ( self::null !== $instance ) {
+		if ( null !== self::$instance ) {
 			return;
 		}
 

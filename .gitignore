@@ -69,7 +69,6 @@ composer.lock
 
 # IDE / editor files
 /.idea/
-/.vscode/
 *.swp
 *.swo
 *~

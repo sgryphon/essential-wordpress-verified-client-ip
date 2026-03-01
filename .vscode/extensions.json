@@ -1,0 +1,10 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=827846 to learn about workspace recommendations.
+  "recommendations": [
+    "EditorConfig.EditorConfig",
+    "wongjn.php-sniffer",
+    "esbenp.prettier-vscode",
+    "mhutchie.git-graph",
+    "kilocode.kilo-code"
+  ]
+}

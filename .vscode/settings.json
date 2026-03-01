@@ -1,0 +1,40 @@
+{
+  "editor.defaultFormatter": "EditorConfig.EditorConfig",
+  "editor.formatOnSave": true,
+
+  // Prettier (esbenp.prettier-vscode)
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": false
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": false
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  // PHP Sniffer & Beautifier (wongjn.php-sniffer)
+  "phpSniffer.standard": "phpcs.xml.dist",
+  "phpSniffer.executablesFolder": "vendor/bin/",
+  "phpSniffer.autoDetect": false,
+  "[php]": {
+    "editor.defaultFormatter": "wongjn.php-sniffer"
+  }
+}

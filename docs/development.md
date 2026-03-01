@@ -12,46 +12,21 @@ directly. Otherwise, use the container commands below.
 
 ## Getting Started
 
-### Option 1: VS Code Dev Containers (Recommended)
-
 If you use VS Code with the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers), you can open this project in a fully configured development environment:
 
 1. Install the "Dev Containers" extension in VS Code
 2. Open the project folder in VS Code
 3. Click "Reopen in Container" when prompted (or press `F1` → "Dev Containers: Reopen")
 
-This will:
-- Start a PHP 8.3 CLI container for development
-- Install Composer dependencies automatically
+This will start a PHP 8.3 CLI container for development. Use Terminal > New Termninal in VS Code to get a terminal running in the container.
 
-### Option 2: Manual Container Setup
-
-```powershell
-git clone https://github.com/sgryphon/essential-wordpress-verified-client-ip.git
-cd essential-wordpress-verified-client-ip
-```
-
-### Install Dependencies (container)
-
-```powershell
-podman run --rm -v "$($PWD.Path):/app" -w /app docker.io/library/composer:2 install
-```
-
-### Install Dependencies (local)
+## Install Dependencies
 
 ```powershell
 composer install
 ```
 
 ## Running Tests
-
-### Via Container
-
-```powershell
-podman run --rm -v "$($PWD.Path):/app" -w /app docker.io/library/php:8.3-cli vendor/bin/phpunit
-```
-
-### Via Local PHP
 
 ```powershell
 vendor/bin/phpunit
@@ -78,10 +53,6 @@ vendor/bin/phpunit --filter testSingleProxyXff tests/Unit/ResolverTest.php
 ### Static Analysis (PHPStan)
 
 ```powershell
-# Container
-podman run --rm -v "$($PWD.Path):/app" -w /app docker.io/library/php:8.3-cli vendor/bin/phpstan analyse
-
-# Local
 vendor/bin/phpstan analyse
 ```
 
@@ -100,10 +71,6 @@ vendor/bin/php-cs-fixer fix
 Run all quality checks (formatter, static analysis, tests) in one command:
 
 ```powershell
-# Container
-podman run --rm -v "$($PWD.Path):/app" -w /app docker.io/library/composer:2 run-script check
-
-# Local
 composer run-script check
 ```
 

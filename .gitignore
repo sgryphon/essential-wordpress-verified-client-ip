@@ -90,3 +90,4 @@ Thumbs.db
 .devcontainer/.onCreateCommandMarker
 .devcontainer/.postCreateCommandMarker
 .devcontainer/.updateContentCommandMarker
+.phpstan.cache/

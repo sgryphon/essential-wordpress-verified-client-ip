@@ -20,36 +20,39 @@
 declare(strict_types=1);
 
 // Abort if called directly.
-if (! defined('ABSPATH')) {
-    exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
 // Plugin version constant.
-define('VCIP_VERSION', '0.1.0');
+define( 'VCIP_VERSION', '0.1.0' );
 
 // Plugin file constant.
-define('VCIP_PLUGIN_FILE', __FILE__);
+define( 'VCIP_PLUGIN_FILE', __FILE__ );
 
 // Plugin directory constant.
-define('VCIP_PLUGIN_DIR', plugin_dir_path(__FILE__));
+define( 'VCIP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
 // Autoload classes.
-if (file_exists(VCIP_PLUGIN_DIR . 'vendor/autoload.php')) {
-    require_once VCIP_PLUGIN_DIR . 'vendor/autoload.php';
+if ( file_exists( VCIP_PLUGIN_DIR . 'vendor/autoload.php' ) ) {
+	require_once VCIP_PLUGIN_DIR . 'vendor/autoload.php';
 }
 
 // Register IP resolution at the earliest possible hook.
 // For must-use plugins, call VerifiedClientIp\Plugin::boot() directly instead.
-add_action('plugins_loaded', [VerifiedClientIp\Plugin::class, 'boot'], 0);
+add_action( 'plugins_loaded', [ VerifiedClientIp\Plugin::class, 'boot' ], 0 );
 
 // Deactivation hook — flush caches only, do NOT remove data.
-register_deactivation_hook(__FILE__, static function (): void {
-    if (function_exists('wp_cache_flush')) {
-        wp_cache_flush();
-    }
-});
+register_deactivation_hook(
+	__FILE__,
+	static function (): void {
+		if ( function_exists( 'wp_cache_flush' ) ) {
+			wp_cache_flush();
+		}
+	}
+);
 
 // Register admin settings page (only loaded in admin context).
-if (is_admin()) {
-    VerifiedClientIp\AdminPage::register();
+if ( is_admin() ) {
+	VerifiedClientIp\AdminPage::register();
 }

@@ -48,7 +48,7 @@ final class Logger {
 	 * This keeps request-level logging off by default for performance.
 	 */
 	public static function debug( string $message, string $context = '' ): void {
-		if ( ! self::isRequestLoggingEnabled() ) {
+		if ( ! self::is_request_logging_enabled() ) {
 			return;
 		}
 
@@ -58,7 +58,7 @@ final class Logger {
 	/**
 	 * Whether request-level (debug) logging is enabled.
 	 */
-	public static function isRequestLoggingEnabled(): bool {
+	public static function is_request_logging_enabled(): bool {
 		// Explicit constant takes precedence.
 		if ( \defined( 'VCIP_LOG_REQUESTS' ) ) {
 			return (bool) \constant( 'VCIP_LOG_REQUESTS' );
@@ -78,7 +78,7 @@ final class Logger {
 	private static function log( string $level, string $message, string $context ): void {
 		$entry = '[' . self::PREFIX . '] ' . $level . ': ' . $message;
 
-		if ( $context !== '' ) {
+		if ( '' !== $context ) {
 			$entry .= ' (' . $context . ')';
 		}
 

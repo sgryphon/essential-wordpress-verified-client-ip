@@ -21,59 +21,59 @@ final class IpUtils {
 	 *
 	 * @return bool True if the IP is within the range.
 	 */
-	public static function isInRange( string $ip, string $cidr ): bool {
+	public static function is_in_range( string $ip, string $cidr ): bool {
 		$ip = self::normalise( $ip );
-		if ( $ip === null ) {
+		if ( null === $ip ) {
 			return false;
 		}
 
 		// Parse CIDR notation.
 		if ( \str_contains( $cidr, '/' ) ) {
-			[$rangeIp, $prefixLen] = \explode( '/', $cidr, 2 );
-			if ( ! \ctype_digit( $prefixLen ) ) {
+			[$range_ip, $prefix_len] = \explode( '/', $cidr, 2 );
+			if ( ! \ctype_digit( $prefix_len ) ) {
 				return false;
 			}
-			$prefixLen = (int) $prefixLen;
+			$prefix_len = (int) $prefix_len;
 		} else {
-			$rangeIp   = $cidr;
-			$prefixLen = null; // Will be set based on address family.
+			$range_ip   = $cidr;
+			$prefix_len = null; // Will be set based on address family.
 		}
 
-		$rangeIp = self::normalise( $rangeIp );
-		if ( $rangeIp === null ) {
+		$range_ip = self::normalise( $range_ip );
+		if ( null === $range_ip ) {
 			return false;
 		}
 
 		// Both must be same family after normalisation.
-		$ipBin    = @\inet_pton( $ip );
-		$rangeBin = @\inet_pton( $rangeIp );
-		if ( $ipBin === false || $rangeBin === false ) {
+		$ip_bin    = \inet_pton( $ip );
+		$range_bin = \inet_pton( $range_ip );
+		if ( false === $ip_bin || false === $range_bin ) {
 			return false;
 		}
 
-		$ipLen    = \strlen( $ipBin );
-		$rangeLen = \strlen( $rangeBin );
+		$ip_len    = \strlen( $ip_bin );
+		$range_len = \strlen( $range_bin );
 
-		if ( $ipLen !== $rangeLen ) {
+		if ( $ip_len !== $range_len ) {
 			return false; // Different address families.
 		}
 
-		$maxBits     = $ipLen * 8; // 32 for IPv4, 128 for IPv6.
-		$prefixLen ??= $maxBits;
+		$max_bits     = $ip_len * 8; // 32 for IPv4, 128 for IPv6.
+		$prefix_len ??= $max_bits;
 
-		if ( $prefixLen < 0 || $prefixLen > $maxBits ) {
+		if ( $prefix_len < 0 || $prefix_len > $max_bits ) {
 			return false;
 		}
 
 		// Build the netmask as a binary string.
-		$mask      = \str_repeat( "\xff", (int) ( $prefixLen / 8 ) );
-		$remainder = $prefixLen % 8;
+		$mask      = \str_repeat( "\xff", (int) ( $prefix_len / 8 ) );
+		$remainder = $prefix_len % 8;
 		if ( $remainder > 0 ) {
 			$mask .= \chr( 0xFF << ( 8 - $remainder ) & 0xFF );
 		}
-		$mask = \str_pad( $mask, $ipLen, "\x00" );
+		$mask = \str_pad( $mask, $ip_len, "\x00" );
 
-		return ( $ipBin & $mask ) === ( $rangeBin & $mask );
+		return ( $ip_bin & $mask ) === ( $range_bin & $mask );
 	}
 
 	/**
@@ -84,9 +84,9 @@ final class IpUtils {
 	 *
 	 * @return bool True if the IP matches at least one entry.
 	 */
-	public static function matchesAny( string $ip, array $cidrs ): bool {
+	public static function matches_any( string $ip, array $cidrs ): bool {
 		foreach ( $cidrs as $cidr ) {
-			if ( self::isInRange( $ip, $cidr ) ) {
+			if ( self::is_in_range( $ip, $cidr ) ) {
 				return true;
 			}
 		}
@@ -105,33 +105,34 @@ final class IpUtils {
 	 */
 	public static function normalise( string $ip ): ?string {
 		$ip = \trim( $ip );
-		$ip = self::stripPort( $ip );
+		$ip = self::strip_port( $ip );
 
-		if ( $ip === '' ) {
+		if ( '' === $ip ) {
 			return null;
 		}
 
 		// Normalise via inet_pton + inet_ntop for consistent formatting.
-		$packed = @\inet_pton( $ip );
-		if ( $packed === false ) {
+		$packed = \inet_pton( $ip );
+		if ( false === $packed ) {
 			return null;
 		}
 
 		// Convert IPv4-mapped IPv6 to IPv4.
 		if ( \strlen( $packed ) === 16 ) {
 			// Check for ::ffff:x.x.x.x mapping (first 10 bytes zero, next 2 bytes 0xff).
-			$prefix    = \substr( $packed, 0, 10 );
-			$mapMarker = \substr( $packed, 10, 2 );
-			if ( $prefix === \str_repeat( "\x00", 10 ) && $mapMarker === "\xff\xff" ) {
-				$ipv4Bytes = \substr( $packed, 12, 4 );
+			$prefix     = \substr( $packed, 0, 10 );
+			$map_marker = \substr( $packed, 10, 2 );
+			if ( \str_repeat( "\x00", 10 ) === $prefix && "\xff\xff" === $map_marker ) {
+				$ipv4_bytes = \substr( $packed, 12, 4 );
+				$ipv4_str   = \inet_ntop( $ipv4_bytes );
 
-				return \inet_ntop( $ipv4Bytes ) ?: null;
+				return false !== $ipv4_str ? $ipv4_str : null;
 			}
 		}
 
 		$normalised = \inet_ntop( $packed );
 
-		return $normalised !== false ? $normalised : null;
+		return false !== $normalised ? $normalised : null;
 	}
 
 	/**
@@ -143,14 +144,14 @@ final class IpUtils {
 	 * - Bracketed IPv6 without port: "[::1]" -> "::1"
 	 * - Plain IPv6: "::1" -> "::1" (unchanged)
 	 */
-	public static function stripPort( string $ip ): string {
+	public static function strip_port( string $ip ): string {
 		$ip = \trim( $ip );
 
 		// Bracketed IPv6: [addr] or [addr]:port
 		if ( \str_starts_with( $ip, '[' ) ) {
-			$closeBracket = \strpos( $ip, ']' );
-			if ( $closeBracket !== false ) {
-				return \substr( $ip, 1, $closeBracket - 1 );
+			$close_bracket = \strpos( $ip, ']' );
+			if ( false !== $close_bracket ) {
+				return \substr( $ip, 1, $close_bracket - 1 );
 			}
 
 			// Malformed bracket — return as-is without the leading bracket.
@@ -175,16 +176,16 @@ final class IpUtils {
 	 *
 	 * Does NOT accept ports or CIDR notation — use normalise() first if needed.
 	 */
-	public static function isValid( string $ip ): bool {
+	public static function is_valid( string $ip ): bool {
 		return \filter_var( $ip, FILTER_VALIDATE_IP ) !== false;
 	}
 
 	/**
 	 * Validate whether a string is valid CIDR notation (address/prefix).
 	 */
-	public static function isValidCidr( string $cidr ): bool {
+	public static function is_valid_cidr( string $cidr ): bool {
 		if ( ! \str_contains( $cidr, '/' ) ) {
-			return self::isValid( $cidr );
+			return self::is_valid( $cidr );
 		}
 
 		[$address, $prefix] = \explode( '/', $cidr, 2 );
@@ -192,14 +193,14 @@ final class IpUtils {
 			return false;
 		}
 
-		$prefixLen = (int) $prefix;
-		$packed    = @\inet_pton( $address );
-		if ( $packed === false ) {
+		$prefix_len = (int) $prefix;
+		$packed     = \inet_pton( $address );
+		if ( false === $packed ) {
 			return false;
 		}
 
-		$maxBits = \strlen( $packed ) * 8;
+		$max_bits = \strlen( $packed ) * 8;
 
-		return $prefixLen >= 0 && $prefixLen <= $maxBits;
+		return $prefix_len >= 0 && $prefix_len <= $max_bits;
 	}
 }

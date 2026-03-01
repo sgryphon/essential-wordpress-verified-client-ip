@@ -15,19 +15,19 @@ final class Plugin {
 	private static ?self $instance = null;
 
 	/** @var ResolverResult|null The most recent resolution result (available for diagnostics). */
-	private ?ResolverResult $lastResult = null;
+	private ?ResolverResult $last_result = null;
 
 	/**
 	 * Boot the plugin.  Safe to call multiple times — only the first call has
 	 * any effect.
 	 */
 	public static function boot(): void {
-		if ( self::$instance !== null ) {
+		if ( self::null !== $instance ) {
 			return;
 		}
 
 		self::$instance = new self();
-		self::$instance->resolveClientIp();
+		self::$instance->resolve_client_ip();
 	}
 
 	/**
@@ -47,8 +47,8 @@ final class Plugin {
 	/**
 	 * Get the last resolution result (useful for diagnostics).
 	 */
-	public function lastResult(): ?ResolverResult {
-		return $this->lastResult;
+	public function last_result(): ?ResolverResult {
+		return $this->last_result;
 	}
 
 	// ------------------------------------------------------------------
@@ -58,7 +58,7 @@ final class Plugin {
 	/**
 	 * Run the IP resolution algorithm and apply results.
 	 */
-	private function resolveClientIp(): void {
+	private function resolve_client_ip(): void {
 		$settings = Settings::load();
 		$schemes  = $settings->schemes;
 
@@ -69,36 +69,36 @@ final class Plugin {
 		}
 
 		$resolver = new Resolver();
-		$result   = $resolver->resolve( $_SERVER, $schemes, $settings->forwardLimit );
+		$result   = $resolver->resolve( $_SERVER, $schemes, $settings->forward_limit );
 
-		$this->lastResult = $result;
+		$this->last_result = $result;
 
 		// Let other plugins override the resolved IP.
-		$resolvedIp = $result->resolvedIp;
+		$resolved_ip = $result->resolved_ip;
 		if ( \function_exists( 'apply_filters' ) ) {
-			/** @var string $resolvedIp */
-			$resolvedIp = \apply_filters( 'vcip_resolved_ip', $resolvedIp, $result->steps );
+			/** @var string $resolved_ip */
+			$resolved_ip = \apply_filters( 'vcip_resolved_ip', $resolved_ip, $result->steps );
 		}
 
 		// Record diagnostics (works even when the plugin is disabled).
-		Diagnostics::maybeRecord( $_SERVER, $result );
+		Diagnostics::maybe_record( $_SERVER, $result );
 
 		// Request-level debug logging (off by default for performance).
 		if ( $result->changed ) {
 			Logger::debug(
-				\sprintf( 'Resolved %s → %s', $result->originalIp, $resolvedIp ),
+				\sprintf( 'Resolved %s → %s', $result->original_ip, $resolved_ip ),
 				'resolver'
 			);
 		}
 
 		// Warn on malformed forwarded values found during resolution.
 		foreach ( $result->steps as $step ) {
-			if ( $step->action === 'malformed_stop' || $step->action === 'malformed_value' ) {
+			if ( 'malformed_stop' === $step->action || 'malformed_value' === $step->action ) {
 				Logger::warning(
 					\sprintf(
 						'Malformed forwarded value "%s" from header %s',
 						$step->address,
-						$step->headerUsed ?? 'unknown',
+						$step->header_used ?? 'unknown',
 					),
 					'resolver'
 				);
@@ -111,25 +111,25 @@ final class Plugin {
 		}
 
 		// Apply the result.
-		if ( $result->changed && $resolvedIp !== $_SERVER['REMOTE_ADDR'] ) {
-			$originalIp = (string) $_SERVER['REMOTE_ADDR'];
+		if ( $result->changed && $resolved_ip !== $_SERVER['REMOTE_ADDR'] ) {
+			$original_ip = (string) $_SERVER['REMOTE_ADDR'];
 
-			$_SERVER['REMOTE_ADDR']                 = $resolvedIp;
-			$_SERVER['HTTP_X_ORIGINAL_REMOTE_ADDR'] = $originalIp;
+			$_SERVER['REMOTE_ADDR']                 = $resolved_ip;
+			$_SERVER['HTTP_X_ORIGINAL_REMOTE_ADDR'] = $original_ip;
 
 			// Proto processing (default: on).
-			if ( $settings->processProto && ! empty( $result->proto['proto'] ) ) {
-				$this->applyProto( (string) $result->proto['proto'] );
+			if ( $settings->process_proto && ! empty( $result->proto['proto'] ) ) {
+				$this->apply_proto( (string) $result->proto['proto'] );
 			}
 
 			// Host processing (default: off).
-			if ( $settings->processHost && ! empty( $result->proto['host'] ) ) {
-				$this->applyHost( (string) $result->proto['host'] );
+			if ( $settings->process_host && ! empty( $result->proto['host'] ) ) {
+				$this->apply_host( (string) $result->proto['host'] );
 			}
 
 			// Fire the post-resolution action.
 			if ( \function_exists( 'do_action' ) ) {
-				\do_action( 'vcip_ip_resolved', $resolvedIp, $originalIp, $result->steps );
+				\do_action( 'vcip_ip_resolved', $resolved_ip, $original_ip, $result->steps );
 			}
 		}
 	}
@@ -141,14 +141,14 @@ final class Plugin {
 	/**
 	 * Apply the forwarded protocol (e.g. "https") to $_SERVER.
 	 */
-	private function applyProto( string $proto ): void {
+	private function apply_proto( string $proto ): void {
 		// Store originals.
 		$_SERVER['HTTP_X_ORIGINAL_HTTPS']          = $_SERVER['HTTPS'] ?? '';
 		$_SERVER['HTTP_X_ORIGINAL_REQUEST_SCHEME'] = $_SERVER['REQUEST_SCHEME'] ?? '';
 
 		$proto = \strtolower( $proto );
 
-		if ( $proto === 'https' ) {
+		if ( 'https' === $proto ) {
 			$_SERVER['HTTPS'] = 'on';
 		}
 
@@ -158,7 +158,7 @@ final class Plugin {
 	/**
 	 * Apply the forwarded host to $_SERVER.
 	 */
-	private function applyHost( string $host ): void {
+	private function apply_host( string $host ): void {
 		$_SERVER['HTTP_X_ORIGINAL_HOST'] = $_SERVER['HTTP_HOST'] ?? '';
 
 		$_SERVER['HTTP_HOST']   = $host;
@@ -172,11 +172,11 @@ final class Plugin {
 	/**
 	 * Return the default scheme definitions per the specification.
 	 *
-	 * Delegates to Settings::defaultSchemes() for the canonical list.
+	 * Delegates to Settings::default_schemes() for the canonical list.
 	 *
 	 * @return array<Scheme>
 	 */
-	public static function defaultSchemes(): array {
-		return Settings::defaultSchemes();
+	public static function default_schemes(): array {
+		return Settings::default_schemes();
 	}
 }

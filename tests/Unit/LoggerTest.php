@@ -17,7 +17,7 @@ final class LoggerTest extends TestCase {
 		// environment, so request-level logging should be off.
 		// Note: If WP_DEBUG or VCIP_LOG_REQUESTS are defined in the test runner,
 		// this test may need adjusting.
-		$enabled = Logger::isRequestLoggingEnabled();
+		$enabled = Logger::is_request_logging_enabled();
 
 		// We can't control constants in tests easily — just check the method
 		// returns a boolean.

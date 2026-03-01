@@ -12,297 +12,285 @@ use VerifiedClientIp\ResolverStep;
 /**
  * @covers \VerifiedClientIp\Diagnostics
  */
-final class DiagnosticsTest extends TestCase
-{
-    protected function setUp(): void
-    {
-        // Reset transient storage before each test.
-        $GLOBALS['_vcip_test_transients'] = [];
-    }
+final class DiagnosticsTest extends TestCase {
 
-    // ------------------------------------------------------------------
-    // State management
-    // ------------------------------------------------------------------
+	protected function setUp(): void {
+		// Reset transient storage before each test.
+		$GLOBALS['_vcip_test_transients'] = [];
+	}
 
-    public function testNotRecordingByDefault(): void
-    {
-        $this->assertFalse(Diagnostics::isRecording());
-    }
+	// ------------------------------------------------------------------
+	// State management
+	// ------------------------------------------------------------------
 
-    public function testDefaultState(): void
-    {
-        $state = Diagnostics::getState();
+	public function testNotRecordingByDefault(): void {
+		$this->assertFalse( Diagnostics::is_recording() );
+	}
 
-        $this->assertFalse($state['recording']);
-        $this->assertSame(10, $state['max_requests']);
-        $this->assertNull($state['started_at']);
-        $this->assertNull($state['stopped_at']);
-    }
+	public function testDefaultState(): void {
+		$state = Diagnostics::get_state();
 
-    public function testStartRecording(): void
-    {
-        Diagnostics::startRecording(5);
+		$this->assertFalse( $state['recording'] );
+		$this->assertSame( 10, $state['max_requests'] );
+		$this->assertNull( $state['started_at'] );
+		$this->assertNull( $state['stopped_at'] );
+	}
 
-        $this->assertTrue(Diagnostics::isRecording());
+	public function testStartRecording(): void {
+		Diagnostics::start_recording( 5 );
 
-        $state = Diagnostics::getState();
-        $this->assertTrue($state['recording']);
-        $this->assertSame(5, $state['max_requests']);
-        $this->assertNotNull($state['started_at']);
-        $this->assertNull($state['stopped_at']);
-    }
+		$this->assertTrue( Diagnostics::is_recording() );
 
-    public function testStartRecordingDefaultCount(): void
-    {
-        Diagnostics::startRecording();
+		$state = Diagnostics::get_state();
+		$this->assertTrue( $state['recording'] );
+		$this->assertSame( 5, $state['max_requests'] );
+		$this->assertNotNull( $state['started_at'] );
+		$this->assertNull( $state['stopped_at'] );
+	}
 
-        $state = Diagnostics::getState();
-        $this->assertSame(Diagnostics::DEFAULT_REQUEST_COUNT, $state['max_requests']);
-    }
+	public function testStartRecordingDefaultCount(): void {
+		Diagnostics::start_recording();
 
-    public function testStopRecording(): void
-    {
-        Diagnostics::startRecording(5);
-        Diagnostics::stopRecording();
+		$state = Diagnostics::get_state();
+		$this->assertSame( Diagnostics::DEFAULT_REQUEST_COUNT, $state['max_requests'] );
+	}
 
-        $this->assertFalse(Diagnostics::isRecording());
+	public function testStopRecording(): void {
+		Diagnostics::start_recording( 5 );
+		Diagnostics::stop_recording();
 
-        $state = Diagnostics::getState();
-        $this->assertFalse($state['recording']);
-        $this->assertNotNull($state['stopped_at']);
-    }
+		$this->assertFalse( Diagnostics::is_recording() );
 
-    public function testClear(): void
-    {
-        Diagnostics::startRecording(3);
+		$state = Diagnostics::get_state();
+		$this->assertFalse( $state['recording'] );
+		$this->assertNotNull( $state['stopped_at'] );
+	}
 
-        // Record an entry.
-        $server = $this->makeServerVars();
-        $result = $this->makeResult();
-        Diagnostics::maybeRecord($server, $result);
+	public function testClear(): void {
+		Diagnostics::start_recording( 3 );
 
-        $this->assertCount(1, Diagnostics::getLog());
+		// Record an entry.
+		$server = $this->makeServerVars();
+		$result = $this->makeResult();
+		Diagnostics::maybe_record( $server, $result );
 
-        Diagnostics::clear();
+		$this->assertCount( 1, Diagnostics::get_log() );
 
-        $this->assertFalse(Diagnostics::isRecording());
-        $this->assertCount(0, Diagnostics::getLog());
-    }
+		Diagnostics::clear();
 
-    // ------------------------------------------------------------------
-    // Max request clamping
-    // ------------------------------------------------------------------
+		$this->assertFalse( Diagnostics::is_recording() );
+		$this->assertCount( 0, Diagnostics::get_log() );
+	}
 
-    public function testStartRecordingClampsLow(): void
-    {
-        Diagnostics::startRecording(0);
+	// ------------------------------------------------------------------
+	// Max request clamping
+	// ------------------------------------------------------------------
 
-        $state = Diagnostics::getState();
-        $this->assertSame(1, $state['max_requests']);
-    }
+	public function testStartRecordingClampsLow(): void {
+		Diagnostics::start_recording( 0 );
 
-    public function testStartRecordingClampsHigh(): void
-    {
-        Diagnostics::startRecording(999);
+		$state = Diagnostics::get_state();
+		$this->assertSame( 1, $state['max_requests'] );
+	}
 
-        $state = Diagnostics::getState();
-        $this->assertSame(Diagnostics::MAX_REQUEST_COUNT, $state['max_requests']);
-    }
+	public function testStartRecordingClampsHigh(): void {
+		Diagnostics::start_recording( 999 );
 
-    // ------------------------------------------------------------------
-    // Recording
-    // ------------------------------------------------------------------
+		$state = Diagnostics::get_state();
+		$this->assertSame( Diagnostics::MAX_REQUEST_COUNT, $state['max_requests'] );
+	}
 
-    public function testMaybeRecordDoesNothingWhenNotRecording(): void
-    {
-        // Not recording — should do nothing.
-        Diagnostics::maybeRecord($this->makeServerVars(), $this->makeResult());
+	// ------------------------------------------------------------------
+	// Recording
+	// ------------------------------------------------------------------
 
-        $this->assertCount(0, Diagnostics::getLog());
-    }
+	public function testMaybeRecordDoesNothingWhenNotRecording(): void {
+		// Not recording — should do nothing.
+		Diagnostics::maybe_record( $this->makeServerVars(), $this->makeResult() );
 
-    public function testMaybeRecordRecordsEntry(): void
-    {
-        Diagnostics::startRecording(5);
+		$this->assertCount( 0, Diagnostics::get_log() );
+	}
 
-        Diagnostics::maybeRecord($this->makeServerVars(), $this->makeResult());
+	public function testMaybeRecordRecordsEntry(): void {
+		Diagnostics::start_recording( 5 );
 
-        $log = Diagnostics::getLog();
-        $this->assertCount(1, $log);
+		Diagnostics::maybe_record( $this->makeServerVars(), $this->makeResult() );
 
-        $entry = $log[0];
-        $this->assertArrayHasKey('timestamp', $entry);
-        $this->assertArrayHasKey('request_uri', $entry);
-        $this->assertArrayHasKey('method', $entry);
-        $this->assertArrayHasKey('remote_addr', $entry);
-        $this->assertArrayHasKey('headers', $entry);
-        $this->assertArrayHasKey('resolved_ip', $entry);
-        $this->assertArrayHasKey('original_ip', $entry);
-        $this->assertArrayHasKey('changed', $entry);
-        $this->assertArrayHasKey('steps', $entry);
-    }
+		$log = Diagnostics::get_log();
+		$this->assertCount( 1, $log );
 
-    public function testRecordedEntryContainsServerData(): void
-    {
-        Diagnostics::startRecording(3);
+		$entry = $log[0];
+		$this->assertArrayHasKey( 'timestamp', $entry );
+		$this->assertArrayHasKey( 'request_uri', $entry );
+		$this->assertArrayHasKey( 'method', $entry );
+		$this->assertArrayHasKey( 'remote_addr', $entry );
+		$this->assertArrayHasKey( 'headers', $entry );
+		$this->assertArrayHasKey( 'resolved_ip', $entry );
+		$this->assertArrayHasKey( 'original_ip', $entry );
+		$this->assertArrayHasKey( 'changed', $entry );
+		$this->assertArrayHasKey( 'steps', $entry );
+	}
 
-        $server = [
-            'REMOTE_ADDR'    => '10.0.0.1',
-            'REQUEST_URI'    => '/test-page',
-            'REQUEST_METHOD' => 'POST',
-            'HTTP_HOST'      => 'example.com',
-            'HTTP_X_FORWARDED_FOR' => '203.0.113.50',
-            'SERVER_PORT'    => '443',
-        ];
+	public function testRecordedEntryContainsServerData(): void {
+		Diagnostics::start_recording( 3 );
 
-        Diagnostics::maybeRecord($server, $this->makeResult('203.0.113.50', '10.0.0.1', true));
+		$server = [
+			'REMOTE_ADDR'          => '10.0.0.1',
+			'REQUEST_URI'          => '/test-page',
+			'REQUEST_METHOD'       => 'POST',
+			'HTTP_HOST'            => 'example.com',
+			'HTTP_X_FORWARDED_FOR' => '203.0.113.50',
+			'SERVER_PORT'          => '443',
+		];
 
-        $entry = Diagnostics::getLog()[0];
-        $this->assertSame('/test-page', $entry['request_uri']);
-        $this->assertSame('POST', $entry['method']);
-        $this->assertSame('10.0.0.1', $entry['remote_addr']);
-        $this->assertSame('203.0.113.50', $entry['resolved_ip']);
-        $this->assertSame('10.0.0.1', $entry['original_ip']);
-        $this->assertTrue($entry['changed']);
+		Diagnostics::maybe_record( $server, $this->makeResult( '203.0.113.50', '10.0.0.1', true ) );
 
-        // Headers should include HTTP_* and known keys.
-        $this->assertSame('example.com', $entry['headers']['HTTP_HOST']);
-        $this->assertSame('203.0.113.50', $entry['headers']['HTTP_X_FORWARDED_FOR']);
-    }
+		$entry = Diagnostics::get_log()[0];
+		$this->assertSame( '/test-page', $entry['request_uri'] );
+		$this->assertSame( 'POST', $entry['method'] );
+		$this->assertSame( '10.0.0.1', $entry['remote_addr'] );
+		$this->assertSame( '203.0.113.50', $entry['resolved_ip'] );
+		$this->assertSame( '10.0.0.1', $entry['original_ip'] );
+		$this->assertTrue( $entry['changed'] );
 
-    public function testAutoStopsAtLimit(): void
-    {
-        Diagnostics::startRecording(3);
+		// Headers should include HTTP_* and known keys.
+		$this->assertSame( 'example.com', $entry['headers']['HTTP_HOST'] );
+		$this->assertSame( '203.0.113.50', $entry['headers']['HTTP_X_FORWARDED_FOR'] );
+	}
 
-        for ($i = 0; $i < 5; $i++) {
-            Diagnostics::maybeRecord($this->makeServerVars(), $this->makeResult());
-        }
+	public function testAutoStopsAtLimit(): void {
+		Diagnostics::start_recording( 3 );
 
-        $log = Diagnostics::getLog();
-        $this->assertCount(3, $log);
-        $this->assertFalse(Diagnostics::isRecording());
-    }
+		for ( $i = 0; $i < 5; $i++ ) {
+			Diagnostics::maybe_record( $this->makeServerVars(), $this->makeResult() );
+		}
 
-    public function testRecordsMultipleEntries(): void
-    {
-        Diagnostics::startRecording(10);
+		$log = Diagnostics::get_log();
+		$this->assertCount( 3, $log );
+		$this->assertFalse( Diagnostics::is_recording() );
+	}
 
-        for ($i = 0; $i < 4; $i++) {
-            Diagnostics::maybeRecord($this->makeServerVars(), $this->makeResult());
-        }
+	public function testRecordsMultipleEntries(): void {
+		Diagnostics::start_recording( 10 );
 
-        $this->assertCount(4, Diagnostics::getLog());
-        $this->assertTrue(Diagnostics::isRecording());
-    }
+		for ( $i = 0; $i < 4; $i++ ) {
+			Diagnostics::maybe_record( $this->makeServerVars(), $this->makeResult() );
+		}
 
-    public function testStartRecordingClearsPreviousLog(): void
-    {
-        Diagnostics::startRecording(10);
-        Diagnostics::maybeRecord($this->makeServerVars(), $this->makeResult());
-        Diagnostics::maybeRecord($this->makeServerVars(), $this->makeResult());
-        $this->assertCount(2, Diagnostics::getLog());
+		$this->assertCount( 4, Diagnostics::get_log() );
+		$this->assertTrue( Diagnostics::is_recording() );
+	}
 
-        // Start again — should clear.
-        Diagnostics::startRecording(5);
-        $this->assertCount(0, Diagnostics::getLog());
-        $this->assertTrue(Diagnostics::isRecording());
-    }
+	public function testStartRecordingClearsPreviousLog(): void {
+		Diagnostics::start_recording( 10 );
+		Diagnostics::maybe_record( $this->makeServerVars(), $this->makeResult() );
+		Diagnostics::maybe_record( $this->makeServerVars(), $this->makeResult() );
+		$this->assertCount( 2, Diagnostics::get_log() );
 
-    public function testMaybeRecordWithNullResult(): void
-    {
-        Diagnostics::startRecording(3);
+		// Start again — should clear.
+		Diagnostics::start_recording( 5 );
+		$this->assertCount( 0, Diagnostics::get_log() );
+		$this->assertTrue( Diagnostics::is_recording() );
+	}
 
-        Diagnostics::maybeRecord($this->makeServerVars(), null);
+	public function testMaybeRecordWithNullResult(): void {
+		Diagnostics::start_recording( 3 );
 
-        $entry = Diagnostics::getLog()[0];
-        $this->assertArrayHasKey('timestamp', $entry);
-        $this->assertArrayHasKey('remote_addr', $entry);
-        $this->assertArrayNotHasKey('resolved_ip', $entry);
-        $this->assertArrayNotHasKey('steps', $entry);
-    }
+		Diagnostics::maybe_record( $this->makeServerVars(), null );
 
-    public function testStopRecordingPreservesData(): void
-    {
-        Diagnostics::startRecording(10);
-        Diagnostics::maybeRecord($this->makeServerVars(), $this->makeResult());
-        Diagnostics::maybeRecord($this->makeServerVars(), $this->makeResult());
+		$entry = Diagnostics::get_log()[0];
+		$this->assertArrayHasKey( 'timestamp', $entry );
+		$this->assertArrayHasKey( 'remote_addr', $entry );
+		$this->assertArrayNotHasKey( 'resolved_ip', $entry );
+		$this->assertArrayNotHasKey( 'steps', $entry );
+	}
 
-        Diagnostics::stopRecording();
+	public function testStopRecordingPreservesData(): void {
+		Diagnostics::start_recording( 10 );
+		Diagnostics::maybe_record( $this->makeServerVars(), $this->makeResult() );
+		Diagnostics::maybe_record( $this->makeServerVars(), $this->makeResult() );
 
-        // Data should still be there.
-        $this->assertCount(2, Diagnostics::getLog());
-    }
+		Diagnostics::stop_recording();
 
-    public function testEntryContainsStepTrace(): void
-    {
-        Diagnostics::startRecording(3);
+		// Data should still be there.
+		$this->assertCount( 2, Diagnostics::get_log() );
+	}
 
-        $steps = [
-            new ResolverStep(1, '10.0.0.1', '10.0.0.1', 'X-Forwarded-For', 'HTTP_X_FORWARDED_FOR', 'trusted_proxy'),
-            new ResolverStep(2, '203.0.113.50', '203.0.113.50', null, null, 'untrusted_stop'),
-        ];
+	public function testEntryContainsStepTrace(): void {
+		Diagnostics::start_recording( 3 );
 
-        $result = new ResolverResult('203.0.113.50', '10.0.0.1', true, $steps);
-        Diagnostics::maybeRecord($this->makeServerVars(), $result);
+		$steps = [
+			new ResolverStep( 1, '10.0.0.1', '10.0.0.1', 'X-Forwarded-For', 'HTTP_X_FORWARDED_FOR', 'trusted_proxy' ),
+			new ResolverStep( 2, '203.0.113.50', '203.0.113.50', null, null, 'untrusted_stop' ),
+		];
 
-        $entry = Diagnostics::getLog()[0];
-        $this->assertCount(2, $entry['steps']);
-        $this->assertSame(1, $entry['steps'][0]['step']);
-        $this->assertSame('10.0.0.1', $entry['steps'][0]['address']);
-        $this->assertSame('trusted_proxy', $entry['steps'][0]['action']);
-    }
+		$result = new ResolverResult( '203.0.113.50', '10.0.0.1', true, $steps );
+		Diagnostics::maybe_record( $this->makeServerVars(), $result );
 
-    public function testEntryContainsProtoInfo(): void
-    {
-        Diagnostics::startRecording(3);
+		$entry = Diagnostics::get_log()[0];
+		$this->assertCount( 2, $entry['steps'] );
+		$this->assertSame( 1, $entry['steps'][0]['step'] );
+		$this->assertSame( '10.0.0.1', $entry['steps'][0]['address'] );
+		$this->assertSame( 'trusted_proxy', $entry['steps'][0]['action'] );
+	}
 
-        $result = new ResolverResult(
-            '203.0.113.50',
-            '10.0.0.1',
-            true,
-            [],
-            ['proto' => 'https', 'host' => 'example.com'],
-        );
+	public function testEntryContainsProtoInfo(): void {
+		Diagnostics::start_recording( 3 );
 
-        Diagnostics::maybeRecord($this->makeServerVars(), $result);
+		$result = new ResolverResult(
+			'203.0.113.50',
+			'10.0.0.1',
+			true,
+			[],
+			[
+				'proto' => 'https',
+				'host'  => 'example.com',
+			],
+		);
 
-        $entry = Diagnostics::getLog()[0];
-        $this->assertSame(['proto' => 'https', 'host' => 'example.com'], $entry['proto']);
-    }
+		Diagnostics::maybe_record( $this->makeServerVars(), $result );
 
-    // ------------------------------------------------------------------
-    // Constants
-    // ------------------------------------------------------------------
+		$entry = Diagnostics::get_log()[0];
+		$this->assertSame(
+			[
+				'proto' => 'https',
+				'host'  => 'example.com',
+			],
+			$entry['proto']
+		);
+	}
 
-    public function testConstants(): void
-    {
-        $this->assertSame(10, Diagnostics::DEFAULT_REQUEST_COUNT);
-        $this->assertSame(100, Diagnostics::MAX_REQUEST_COUNT);
-        $this->assertSame(86400, Diagnostics::EXPIRY_SECONDS);
-    }
+	// ------------------------------------------------------------------
+	// Constants
+	// ------------------------------------------------------------------
 
-    // ------------------------------------------------------------------
-    // Helpers
-    // ------------------------------------------------------------------
+	public function testConstants(): void {
+		$this->assertSame( 10, Diagnostics::DEFAULT_REQUEST_COUNT );
+		$this->assertSame( 100, Diagnostics::MAX_REQUEST_COUNT );
+		$this->assertSame( 86400, Diagnostics::EXPIRY_SECONDS );
+	}
 
-    /**
-     * @return array<string, string>
-     */
-    private function makeServerVars(): array
-    {
-        return [
-            'REMOTE_ADDR'    => '127.0.0.1',
-            'REQUEST_URI'    => '/',
-            'REQUEST_METHOD' => 'GET',
-            'HTTP_HOST'      => 'localhost',
-        ];
-    }
+	// ------------------------------------------------------------------
+	// Helpers
+	// ------------------------------------------------------------------
 
-    private function makeResult(
-        string $resolvedIp = '127.0.0.1',
-        string $originalIp = '127.0.0.1',
-        bool $changed = false,
-    ): ResolverResult {
-        return new ResolverResult($resolvedIp, $originalIp, $changed, []);
-    }
+	/**
+	 * @return array<string, string>
+	 */
+	private function makeServerVars(): array {
+		return [
+			'REMOTE_ADDR'    => '127.0.0.1',
+			'REQUEST_URI'    => '/',
+			'REQUEST_METHOD' => 'GET',
+			'HTTP_HOST'      => 'localhost',
+		];
+	}
+
+	private function makeResult(
+		string $resolved_ip = '127.0.0.1',
+		string $original_ip = '127.0.0.1',
+		bool $changed = false,
+	): ResolverResult {
+		return new ResolverResult( $resolved_ip, $original_ip, $changed, [] );
+	}
 }

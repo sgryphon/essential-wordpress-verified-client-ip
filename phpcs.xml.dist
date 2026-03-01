@@ -13,18 +13,25 @@
     <arg name="colors"/>
 
     <!-- Use WordPress-Core standard -->
-    <rule ref="WordPress-Core"/>
+    <rule ref="WordPress-Core">
+        <!-- PSR-4 autoloading requires PascalCase filenames; skip WP file naming rules -->
+        <exclude name="WordPress.Files.FileName"/>
+        <!-- Enforce short array syntax [] instead of long array() -->
+        <exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
+    </rule>
+
+    <!-- Explicitly require short array syntax -->
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
 
     <!-- Minimum PHP version -->
     <config name="minimum_supported_wp_version" value="6.4"/>
 
-    <!-- Allow short array syntax -->
-    <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
-
     <!-- WordPress text domain -->
     <rule ref="WordPress.WP.I18n">
         <properties>
-            <property name="text_domain" type="array" value="verified-client-ip"/>
+            <property name="text_domain" type="array">
+                <element value="verified-client-ip"/>
+            </property>
         </properties>
     </rule>
 

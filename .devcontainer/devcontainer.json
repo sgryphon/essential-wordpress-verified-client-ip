@@ -1,65 +1,22 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/php
 {
-  "name": "Verified Client IP - Development",
-  "dockerComposeFile": [
-    "compose.yml"
-  ],
-  "service": "app",
-  "workspaceFolder": "/workspace",
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "bmewburn.vscode-intelephense-client",
-        "dbaeumer.vscode-eslint",
-        "xdebug.php-debug"
-      ],
-      "settings": {
-        "php.suggest.basic": false,
-        "php.validate.executablePath": "/usr/local/bin/php",
-        "editor.formatOnSave": true,
-        "[php]": {
-          "editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
-        }
-      }
-    }
-  },
-  "postCreateCommand": "composer install --no-interaction --prefer-dist",
-  "portsAttributes": {
-    "8100": {
-      "label": "WordPress",
-      "onAutoForward": "notify"
-    },
-    "8101": {
-      "label": "Proxy A (RFC 7239)",
-      "onAutoForward": "notify"
-    },
-    "8102": {
-      "label": "Proxy B (RFC 7239)",
-      "onAutoForward": "notify"
-    },
-    "8103": {
-      "label": "Proxy C (RFC 7239)",
-      "onAutoForward": "notify"
-    },
-    "8112": {
-      "label": "Proxy XFF",
-      "onAutoForward": "notify"
-    },
-    "8122": {
-      "label": "Proxy CF",
-      "onAutoForward": "notify"
-    },
-    "8180": {
-      "label": "noVNC Desktop",
-      "onAutoForward": "notify"
-    }
-  },
-  "forwardPorts": [
-    8100,
-    8101,
-    8102,
-    8103,
-    8112,
-    8122,
-    8180
-  ]
+	"name": "Verified Client IP - Development",
+	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+	"image": "mcr.microsoft.com/devcontainers/php:3-8.3-trixie",
+
+	// Features to add to the dev container. More info: https://containers.dev/features.
+	// "features": {},
+
+	// Configure tool-specific properties.
+	// "customizations": {},
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	"forwardPorts": [8080]
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	// "postCreateCommand": "sudo chmod a+x \"$(pwd)\" && sudo rm -rf /var/www/html && sudo ln -s \"$(pwd)\" /var/www/html"
+
+	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	// "remoteUser": "root"
 }

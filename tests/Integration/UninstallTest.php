@@ -49,6 +49,9 @@ final class UninstallTest extends TestCase
         $this->assertArrayNotHasKey('vcip_diagnostic_lock', $GLOBALS['_vcip_test_transients']);
     }
 
+    /**
+     * @depends testUninstallDeletesOptionsAndTransients
+     */
     public function testUninstallCallsVcipUninstallSite(): void
     {
         // The function vcip_uninstall_site was defined in the previous test's

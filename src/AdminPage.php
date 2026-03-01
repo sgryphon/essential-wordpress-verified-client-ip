@@ -473,7 +473,7 @@ final class AdminPage
             'process_host'  => !empty($post['vcip_process_host']),
         ];
 
-        $rawSchemes = $post['vcip_schemes'] ?? [];
+        $rawSchemes = $post['vcip_schemes'] ?? null;
         if (\is_array($rawSchemes)) {
             $schemes = [];
             foreach ($rawSchemes as $raw) {

@@ -178,7 +178,7 @@ final class IpUtilsTest extends TestCase
             'mapped ipv6 not in 10/8' => ['::ffff:11.0.0.1', '10.0.0.0/8', false],
 
             // IPv4 matching IPv4-mapped IPv6 range — maps range too
-            'ipv4 vs mapped range' => ['10.0.0.1', '::ffff:10.0.0.0/8', false], // Different family after normalisation
+            'ipv4 vs mapped range' => ['10.0.0.1', '::ffff:10.0.0.0/8', true], // Both normalise to IPv4; range becomes 10.0.0.0/8
 
             // Cross-family should not match
             'ipv4 vs ipv6' => ['10.0.0.1', 'fc00::/7', false],

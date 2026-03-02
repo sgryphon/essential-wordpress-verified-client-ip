@@ -29,10 +29,12 @@ composer install
 ## Running Tests
 
 ```powershell
-vendor/bin/phpunit
+composer test
 ```
 
 ### Running Specific Tests
+
+For running a specific subset, file, or test method, pass arguments directly to PHPUnit:
 
 ```powershell
 # Run only unit tests
@@ -53,17 +55,17 @@ vendor/bin/phpunit --filter testSingleProxyXff tests/Unit/ResolverTest.php
 ### Static Analysis (PHPStan)
 
 ```powershell
-vendor/bin/phpstan analyse
+composer analyse
 ```
 
-### Code Formatting (PHP-CS-Fixer)
+### Code Formatting (PHPCS / WPCS)
 
 ```powershell
-# Check formatting
-vendor/bin/php-cs-fixer fix --dry-run --diff
+# Check formatting (detect violations)
+composer format-check
 
-# Fix formatting
-vendor/bin/php-cs-fixer fix
+# Fix formatting automatically
+composer format
 ```
 
 ## Full Quality Check
@@ -71,7 +73,7 @@ vendor/bin/php-cs-fixer fix
 Run all quality checks (formatter, static analysis, tests) in one command:
 
 ```powershell
-composer run-script check
+composer check
 ```
 
 ## Project Structure
@@ -135,9 +137,9 @@ docs/                         User and developer documentation
 The GitHub Actions workflow runs:
 
 1. `composer install`
-2. PHPUnit tests
-3. PHPStan static analysis
-4. PHP-CS-Fixer formatting check
+2. `composer test` — PHPUnit tests
+3. `composer analyse` — PHPStan static analysis
+4. `composer format-check` — PHPCS (WordPress Coding Standards) formatting check
 
 All four must pass before merging.
 

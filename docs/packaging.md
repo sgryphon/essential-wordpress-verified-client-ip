@@ -54,7 +54,7 @@ cd build && zip -r verified-client-ip.zip verified-client-ip/
 | `README.md`              | Plugin overview                  |
 
 Files **excluded** from the zip: `tests/`, `examples/`, `specifications/`,
-`docs/`, `compose.yaml`, `.github/`, `.php-cs-fixer.php`, `phpstan.neon`,
+`docs/`, `compose.yaml`, `.github/`, `phpcs.xml.dist`, `phpstan.neon`,
 `phpunit.xml`, build scripts.
 
 ## WordPress Plugin Directory Submission

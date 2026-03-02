@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<ruleset name="Verified Client IP">
+    <description>WordPress Coding Standards for the Verified Client IP plugin.</description>
+
+    <!-- Files and directories to check -->
+    <file>src/</file>
+    <file>tests/</file>
+    <file>verified-client-ip.php</file>
+    <file>uninstall.php</file>
+
+    <!-- Show progress and sniff codes -->
+    <arg value="sp"/>
+    <arg name="colors"/>
+
+    <!-- Use WordPress-Core standard -->
+    <rule ref="WordPress-Core">
+        <!-- PSR-4 autoloading requires PascalCase filenames; skip WP file naming rules -->
+        <exclude name="WordPress.Files.FileName"/>
+        <!-- Enforce short array syntax [] instead of long array() -->
+        <exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
+    </rule>
+
+    <!-- Explicitly require short array syntax -->
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+
+    <!-- Minimum PHP version -->
+    <config name="minimum_supported_wp_version" value="6.4"/>
+
+    <!-- WordPress text domain -->
+    <rule ref="WordPress.WP.I18n">
+        <properties>
+            <property name="text_domain" type="array">
+                <element value="verified-client-ip"/>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- Exclude test bootstrap stubs from some checks -->
+    <rule ref="WordPress.WP.GlobalVariablesOverride">
+        <exclude-pattern>tests/Integration/bootstrap\.php</exclude-pattern>
+    </rule>
+</ruleset>

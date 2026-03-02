@@ -3,3 +3,5 @@ parameters:
     paths:
         - src
     tmpDir: .phpstan.cache
+    bootstrapFiles:
+        - vendor/php-stubs/wordpress-stubs/wordpress-stubs.php

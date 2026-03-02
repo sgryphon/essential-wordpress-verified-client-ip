@@ -15,299 +15,285 @@ namespace VerifiedClientIp;
  * Diagnostics work even when the main plugin switch is off — the algorithm
  * calculates but does not apply (see Plugin.php).
  */
-final class Diagnostics
-{
-    /** Transient key for the diagnostic log entries. */
-    public const TRANSIENT_LOG = 'vcip_diagnostic_log';
+final class Diagnostics {
 
-    /** Transient key for the diagnostic state (recording, count, etc.). */
-    public const TRANSIENT_STATE = 'vcip_diagnostic_state';
+	/** Transient key for the diagnostic log entries. */
+	public const TRANSIENT_LOG = 'vcip_diagnostic_log';
 
-    /** Transient key used as a simple lock to prevent concurrent writes. */
-    public const TRANSIENT_LOCK = 'vcip_diagnostic_lock';
+	/** Transient key for the diagnostic state (recording, count, etc.). */
+	public const TRANSIENT_STATE = 'vcip_diagnostic_state';
 
-    /** Default number of requests to record. */
-    public const DEFAULT_REQUEST_COUNT = 10;
+	/** Transient key used as a simple lock to prevent concurrent writes. */
+	public const TRANSIENT_LOCK = 'vcip_diagnostic_lock';
 
-    /** Maximum number of requests that can be recorded. */
-    public const MAX_REQUEST_COUNT = 100;
+	/** Default number of requests to record. */
+	public const DEFAULT_REQUEST_COUNT = 10;
 
-    /** Transient expiry in seconds (24 hours). */
-    public const EXPIRY_SECONDS = 86400;
+	/** Maximum number of requests that can be recorded. */
+	public const MAX_REQUEST_COUNT = 100;
 
-    /** Lock expiry in seconds (short — just long enough to prevent races). */
-    public const LOCK_SECONDS = 5;
+	/** Transient expiry in seconds (24 hours). */
+	public const EXPIRY_SECONDS = 86400;
 
-    /**
-     * Record a request if diagnostics are active and the limit has not
-     * been reached.
-     *
-     * Should be called from Plugin after resolution, regardless of the
-     * enabled/disabled switch.
-     *
-     * @param array<string, mixed>  $serverVars Full $_SERVER snapshot.
-     * @param ResolverResult|null   $result     The resolver result (null if not run).
-     */
-    public static function maybeRecord(array $serverVars, ?ResolverResult $result): void
-    {
-        $state = self::getState();
+	/** Lock expiry in seconds (short — just long enough to prevent races). */
+	public const LOCK_SECONDS = 5;
 
-        if (!$state['recording']) {
-            return;
-        }
+	/**
+	 * Record a request if diagnostics are active and the limit has not
+	 * been reached.
+	 *
+	 * Should be called from Plugin after resolution, regardless of the
+	 * enabled/disabled switch.
+	 *
+	 * @param array<string, mixed>  $server_vars Full $_SERVER snapshot.
+	 * @param ResolverResult|null   $result     The resolver result (null if not run).
+	 */
+	public static function maybe_record( array $server_vars, ?ResolverResult $result ): void {
+		$state = self::get_state();
 
-        // Already reached the configured limit?
-        $log = self::getLog();
-        if (\count($log) >= $state['max_requests']) {
-            // Auto-stop.
-            self::stopRecording();
-            return;
-        }
+		if ( ! $state['recording'] ) {
+			return;
+		}
 
-        // Acquire a simple lock to prevent concurrent writes.
-        if (!self::acquireLock()) {
-            return; // Another request is writing — skip this one.
-        }
+		// Already reached the configured limit?
+		$log = self::get_log();
+		if ( \count( $log ) >= $state['max_requests'] ) {
+			// Auto-stop.
+			self::stop_recording();
+			return;
+		}
 
-        try {
-            // Re-read inside the lock (another request may have written).
-            $log = self::getLog();
-            if (\count($log) >= $state['max_requests']) {
-                self::stopRecording();
-                return;
-            }
+		// Acquire a simple lock to prevent concurrent writes.
+		if ( ! self::acquire_lock() ) {
+			return; // Another request is writing — skip this one.
+		}
 
-            $entry = self::buildEntry($serverVars, $result);
-            $log[] = $entry;
+		try {
+			// Re-read inside the lock (another request may have written).
+			$log = self::get_log();
+			if ( \count( $log ) >= $state['max_requests'] ) {
+				self::stop_recording();
+				return;
+			}
 
-            self::saveLog($log);
+			$entry = self::build_entry( $server_vars, $result );
+			$log[] = $entry;
 
-            // Auto-stop when limit reached.
-            if (\count($log) >= $state['max_requests']) {
-                self::stopRecording();
-            }
-        } finally {
-            self::releaseLock();
-        }
-    }
+			self::save_log( $log );
 
-    // ------------------------------------------------------------------
-    // State management
-    // ------------------------------------------------------------------
+			// Auto-stop when limit reached.
+			if ( \count( $log ) >= $state['max_requests'] ) {
+				self::stop_recording();
+			}
+		} finally {
+			self::release_lock();
+		}
+	}
 
-    /**
-     * Start diagnostic recording.
-     *
-     * @param int $maxRequests Number of requests to record (1–100).
-     */
-    public static function startRecording(int $maxRequests = self::DEFAULT_REQUEST_COUNT): void
-    {
-        $maxRequests = \max(1, \min(self::MAX_REQUEST_COUNT, $maxRequests));
+	// ------------------------------------------------------------------
+	// State management
+	// ------------------------------------------------------------------
 
-        $state = [
-            'recording'    => true,
-            'max_requests' => $maxRequests,
-            'started_at'   => \time(),
-        ];
+	/**
+	 * Start diagnostic recording.
+	 *
+	 * @param int $max_requests Number of requests to record (1–100).
+	 */
+	public static function start_recording( int $max_requests = self::DEFAULT_REQUEST_COUNT ): void {
+		$max_requests = \max( 1, \min( self::MAX_REQUEST_COUNT, $max_requests ) );
 
-        self::saveState($state);
+		$state = [
+			'recording'    => true,
+			'max_requests' => $max_requests,
+			'started_at'   => \time(),
+		];
 
-        // Clear any previous log.
-        self::clearLog();
-    }
+		self::save_state( $state );
 
-    /**
-     * Stop diagnostic recording (preserves the recorded data).
-     */
-    public static function stopRecording(): void
-    {
-        $state = self::getState();
-        $state['recording']  = false;
-        $state['stopped_at'] = \time();
+		// Clear any previous log.
+		self::clear_log();
+	}
 
-        self::saveState($state);
-    }
+	/**
+	 * Stop diagnostic recording (preserves the recorded data).
+	 */
+	public static function stop_recording(): void {
+		$state               = self::get_state();
+		$state['recording']  = false;
+		$state['stopped_at'] = \time();
 
-    /**
-     * Clear all diagnostic data and reset state.
-     */
-    public static function clear(): void
-    {
-        if (\function_exists('delete_transient')) {
-            \delete_transient(self::TRANSIENT_LOG);
-            \delete_transient(self::TRANSIENT_STATE);
-        }
-    }
+		self::save_state( $state );
+	}
 
-    /**
-     * Whether diagnostics are currently recording.
-     */
-    public static function isRecording(): bool
-    {
-        return self::getState()['recording'];
-    }
+	/**
+	 * Clear all diagnostic data and reset state.
+	 */
+	public static function clear(): void {
+		if ( \function_exists( 'delete_transient' ) ) {
+			\delete_transient( self::TRANSIENT_LOG );
+			\delete_transient( self::TRANSIENT_STATE );
+		}
+	}
 
-    /**
-     * Return the current diagnostic state.
-     *
-     * @return array{recording: bool, max_requests: int, started_at: int|null, stopped_at: int|null}
-     */
-    public static function getState(): array
-    {
-        $defaults = [
-            'recording'    => false,
-            'max_requests' => self::DEFAULT_REQUEST_COUNT,
-            'started_at'   => null,
-            'stopped_at'   => null,
-        ];
+	/**
+	 * Whether diagnostics are currently recording.
+	 */
+	public static function is_recording(): bool {
+		return self::get_state()['recording'];
+	}
 
-        if (!\function_exists('get_transient')) {
-            return $defaults;
-        }
+	/**
+	 * Return the current diagnostic state.
+	 *
+	 * @return array{recording: bool, max_requests: int, started_at: int|null, stopped_at: int|null}
+	 */
+	public static function get_state(): array {
+		$defaults = [
+			'recording'    => false,
+			'max_requests' => self::DEFAULT_REQUEST_COUNT,
+			'started_at'   => null,
+			'stopped_at'   => null,
+		];
 
-        /** @var array<string, mixed>|false $state */
-        $state = \get_transient(self::TRANSIENT_STATE);
+		if ( ! \function_exists( 'get_transient' ) ) {
+			return $defaults;
+		}
 
-        if (!\is_array($state)) {
-            return $defaults;
-        }
+		/** @var array<string, mixed>|false $state */
+		$state = \get_transient( self::TRANSIENT_STATE );
 
-        return [
-            'recording'    => (bool) ($state['recording'] ?? false),
-            'max_requests' => (int) ($state['max_requests'] ?? self::DEFAULT_REQUEST_COUNT),
-            'started_at'   => isset($state['started_at']) ? (int) $state['started_at'] : null,
-            'stopped_at'   => isset($state['stopped_at']) ? (int) $state['stopped_at'] : null,
-        ];
-    }
+		if ( ! \is_array( $state ) ) {
+			return $defaults;
+		}
 
-    /**
-     * Return the diagnostic log entries.
-     *
-     * @return array<int, array<string, mixed>>
-     */
-    public static function getLog(): array
-    {
-        if (!\function_exists('get_transient')) {
-            return [];
-        }
+		return [
+			'recording'    => (bool) ( $state['recording'] ?? false ),
+			'max_requests' => (int) ( $state['max_requests'] ?? self::DEFAULT_REQUEST_COUNT ),
+			'started_at'   => isset( $state['started_at'] ) ? (int) $state['started_at'] : null,
+			'stopped_at'   => isset( $state['stopped_at'] ) ? (int) $state['stopped_at'] : null,
+		];
+	}
 
-        /** @var array<int, array<string, mixed>>|false $log */
-        $log = \get_transient(self::TRANSIENT_LOG);
+	/**
+	 * Return the diagnostic log entries.
+	 *
+	 * @return array<int, array<string, mixed>>
+	 */
+	public static function get_log(): array {
+		if ( ! \function_exists( 'get_transient' ) ) {
+			return [];
+		}
 
-        return \is_array($log) ? $log : [];
-    }
+		/** @var array<int, array<string, mixed>>|false $log */
+		$log = \get_transient( self::TRANSIENT_LOG );
 
-    // ------------------------------------------------------------------
-    // Entry builder
-    // ------------------------------------------------------------------
+		return \is_array( $log ) ? $log : [];
+	}
 
-    /**
-     * Build a single diagnostic log entry.
-     *
-     * @param array<string, mixed> $serverVars
-     *
-     * @return array<string, mixed>
-     */
-    private static function buildEntry(array $serverVars, ?ResolverResult $result): array
-    {
-        // Extract only headers from $_SERVER (keys starting with HTTP_ or
-        // known special keys).
-        $headers = [];
-        foreach ($serverVars as $key => $value) {
-            if (\is_string($key) && (
-                \str_starts_with($key, 'HTTP_')
-                || \in_array($key, ['REMOTE_ADDR', 'HTTPS', 'REQUEST_SCHEME', 'SERVER_NAME', 'REQUEST_URI', 'REQUEST_METHOD', 'SERVER_PORT', 'SERVER_PROTOCOL'], true)
-            )) {
-                $headers[$key] = $value;
-            }
-        }
+	// ------------------------------------------------------------------
+	// Entry builder
+	// ------------------------------------------------------------------
 
-        $entry = [
-            'timestamp'   => \gmdate('c'),
-            'request_uri' => (string) ($serverVars['REQUEST_URI'] ?? ''),
-            'method'      => (string) ($serverVars['REQUEST_METHOD'] ?? 'GET'),
-            'remote_addr' => (string) ($serverVars['REMOTE_ADDR'] ?? ''),
-            'headers'     => $headers,
-        ];
+	/**
+	 * Build a single diagnostic log entry.
+	 *
+	 * @param array<string, mixed> $server_vars
+	 *
+	 * @return array<string, mixed>
+	 */
+	private static function build_entry( array $server_vars, ?ResolverResult $result ): array {
+		// Extract only headers from $_SERVER (keys starting with HTTP_ or
+		// known special keys).
+		$headers = [];
+		foreach ( $server_vars as $key => $value ) {
+			if ( \str_starts_with( $key, 'HTTP_' )
+				|| \in_array( $key, [ 'REMOTE_ADDR', 'HTTPS', 'REQUEST_SCHEME', 'SERVER_NAME', 'REQUEST_URI', 'REQUEST_METHOD', 'SERVER_PORT', 'SERVER_PROTOCOL' ], true )
+			) {
+				$headers[ $key ] = $value;
+			}
+		}
 
-        if ($result !== null) {
-            $entry['resolved_ip']  = $result->resolvedIp;
-            $entry['original_ip']  = $result->originalIp;
-            $entry['changed']      = $result->changed;
-            $entry['steps']        = \array_map(
-                static fn (ResolverStep $s): array => $s->toArray(),
-                $result->steps,
-            );
-            $entry['proto']        = $result->proto;
-        }
+		$entry = [
+			'timestamp'   => \gmdate( 'c' ),
+			'request_uri' => (string) ( $server_vars['REQUEST_URI'] ?? '' ),
+			'method'      => (string) ( $server_vars['REQUEST_METHOD'] ?? 'GET' ),
+			'remote_addr' => (string) ( $server_vars['REMOTE_ADDR'] ?? '' ),
+			'headers'     => $headers,
+		];
 
-        return $entry;
-    }
+		if ( null !== $result ) {
+			$entry['resolved_ip'] = $result->resolved_ip;
+			$entry['original_ip'] = $result->original_ip;
+			$entry['changed']     = $result->changed;
+			$entry['steps']       = \array_map(
+				static fn ( ResolverStep $s ): array => $s->to_array(),
+				$result->steps,
+			);
+			$entry['proto']       = $result->proto;
+		}
 
-    // ------------------------------------------------------------------
-    // Persistence helpers
-    // ------------------------------------------------------------------
+		return $entry;
+	}
 
-    /**
-     * @param array<string, mixed> $state
-     */
-    private static function saveState(array $state): void
-    {
-        if (\function_exists('set_transient')) {
-            \set_transient(self::TRANSIENT_STATE, $state, self::EXPIRY_SECONDS);
-        }
-    }
+	// ------------------------------------------------------------------
+	// Persistence helpers
+	// ------------------------------------------------------------------
 
-    /**
-     * @param array<int, array<string, mixed>> $log
-     */
-    private static function saveLog(array $log): void
-    {
-        if (\function_exists('set_transient')) {
-            \set_transient(self::TRANSIENT_LOG, $log, self::EXPIRY_SECONDS);
-        }
-    }
+	/**
+	 * @param array<string, mixed> $state
+	 */
+	private static function save_state( array $state ): void {
+		if ( \function_exists( 'set_transient' ) ) {
+			\set_transient( self::TRANSIENT_STATE, $state, self::EXPIRY_SECONDS );
+		}
+	}
 
-    /**
-     * Delete only the log transient.
-     */
-    private static function clearLog(): void
-    {
-        if (\function_exists('delete_transient')) {
-            \delete_transient(self::TRANSIENT_LOG);
-        }
-    }
+	/**
+	 * @param array<int, array<string, mixed>> $log
+	 */
+	private static function save_log( array $log ): void {
+		if ( \function_exists( 'set_transient' ) ) {
+			\set_transient( self::TRANSIENT_LOG, $log, self::EXPIRY_SECONDS );
+		}
+	}
 
-    // ------------------------------------------------------------------
-    // Lock helpers
-    // ------------------------------------------------------------------
+	/**
+	 * Delete only the log transient.
+	 */
+	private static function clear_log(): void {
+		if ( \function_exists( 'delete_transient' ) ) {
+			\delete_transient( self::TRANSIENT_LOG );
+		}
+	}
 
-    /**
-     * Try to acquire a simple transient-based lock.
-     */
-    private static function acquireLock(): bool
-    {
-        if (!\function_exists('get_transient') || !\function_exists('set_transient')) {
-            return true; // No WP — running in tests, proceed.
-        }
+	// ------------------------------------------------------------------
+	// Lock helpers
+	// ------------------------------------------------------------------
 
-        // If the lock transient exists, another request holds it.
-        if (\get_transient(self::TRANSIENT_LOCK) !== false) {
-            return false;
-        }
+	/**
+	 * Try to acquire a simple transient-based lock.
+	 */
+	private static function acquire_lock(): bool {
+		if ( ! \function_exists( 'get_transient' ) || ! \function_exists( 'set_transient' ) ) {
+			return true; // No WP — running in tests, proceed.
+		}
 
-        \set_transient(self::TRANSIENT_LOCK, '1', self::LOCK_SECONDS);
+		// If the lock transient exists, another request holds it.
+		if ( \get_transient( self::TRANSIENT_LOCK ) !== false ) {
+			return false;
+		}
 
-        return true;
-    }
+		\set_transient( self::TRANSIENT_LOCK, '1', self::LOCK_SECONDS );
 
-    /**
-     * Release the lock.
-     */
-    private static function releaseLock(): void
-    {
-        if (\function_exists('delete_transient')) {
-            \delete_transient(self::TRANSIENT_LOCK);
-        }
-    }
+		return true;
+	}
+
+	/**
+	 * Release the lock.
+	 */
+	private static function release_lock(): void {
+		if ( \function_exists( 'delete_transient' ) ) {
+			\delete_transient( self::TRANSIENT_LOCK );
+		}
+	}
 }

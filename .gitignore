@@ -55,9 +55,8 @@ composer.lock
 .phpunit.result.cache
 .phpunit.cache/
 
-# PHP-CS-Fixer / Laravel Pint
-.php-cs-fixer.cache
-.php_cs.cache
+# PHP_CodeSniffer
+.phpcs-cache
 
 # PHPStan / Psalm
 /phpstan-cache/
@@ -70,7 +69,6 @@ composer.lock
 
 # IDE / editor files
 /.idea/
-/.vscode/
 *.swp
 *.swo
 *~

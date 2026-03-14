@@ -36,7 +36,7 @@ services:
     volumes:
       - db_data:/var/lib/mysql
     networks:
-      vcip_net:
+      default:
 
   wordpress:
     image: docker.io/library/wordpress:6.7-php8.3-apache
@@ -53,9 +53,9 @@ services:
     volumes:
       - wp_data:/var/www/html
       # Mount the plugin source into the plugins directory.
-      - ./:/var/www/html/wp-content/plugins/verified-client-ip:ro
+      - ../../build/verified-client-ip:/var/www/html/wp-content/plugins/verified-client-ip:ro
     networks:
-      vcip_net:
+      default:
 
   # -----------------------------------------------------------------
   # RFC 7239 Forwarded proxy chain (ports 8101–8103)
@@ -68,9 +68,9 @@ services:
     ports:
       - "8101:80"
     volumes:
-      - ./examples/proxy-a/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./proxy-a/Caddyfile:/etc/caddy/Caddyfile:ro
     networks:
-      vcip_net:
+      default:
 
   proxy-b:
     image: docker.io/library/caddy:2-alpine
@@ -79,9 +79,9 @@ services:
     ports:
       - "8102:80"
     volumes:
-      - ./examples/proxy-b/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./proxy-b/Caddyfile:/etc/caddy/Caddyfile:ro
     networks:
-      vcip_net:
+      default:
 
   proxy-c:
     image: docker.io/library/caddy:2-alpine
@@ -90,9 +90,9 @@ services:
     ports:
       - "8103:80"
     volumes:
-      - ./examples/proxy-c/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./proxy-c/Caddyfile:/etc/caddy/Caddyfile:ro
     networks:
-      vcip_net:
+      default:
 
   # -----------------------------------------------------------------
   # X-Forwarded-For proxy (port 8112)
@@ -104,9 +104,9 @@ services:
     ports:
       - "8112:80"
     volumes:
-      - ./examples/proxy-xff/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./proxy-xff/Caddyfile:/etc/caddy/Caddyfile:ro
     networks:
-      vcip_net:
+      default:
 
   # -----------------------------------------------------------------
   # Cloudflare-sim proxy (port 8122)
@@ -118,9 +118,9 @@ services:
     ports:
       - "8122:80"
     volumes:
-      - ./examples/proxy-cf/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./proxy-cf/Caddyfile:/etc/caddy/Caddyfile:ro
     networks:
-      vcip_net:
+      default:
 
   # -----------------------------------------------------------------
   # noVNC Linux desktop for IPv6 browser testing (port 8180)
@@ -133,19 +133,18 @@ services:
       DISPLAY_WIDTH: 1280
       DISPLAY_HEIGHT: 720
     networks:
-      vcip_net:
+      default:
 
 # -------------------------------------------------------------------
 # Network with IPv6 enabled
 # -------------------------------------------------------------------
 networks:
-  vcip_net:
-    driver: bridge
+  default:
     enable_ipv6: true
     ipam:
       config:
         - subnet: 172.28.0.0/16
-        - subnet: fd12:3456:789a::/48
+        - subnet: fd4b:0eb7:8f0c::/48
 
 volumes:
   db_data:

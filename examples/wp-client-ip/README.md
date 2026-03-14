@@ -4,7 +4,10 @@ This directory contains proxy configurations and the Docker Compose file used to
 
 ## Quick Start
 
-```bash
+```powershell
+# Manually create IPv6 podman network
+podman network create --ipv6 --subnet 172.28.0.0/16 --subnet fd12:3456:789a::/48 examples_vcip_net
+
 # Start all services from the examples folder (Podman preferred)
 cd examples
 podman compose up -d
@@ -16,15 +19,15 @@ docker compose up -d
 
 ## Services & Ports
 
-| Port | Service        | Description                                      |
-|------|----------------|--------------------------------------------------|
-| 8100 | WordPress      | Direct access (no proxy)                         |
-| 8101 | Proxy A        | RFC 7239 `Forwarded` → WordPress                 |
-| 8102 | Proxy B        | RFC 7239 `Forwarded` → Proxy A                   |
-| 8103 | Proxy C        | RFC 7239 `Forwarded` → Proxy B → Proxy A → WP   |
-| 8112 | Proxy XFF      | `X-Forwarded-For` → Proxy A → WordPress          |
-| 8122 | Proxy CF       | Cloudflare-sim (`CF-Connecting-IP`) → Proxy A    |
-| 8180 | noVNC Desktop  | Lightweight Linux desktop for IPv6 browser tests |
+| Port | Service       | Description                                      |
+| ---- | ------------- | ------------------------------------------------ |
+| 8100 | WordPress     | Direct access (no proxy)                         |
+| 8101 | Proxy A       | RFC 7239 `Forwarded` → WordPress                 |
+| 8102 | Proxy B       | RFC 7239 `Forwarded` → Proxy A                   |
+| 8103 | Proxy C       | RFC 7239 `Forwarded` → Proxy B → Proxy A → WP    |
+| 8112 | Proxy XFF     | `X-Forwarded-For` → Proxy A → WordPress          |
+| 8122 | Proxy CF      | Cloudflare-sim (`CF-Connecting-IP`) → Proxy A    |
+| 8180 | noVNC Desktop | Lightweight Linux desktop for IPv6 browser tests |
 
 ## Proxy Chains
 

@@ -634,7 +634,7 @@ final class AdminPage {
 						<th><?php echo \esc_html__( 'Time', 'verified-client-ip' ); ?></th>
 						<th><?php echo \esc_html__( 'Method', 'verified-client-ip' ); ?></th>
 						<th><?php echo \esc_html__( 'URI', 'verified-client-ip' ); ?></th>
-						<th><?php echo \esc_html__( 'REMOTE_ADDR', 'verified-client-ip' ); ?></th>
+						<th><?php echo \esc_html__( 'Original IP', 'verified-client-ip' ); ?></th>
 						<th><?php echo \esc_html__( 'Resolved IP', 'verified-client-ip' ); ?></th>
 						<th><?php echo \esc_html__( 'Changed', 'verified-client-ip' ); ?></th>
 					</tr>
@@ -646,7 +646,7 @@ final class AdminPage {
 							<td><?php echo \esc_html( $entry['timestamp'] ?? '' ); ?></td>
 							<td><?php echo \esc_html( $entry['method'] ?? '' ); ?></td>
 							<td><?php echo \esc_html( $entry['request_uri'] ?? '' ); ?></td>
-							<td><code><?php echo \esc_html( $entry['remote_addr'] ?? '' ); ?></code></td>
+							<td><code><?php echo \esc_html( $entry['original_ip'] ?? $entry['remote_addr'] ?? '' ); ?></code></td>
 							<td><code><?php echo \esc_html( $entry['resolved_ip'] ?? $entry['remote_addr'] ?? '' ); ?></code></td>
 							<td><?php echo ! empty( $entry['changed'] ) ? '&#10004;' : '—'; ?></td>
 						</tr>
@@ -681,11 +681,11 @@ final class AdminPage {
 	private static function render_diagnostic_detail( array $entry ): void {
 		// Step trace.
 		if ( ! empty( $entry['steps'] ) && \is_array( $entry['steps'] ) ) {
-			echo '<h4>' . \esc_html__( 'Algorithm Steps', 'verified-client-ip' ) . '</h4>';
+			echo '<h4>' . \esc_html__( 'Client IP calculation', 'verified-client-ip' ) . '</h4>';
 			echo '<ol>';
 			foreach ( $entry['steps'] as $step ) {
 				echo '<li>';
-				echo \esc_html( ( $step['description'] ?? $step['action'] ?? '' ) . ' — ' . ( $step['ip'] ?? '' ) );
+				echo \esc_html( ( $step['description'] ?? $step['action'] ?? '' ) );
 				if ( ! empty( $step['scheme'] ) ) {
 					echo ' <em>(' . \esc_html( $step['scheme'] ) . ')</em>';
 				}

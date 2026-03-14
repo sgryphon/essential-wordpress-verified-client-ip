@@ -5,6 +5,7 @@
 
 :80 {
 	reverse_proxy proxy-a:80 {
-		header_up Forwarded "for={http.request.remote.host};proto={http.request.scheme};host={http.request.host}"
+		# Append this proxy's entry; preserve any Forwarded headers from upstream.
+		header_up +Forwarded "for={http.request.remote.host};proto={http.request.scheme};host={http.request.host}"
 	}
 }

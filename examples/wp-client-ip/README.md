@@ -28,7 +28,7 @@ Once activated, to see the plugin in action, you can go to Settings > Verified C
 
 Access the website directly at http://localhost:8100/ and then via proxies http://localhost:8101/ and http://localhost:8102/. Note that the example configuration is set up with dynamic host detection so that the proxy URL (with the port) is retained, to make testing easier.
 
-Refresh and check the diagnostics to see how the verified client IP is resolved.
+Refresh and check the diagnostics to see how the verified client IP is resolved. Note that by default only 1 hop is resolved, so the proxy using 2 hops (port 8102) will only resolve to the address of that proxy (not the actual client).
 
 ## Services & Ports
 

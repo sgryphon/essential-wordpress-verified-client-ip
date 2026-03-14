@@ -11,21 +11,29 @@
 #   docker compose down
 #
 # Ports:
-#   8100  — WordPress (direct)
-#   8101  — Proxy A (RFC 7239 Forwarded) → WordPress
-#   8102  — Proxy B (RFC 7239 Forwarded) → Proxy A
-#   8103  — Proxy C (RFC 7239 Forwarded) → Proxy B
-#   8112  — X-Forwarded-For proxy → Proxy A
-#   8122  — Cloudflare-sim proxy → Proxy A
-#   8180  — noVNC Linux desktop (for IPv6 browser testing)
+#   8064  — WordPress (direct)
+#   8128  — Proxy A (RFC 7239 Forwarded) → WordPress
+#   8160  — Proxy B (RFC 7239 Forwarded) → Proxy A
+#   8161  — X-Forwarded-For proxy → Proxy A
+#   8162  — Cloudflare-sim proxy → Proxy A
+#   8192  — Proxy C (RFC 7239 Forwarded) → Proxy B
+#   8032  — noVNC Linux desktop (for IPv6 browser testing)
 #
-# IPv6 is enabled on the network.  The RFC 7239 chain (8101–8103) uses
-# IPv6 addresses between hops.
+# Fixed IP addresses:
+#   10.72.39.64   / fd00:72:39:0:4000::64   — WordPress
+#   10.72.39.128  / fd00:72:39:0:8000::128  — Proxy A
+#   10.72.39.160  / fd00:72:39:0:A000::160  — Proxy B
+#   10.72.39.161  / fd00:72:39:0:A100::161  — Proxy XFF
+#   10.72.39.162  / fd00:72:39:0:A200::162  — Proxy CF
+#   10.72.39.192  / fd00:72:39:0:C000::192  — Proxy C
+#   10.72.39.32   / fd00:72:39:0:2000::32   — noVNC desktop
 #
-# Fixed IP addresses follow the port number convention:
-#   IPv4: 10.72.39.<last-digits-of-port>   e.g. port 8101 → 10.72.39.101
-#   IPv6: fd00:72:39::<last-digits-of-port> e.g. port 8101 → fd00:72:39::101
-# (The suffix is written in decimal for readability, not hex compatibility.)
+# The address layout allows testing with different CIDR ranges:
+#   10.72.39.128/25 or fd00:72:39:0:8000::/65 — all proxies
+#   10.72.39.128/26 or fd00:72:39:0:8000::/66 — Proxy A + B/XFF/CF
+#   10.72.39.128/27 or fd00:72:39:0:8000::/67 — Proxy A only
+#
+# Default connections come in from 10.72.39.1.
 
 services:
   # -----------------------------------------------------------------
@@ -64,7 +72,7 @@ services:
             define( 'WP_SITEURL', 'http://' . $$_SERVER['HTTP_HOST'] );
         }
     ports:
-      - "8100:80"
+      - "8064:80"
     volumes:
       - wp_data:/var/www/html
       # Mount the plugin source into the plugins directory.
@@ -76,98 +84,97 @@ services:
       - ./wordpress-apache/disable-remoteip.conf:/etc/apache2/conf-enabled/remoteip.conf:ro
     networks:
       default:
-        ipv4_address: 10.72.39.100
-        ipv6_address: fd00:72:39::100
+        ipv4_address: 10.72.39.64
+        ipv6_address: fd00:72:39:0:4000::64
 
   # -----------------------------------------------------------------
-  # RFC 7239 Forwarded proxy chain (ports 8101–8103)
-  # Uses IPv6 between hops where possible.
+  # RFC 7239 Forwarded proxy chain
   # -----------------------------------------------------------------
   proxy-a:
     image: docker.io/library/caddy:2-alpine
     depends_on:
       - wordpress
     ports:
-      - "8101:80"
+      - "8128:80"
     volumes:
       - ./proxy-a/Caddyfile:/etc/caddy/Caddyfile:ro
     networks:
       default:
-        ipv4_address: 10.72.39.101
-        ipv6_address: fd00:72:39::101
+        ipv4_address: 10.72.39.128
+        ipv6_address: fd00:72:39:0:8000::128
 
   proxy-b:
     image: docker.io/library/caddy:2-alpine
     depends_on:
       - proxy-a
     ports:
-      - "8102:80"
+      - "8160:80"
     volumes:
       - ./proxy-b/Caddyfile:/etc/caddy/Caddyfile:ro
     networks:
       default:
-        ipv4_address: 10.72.39.102
-        ipv6_address: fd00:72:39::102
+        ipv4_address: 10.72.39.160
+        ipv6_address: fd00:72:39:0:A000::160
 
   proxy-c:
     image: docker.io/library/caddy:2-alpine
     depends_on:
       - proxy-b
     ports:
-      - "8103:80"
+      - "8192:80"
     volumes:
       - ./proxy-c/Caddyfile:/etc/caddy/Caddyfile:ro
     networks:
       default:
-        ipv4_address: 10.72.39.103
-        ipv6_address: fd00:72:39::103
+        ipv4_address: 10.72.39.192
+        ipv6_address: fd00:72:39:0:C000::192
 
   # -----------------------------------------------------------------
-  # X-Forwarded-For proxy (port 8112)
+  # X-Forwarded-For proxy
   # -----------------------------------------------------------------
   proxy-xff:
     image: docker.io/library/caddy:2-alpine
     depends_on:
       - proxy-a
     ports:
-      - "8112:80"
+      - "8161:80"
     volumes:
       - ./proxy-xff/Caddyfile:/etc/caddy/Caddyfile:ro
     networks:
       default:
-        ipv4_address: 10.72.39.112
-        ipv6_address: fd00:72:39::112
+        ipv4_address: 10.72.39.161
+        ipv6_address: fd00:72:39:0:A100::161
 
   # -----------------------------------------------------------------
-  # Cloudflare-sim proxy (port 8122)
+  # Cloudflare-sim proxy
   # -----------------------------------------------------------------
   proxy-cf:
     image: docker.io/library/caddy:2-alpine
     depends_on:
       - proxy-a
     ports:
-      - "8122:80"
+      - "8162:80"
     volumes:
       - ./proxy-cf/Caddyfile:/etc/caddy/Caddyfile:ro
     networks:
       default:
-        ipv4_address: 10.72.39.122
-        ipv6_address: fd00:72:39::122
+        ipv4_address: 10.72.39.162
+        ipv6_address: fd00:72:39:0:A200::162
 
   # -----------------------------------------------------------------
-  # noVNC Linux desktop for IPv6 browser testing (port 8180)
+  # noVNC Linux desktop for IPv6 browser testing
   # -----------------------------------------------------------------
   desktop:
     image: docker.io/theasp/novnc:latest
     ports:
-      - "8180:8080"
+      - "8032:8080"
     environment:
       DISPLAY_WIDTH: 1280
       DISPLAY_HEIGHT: 720
     networks:
       default:
-        ipv4_address: 10.72.39.180
-        ipv6_address: fd00:72:39::180
+        ipv4_address: 10.72.39.32
+        ipv6_address: fd00:72:39:0:2000::32
 
 # -------------------------------------------------------------------
 # Network with IPv6 enabled

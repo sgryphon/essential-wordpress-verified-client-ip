@@ -622,6 +622,10 @@ final class AdminPage {
 						<?php echo \esc_html__( 'Clear Diagnostics', 'verified-client-ip' ); ?>
 					</button>
 				<?php endif; ?>
+	
+				<a href="<?php echo \esc_url( \remove_query_arg( 'vcip_diag_action' ) ); ?>" class="button">
+					<?php echo \esc_html__( 'Refresh', 'verified-client-ip' ); ?>
+				</a>
 			</p>
 		</form>
 

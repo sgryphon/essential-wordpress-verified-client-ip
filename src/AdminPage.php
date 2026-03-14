@@ -123,7 +123,9 @@ final class AdminPage {
 
 			<?php
 			if ( \function_exists( 'settings_errors' ) ) {
-				\settings_errors( 'vcip_settings' );
+				// Pass true for $sanitize to deduplicate messages that may appear
+				// in both the transient and the in-memory global.
+				\settings_errors( 'vcip_settings', false, true );
 			}
 			?>
 
@@ -259,23 +261,27 @@ final class AdminPage {
 	 * Render a single scheme configuration panel.
 	 */
 	private static function render_scheme_panel( Scheme $scheme, int $index ): void {
-		$prefix = "vcip_schemes[{$index}]";
+		$prefix    = "vcip_schemes[{$index}]";
+		$header_bg = $scheme->enabled ? 'background-color:rgb(240,246,252);' : '';
 		?>
 		<div class="vcip-scheme-panel postbox" data-index="<?php echo $index; ?>">
-			<div class="postbox-header">
+			<div class="postbox-header" style="<?php echo \esc_attr( $header_bg ); ?>">
 				<h3 class="hndle">
 					<span class="vcip-scheme-name"><?php echo \esc_html( $scheme->name ? $scheme->name : __( 'New Scheme', 'verified-client-ip' ) ); ?></span>
-					<?php if ( ! $scheme->enabled ) : ?>
-						<span class="vcip-scheme-badge" style="color:#999;font-weight:normal;margin-left:8px;">(<?php echo \esc_html__( 'disabled', 'verified-client-ip' ); ?>)</span>
-					<?php endif; ?>
 				</h3>
-				<div class="vcip-scheme-controls" style="position:absolute;right:10px;top:6px;">
+				<div class="vcip-scheme-controls" style="display:flex;align-items:center;gap:6px;margin-left:auto;padding-right:10px;">
+					<label style="display:flex;align-items:center;gap:4px;font-weight:normal;cursor:pointer;">
+						<input type="hidden" name="<?php echo \esc_attr( $prefix ); ?>[enabled]" value="0">
+						<input type="checkbox" name="<?php echo \esc_attr( $prefix ); ?>[enabled]" value="1"
+							class="vcip-enabled-checkbox"
+							<?php echo $scheme->enabled ? 'checked' : ''; ?>>
+						<?php echo \esc_html__( 'Enabled', 'verified-client-ip' ); ?>
+					</label>
 					<button type="button" class="button button-small vcip-move-up" title="<?php echo \esc_attr__( 'Move up', 'verified-client-ip' ); ?>">&uarr;</button>
 					<button type="button" class="button button-small vcip-move-down" title="<?php echo \esc_attr__( 'Move down', 'verified-client-ip' ); ?>">&darr;</button>
-					<button type="button" class="button button-small vcip-delete-scheme" title="<?php echo \esc_attr__( 'Delete', 'verified-client-ip' ); ?>">&times;</button>
 				</div>
 			</div>
-			<div class="inside">
+			<div class="inside" style="display:none;">
 				<table class="form-table" role="presentation">
 					<tr>
 						<th scope="row">
@@ -286,14 +292,6 @@ final class AdminPage {
 									value="<?php echo \esc_attr( $scheme->name ); ?>"
 									class="regular-text vcip-scheme-name-input"
 									maxlength="<?php echo Settings::SCHEME_NAME_MAX_LENGTH; ?>">
-						</td>
-					</tr>
-					<tr>
-						<th scope="row"><?php echo \esc_html__( 'Enabled', 'verified-client-ip' ); ?></th>
-						<td>
-							<input type="hidden" name="<?php echo \esc_attr( $prefix ); ?>[enabled]" value="0">
-							<input type="checkbox" name="<?php echo \esc_attr( $prefix ); ?>[enabled]" value="1"
-								<?php echo $scheme->enabled ? 'checked' : ''; ?>>
 						</td>
 					</tr>
 					<tr>
@@ -345,6 +343,13 @@ final class AdminPage {
 						</td>
 					</tr>
 				</table>
+				<p>
+					<button type="button" class="button vcip-delete-scheme"
+							style="color:#b32d2e;border-color:#b32d2e;"
+							title="<?php echo \esc_attr__( 'Delete this scheme', 'verified-client-ip' ); ?>">
+						<?php echo \esc_html__( 'Delete Scheme', 'verified-client-ip' ); ?>
+					</button>
+				</p>
 			</div>
 		</div>
 		<?php
@@ -377,13 +382,25 @@ final class AdminPage {
 				reindex();
 			});
 
+			// Toggle collapse/expand on header click (but not on controls)
+			container.addEventListener('click', function (e) {
+				var header = e.target.closest('.postbox-header');
+				if (!header) return;
+				// Don't toggle if clicking a button, checkbox, or label inside controls
+				if (e.target.closest('.vcip-scheme-controls')) return;
+	
+				var panel = header.closest('.vcip-scheme-panel');
+				var inside = panel.querySelector('.inside');
+				inside.style.display = inside.style.display === 'none' ? '' : 'none';
+			});
+	
 			// Delegate move / delete
 			container.addEventListener('click', function (e) {
 				var btn = e.target.closest('button');
 				if (!btn) return;
-
+	
 				var panel = btn.closest('.vcip-scheme-panel');
-
+	
 				if (btn.classList.contains('vcip-move-up') && panel.previousElementSibling) {
 					container.insertBefore(panel, panel.previousElementSibling);
 					reindex();
@@ -397,7 +414,17 @@ final class AdminPage {
 					}
 				}
 			});
-
+	
+			// Enabled checkbox: update header background
+			container.addEventListener('change', function (e) {
+				if (e.target.classList.contains('vcip-enabled-checkbox')) {
+					var header = e.target.closest('.postbox-header');
+					if (header) {
+						header.style.backgroundColor = e.target.checked ? 'rgb(240,246,252)' : '';
+					}
+				}
+			});
+	
 			// Update live panel title
 			container.addEventListener('input', function (e) {
 				if (e.target.classList.contains('vcip-scheme-name-input')) {
@@ -406,7 +433,7 @@ final class AdminPage {
 					title.textContent = e.target.value || <?php echo \wp_json_encode( __( 'New Scheme', 'verified-client-ip' ) ); ?>;
 				}
 			});
-
+	
 			function reindex() {
 				var panels = container.querySelectorAll('.vcip-scheme-panel');
 				panels.forEach(function (panel, i) {
@@ -417,13 +444,13 @@ final class AdminPage {
 					});
 				});
 			}
-		})();
-		</script>
-		<style>
-			.vcip-scheme-panel { position: relative; margin-bottom: 12px; }
-			.vcip-scheme-panel .postbox-header { display: flex; align-items: center; }
-			.vcip-scheme-controls { display: flex; gap: 4px; }
-		</style>
+			})();
+			</script>
+			<style>
+				.vcip-scheme-panel { position: relative; margin-bottom: 12px; }
+				.vcip-scheme-panel .postbox-header { display: flex; align-items: center; cursor: pointer; }
+				.vcip-scheme-panel .postbox-header .vcip-scheme-controls { cursor: default; }
+			</style>
 		<?php
 	}
 
@@ -464,6 +491,14 @@ final class AdminPage {
 	 * @return array<string, mixed>
 	 */
 	public static function parse_form_input( array $post ): array {
+		// WordPress adds magic quotes to $_POST via wp_magic_quotes().
+		// Strip them before processing so that quotes and backslashes in
+		// user-entered text are not double-encoded on each save.
+		if ( \function_exists( 'wp_unslash' ) ) {
+			/** @var array<string, mixed> $post */
+			$post = \wp_unslash( $post );
+		}
+
 		$input = [
 			'enabled'       => ! empty( $post['vcip_enabled'] ),
 			'forward_limit' => $post['vcip_forward_limit'] ?? 1,

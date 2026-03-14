@@ -69,6 +69,11 @@ services:
       - wp_data:/var/www/html
       # Mount the plugin source into the plugins directory.
       - ../../build/verified-client-ip:/var/www/html/wp-content/plugins/verified-client-ip:ro
+      # Disable mod_remoteip so Apache does not pre-resolve REMOTE_ADDR from
+      # X-Forwarded-For before PHP runs.  Without this the plugin becomes a
+      # no-op because REMOTE_ADDR is already the client IP by the time PHP
+      # sees it.  See examples/wp-client-ip/README.md for details.
+      - ./wordpress-apache/disable-remoteip.conf:/etc/apache2/conf-enabled/remoteip.conf:ro
     networks:
       default:
         ipv4_address: 10.72.39.100

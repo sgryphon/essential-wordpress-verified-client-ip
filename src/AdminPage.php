@@ -682,6 +682,7 @@ final class AdminPage {
 		// Step trace.
 		if ( ! empty( $entry['steps'] ) && \is_array( $entry['steps'] ) ) {
 			echo '<h4>' . \esc_html__( 'Client IP calculation', 'verified-client-ip' ) . '</h4>';
+			echo '<p>' . \esc_html__( 'Note: If initial REMOTE_ADDR is not as you expect, then it may already be resolved by Apache <pre>mod_remoteip</pre> or nginx <pre>set_real_ip_from</pre>. See the user guide for details.', 'verified-client-ip' ) . '</p>';
 			echo '<ol>';
 			foreach ( $entry['steps'] as $step ) {
 				echo '<li>';
@@ -702,7 +703,7 @@ final class AdminPage {
 
 		// All headers.
 		if ( ! empty( $entry['headers'] ) && \is_array( $entry['headers'] ) ) {
-			echo '<h4>' . \esc_html__( 'Headers', 'verified-client-ip' ) . '</h4>';
+			echo '<h4>' . \esc_html__( 'Original Headers', 'verified-client-ip' ) . '</h4>';
 			echo '<table class="widefat" style="max-width:800px;">';
 			foreach ( $entry['headers'] as $key => $value ) {
 				echo '<tr><td><code>' . \esc_html( (string) $key ) . '</code></td>';

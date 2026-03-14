@@ -82,6 +82,23 @@ This avoids Windows limitations with IPv6 connections to containers. Open
 Firefox inside the desktop and navigate to `http://wordpress/` or use the
 IPv6 address directly.
 
+## Apache `mod_remoteip` and this plugin
+
+The WordPress Docker image ships with Apache's `mod_remoteip` enabled and
+configured to trust all RFC 1918 private IP ranges. This module reads
+`X-Forwarded-For` and replaces `REMOTE_ADDR` **before PHP runs**, which means
+the plugin would receive an already-resolved IP and become a no-op.
+
+To prevent this, the compose file mounts
+`wordpress-apache/disable-remoteip.conf` over the default `remoteip.conf`,
+redirecting `mod_remoteip` to a non-existent header so it leaves `REMOTE_ADDR`
+untouched. The plugin then performs its own verified resolution.
+
+> **Note for production use:** If your server runs Apache with `mod_remoteip`
+> (or nginx with `set_real_ip_from`) you should disable that feature and let
+> this plugin handle IP resolution instead. See the
+> [user guide](../../docs/user-guide.md) for details.
+
 ## Shutting Down
 
 ```bash

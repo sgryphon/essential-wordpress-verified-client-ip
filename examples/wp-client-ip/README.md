@@ -4,18 +4,31 @@ This directory contains proxy configurations and the Docker Compose file used to
 
 ## Quick Start
 
-```powershell
-# Manually create IPv6 podman network
-podman network create --ipv6 --subnet 172.28.0.0/16 --subnet fd12:3456:789a::/48 examples_vcip_net
+First build the plugin, e.g. use the development container:
 
-# Start all services from the examples folder (Podman preferred)
-cd examples
-podman compose up -d
-
-# Or with Docker
-cd examples
-docker compose up -d
+```bash
+./build.sh
 ```
+
+This will publish the component to `build/verified-client-ip/`.
+
+Then on your host run the compose file to start the environment:
+
+```powershell
+# Start all services from the examples folder (Podman preferred)
+cd examples/wp-client-ip
+podman compose up -d
+```
+
+Activate the plugin via the WordPress admin UI at http://localhost:8100/wp-admin/.
+
+The first time you run the example you will need to create a Wordpress site with an admin account (e.g. admin/P@ssw0rd).
+
+Once activated, to see the plugin in action, you can go to Settings > Verified Client IP, and then on the Diagnostics tab click Start Diagnostics.
+
+Access the website directly at http://localhost:8100/ and then via proxies http://localhost:8101/ and http://localhost:8102/. Note that the example configuration is set up with dynamic host detection so that the proxy URL (with the port) is retained, to make testing easier.
+
+Refresh and check the diagnostics to see how the verified client IP is resolved.
 
 ## Services & Ports
 
@@ -68,24 +81,6 @@ To test IPv6 from a browser, use the noVNC desktop at http://localhost:8180.
 This avoids Windows limitations with IPv6 connections to containers. Open
 Firefox inside the desktop and navigate to `http://wordpress/` or use the
 IPv6 address directly.
-
-## Installing the Plugin for Development
-
-The plugin source is bind-mounted read-only into the WordPress container at:
-
-```
-/var/www/html/wp-content/plugins/verified-client-ip
-```
-
-Any changes you make to the plugin files on your host are immediately
-reflected in the container. Activate the plugin via the WordPress admin UI
-at http://localhost:8100/wp-admin/.
-
-If you modify `composer.json`, rebuild the autoloader:
-
-```bash
-podman compose exec wordpress bash -c "cd /var/www/html/wp-content/plugins/verified-client-ip && composer dump-autoload"
-```
 
 ## Shutting Down
 

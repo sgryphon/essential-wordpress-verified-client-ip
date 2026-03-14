@@ -147,4 +147,4 @@ All four must pass before merging.
 
 For full end-to-end testing with WordPress and proxy chains, see the examples directory:
 
-- [examples/README.md](../examples/README.md) — setup instructions for local proxy chain testing
+- [examples/wp-client-ip/README.md](../examples/wp-client-ip/README.md) — setup instructions for local proxy chain testing

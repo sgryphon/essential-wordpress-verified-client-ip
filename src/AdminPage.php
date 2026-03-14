@@ -262,7 +262,7 @@ final class AdminPage {
 	 */
 	private static function render_scheme_panel( Scheme $scheme, int $index ): void {
 		$prefix    = "vcip_schemes[{$index}]";
-		$header_bg = $scheme->enabled ? 'background-color:rgb(240,246,252);' : '';
+		$header_bg = $scheme->enabled ? 'background-color:#f0f6fc;' : '';
 		?>
 		<div class="vcip-scheme-panel postbox" data-index="<?php echo $index; ?>">
 			<div class="postbox-header" style="<?php echo \esc_attr( $header_bg ); ?>">
@@ -344,12 +344,11 @@ final class AdminPage {
 					</tr>
 				</table>
 				<p>
-					<button type="button" class="button vcip-delete-scheme"
-							style="color:#b32d2e;border-color:#b32d2e;"
-							title="<?php echo \esc_attr__( 'Delete this scheme', 'verified-client-ip' ); ?>">
-						<?php echo \esc_html__( 'Delete Scheme', 'verified-client-ip' ); ?>
-					</button>
-				</p>
+						<button type="button" class="button-link button-link-delete vcip-delete-scheme"
+								title="<?php echo \esc_attr__( 'Delete this scheme', 'verified-client-ip' ); ?>">
+							<?php echo \esc_html__( 'Delete Scheme', 'verified-client-ip' ); ?>
+						</button>
+					</p>
 			</div>
 		</div>
 		<?php
@@ -420,7 +419,7 @@ final class AdminPage {
 				if (e.target.classList.contains('vcip-enabled-checkbox')) {
 					var header = e.target.closest('.postbox-header');
 					if (header) {
-						header.style.backgroundColor = e.target.checked ? 'rgb(240,246,252)' : '';
+						header.style.backgroundColor = e.target.checked ? '#f0f6fc' : '';
 					}
 				}
 			});
@@ -449,6 +448,7 @@ final class AdminPage {
 			<style>
 				.vcip-scheme-panel { position: relative; margin-bottom: 12px; }
 				.vcip-scheme-panel .postbox-header { display: flex; align-items: center; cursor: pointer; }
+				.vcip-scheme-panel .postbox-header .hndle { padding-left: 12px; }
 				.vcip-scheme-panel .postbox-header .vcip-scheme-controls { cursor: default; }
 			</style>
 		<?php

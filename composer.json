@@ -10,6 +10,7 @@
     },
     "require-dev": {
         "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+        "erusev/parsedown": "^1.8",
         "php-stubs/wordpress-stubs": "^6.9",
         "phpstan/phpstan": "^1.10 || ^2.0",
         "phpunit/phpunit": "^10.5",
@@ -31,6 +32,7 @@
         "analyse": "phpstan analyse",
         "format": "phpcbf",
         "format-check": "phpcs",
+        "build-user-guide": "php bin/build-user-guide.php",
         "check": [
             "@format-check",
             "@analyse",

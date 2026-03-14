@@ -136,10 +136,16 @@ final class AdminPage {
 					class="nav-tab <?php echo 'diagnostics' === $active_tab ? 'nav-tab-active' : ''; ?>">
 					<?php echo \esc_html__( 'Diagnostics', 'verified-client-ip' ); ?>
 				</a>
+				<a href="?page=<?php echo self::MENU_SLUG; ?>&tab=user-guide"
+					class="nav-tab <?php echo 'user-guide' === $active_tab ? 'nav-tab-active' : ''; ?>">
+					<?php echo \esc_html__( 'User Guide', 'verified-client-ip' ); ?>
+				</a>
 			</nav>
-
+	
 			<?php if ( 'diagnostics' === $active_tab ) : ?>
 				<?php self::render_diagnostics_tab(); ?>
+			<?php elseif ( 'user-guide' === $active_tab ) : ?>
+				<?php self::render_user_guide_tab(); ?>
 			<?php else : ?>
 
 			<form method="post" action="">
@@ -239,7 +245,7 @@ final class AdminPage {
 			<?php endif; ?>
 		</div>
 
-		<?php if ( 'diagnostics' !== $active_tab ) : ?>
+		<?php if ( 'settings' === $active_tab ) : ?>
 			<?php self::render_inline_script(); ?>
 		<?php endif; ?>
 		<?php
@@ -715,5 +721,38 @@ final class AdminPage {
 			}
 			echo '</table>';
 		}
+	}
+
+	// ------------------------------------------------------------------
+	// User Guide tab
+	// ------------------------------------------------------------------
+
+	/**
+		* Render the User Guide tab from the pre-built HTML file.
+		*/
+	private static function render_user_guide_tab(): void {
+		$html_file = \plugin_dir_path( __DIR__ ) . 'src/user-guide.html';
+
+		if ( ! \file_exists( $html_file ) ) {
+			echo '<div class="notice notice-warning"><p>';
+			echo \esc_html__( 'User guide not available. Run the build script to generate it.', 'verified-client-ip' );
+			echo '</p></div>';
+			return;
+		}
+
+		$html = \file_get_contents( $html_file );
+		if ( false === $html ) {
+			echo '<div class="notice notice-error"><p>';
+			echo \esc_html__( 'Could not read user guide file.', 'verified-client-ip' );
+			echo '</p></div>';
+			return;
+		}
+
+		// The HTML was generated from trusted source (docs/user-guide.md) at
+		// build time.  Output it directly inside a scoped wrapper.
+		echo '<div class="vcip-user-guide-tab" style="max-width:900px;">';
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- trusted build-time HTML
+		echo $html;
+		echo '</div>';
 	}
 }

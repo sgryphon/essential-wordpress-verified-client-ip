@@ -1,3 +1,5 @@
+![Essential Verified Client IP](docs/verified-ip-logo.png)
+
 # Verified Client IP
 
 [![CI](https://github.com/sgryphon/essential-wordpress-verified-client-ip/actions/workflows/ci.yml/badge.svg)](https://github.com/sgryphon/essential-wordpress-verified-client-ip/actions/workflows/ci.yml)

@@ -25,6 +25,9 @@ Cloudflare `CF-Connecting-IP`, or any custom header.
 The component includes a diagnostics panel that can be enabled to recording incoming requests with
 full header dumps and algorithm step traces for debugging.
 
+For more detail see the Github project site
+[Essential WordPress Verified Client IP](https://github.com/sgryphon/essential-wordpress-verified-client-ip)
+
 = Compatibility Note =
 
 If your server uses **Apache `mod_remoteip`** or **nginx `set_real_ip_from`**, those modules will 

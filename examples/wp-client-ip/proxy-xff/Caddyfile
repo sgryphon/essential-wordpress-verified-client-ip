@@ -1,12 +1,19 @@
 # Proxy XFF — X-Forwarded-For → Proxy A
 #
-# Listens on port 80, forwards to proxy-a:80.
+# Listens on port 80 (all interfaces).
 # Uses X-Forwarded-For headers (Caddy's default behaviour).
+# IPv4 clients are forwarded to Proxy A's IPv4 address; all other clients
+# (IPv6) are forwarded to Proxy A's IPv6 address, preserving the protocol.
 # Explicitly removes any Forwarded header to keep the chain clean.
 
 :80 {
-	reverse_proxy proxy-a:80 {
+	@ipv4 remote_ip 0.0.0.0/0
+	reverse_proxy @ipv4 10.72.39.128:80 {
 		# Remove RFC 7239 header — this proxy only uses XFF.
+		header_up -Forwarded
+	}
+
+	reverse_proxy [fd00:72:39:0:8000::128]:80 {
 		header_up -Forwarded
 	}
 }

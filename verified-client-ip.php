@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Plugin Name:       Essential Verified Client IP
+ * Plugin Name:       Verified Client IP
  * Plugin URI:        https://github.com/sgryphon/essential-wordpress-verified-client-ip
  * Description:       Determines the true client IP by verifying Forwarded and similar headers, traversing only trusted proxy hops.
  * Version:           1.0.0

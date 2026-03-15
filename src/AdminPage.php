@@ -673,6 +673,7 @@ final class AdminPage {
 						<th><?php echo \esc_html__( 'URI', 'verified-client-ip' ); ?></th>
 						<th><?php echo \esc_html__( 'Original IP', 'verified-client-ip' ); ?></th>
 						<th><?php echo \esc_html__( 'Resolved IP', 'verified-client-ip' ); ?></th>
+						<th><?php echo \esc_html__( 'Hops', 'verified-client-ip' ); ?></th>
 						<th><?php echo \esc_html__( 'Changed', 'verified-client-ip' ); ?></th>
 					</tr>
 				</thead>
@@ -685,10 +686,11 @@ final class AdminPage {
 							<td><?php echo \esc_html( $entry['request_uri'] ?? '' ); ?></td>
 							<td><code><?php echo \esc_html( $entry['original_ip'] ?? $entry['remote_addr'] ?? '' ); ?></code></td>
 							<td><code><?php echo \esc_html( $entry['resolved_ip'] ?? $entry['remote_addr'] ?? '' ); ?></code></td>
+							<td><?php echo \esc_html( (string) \max( 0, \count( $entry['steps'] ?? [] ) - 1 ) ); ?></td>
 							<td><?php echo ! empty( $entry['changed'] ) ? '&#10004;' : '—'; ?></td>
 						</tr>
 						<tr class="vcip-diag-detail" id="vcip-detail-<?php echo $i; ?>" style="display:none;">
-							<td colspan="7">
+							<td colspan="8">
 								<?php self::render_diagnostic_detail( $entry ); ?>
 							</td>
 						</tr>
@@ -719,7 +721,6 @@ final class AdminPage {
 		// Step trace.
 		if ( ! empty( $entry['steps'] ) && \is_array( $entry['steps'] ) ) {
 			echo '<h4>' . \esc_html__( 'Client IP calculation', 'verified-client-ip' ) . '</h4>';
-			echo '<p>' . \esc_html__( 'Note: If initial REMOTE_ADDR is not as you expect, then it may already be resolved by Apache <pre>mod_remoteip</pre> or nginx <pre>set_real_ip_from</pre>. See the user guide for details.', 'verified-client-ip' ) . '</p>';
 			echo '<ol>';
 			foreach ( $entry['steps'] as $step ) {
 				echo '<li>';
@@ -730,6 +731,7 @@ final class AdminPage {
 				echo '</li>';
 			}
 			echo '</ol>';
+			echo '<p>' . \esc_html__( 'Note: If initial REMOTE_ADDR is not as you expect, then it may already be resolved by Apache \'mod_remoteip\' or nginx \'set_real_ip_from\'. See the user guide for details.', 'verified-client-ip' ) . '</p>';
 		}
 
 		// Proto info.

@@ -84,6 +84,7 @@ final class Logger {
 
 		// @codeCoverageIgnoreStart
 		if ( \function_exists( 'error_log' ) ) {
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- intentional logger implementation
 			\error_log( $entry );
 		}
 		// @codeCoverageIgnoreEnd

@@ -14,6 +14,12 @@ echo "==> Cleaning previous build..."
 rm -rf "${BUILD_DIR}"
 mkdir -p "${DIST_DIR}"
 
+echo "==> Installing dev dependencies for build tools..."
+composer install --optimize-autoloader --quiet
+
+echo "==> Generating user guide HTML..."
+composer run-script build-user-guide --quiet
+
 echo "==> Installing production dependencies..."
 composer install --no-dev --optimize-autoloader --quiet
 
@@ -25,6 +31,7 @@ cp uninstall.php "${DIST_DIR}/"
 cp composer.json "${DIST_DIR}/"
 cp LICENSE "${DIST_DIR}/"
 cp README.md "${DIST_DIR}/"
+cp src/user-guide.html "${DIST_DIR}/src/"
 
 echo "==> Creating zip..."
 cd "${BUILD_DIR}"

@@ -25,12 +25,12 @@ Navigate to **Settings → Verified Client IP** in the WordPress admin.
 
 ### General Settings
 
-| Setting           | Default | Description |
-|-------------------|---------|-------------|
-| **Enable**        | On      | Master switch. When off, the plugin calculates but does not replace `REMOTE_ADDR`. Diagnostics still work. |
-| **Forward Limit** | 1       | Maximum number of proxy hops to traverse (1–20). Set this to the number of trusted proxies between your server and the internet. |
+| Setting           | Default | Description                                                                                                                                                                        |
+| ----------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Enable**        | On      | Master switch. When off, the plugin calculates but does not replace `REMOTE_ADDR`. Diagnostics still work.                                                                         |
+| **Forward Limit** | 1       | Maximum number of proxy hops to traverse (1–20). Set this to the number of trusted proxies between your server and the internet.                                                   |
 | **Process Proto** | On      | When enabled, updates `$_SERVER['HTTPS']` and `REQUEST_SCHEME` from the proxy's forwarded protocol. Originals are preserved in `X-Original-HTTPS` and `X-Original-Request-Scheme`. |
-| **Process Host**  | Off     | When enabled, updates `HTTP_HOST` and `SERVER_NAME` from the proxy's forwarded host. Original is preserved in `X-Original-Host`. |
+| **Process Host**  | Off     | When enabled, updates `HTTP_HOST` and `SERVER_NAME` from the proxy's forwarded host. Original is preserved in `X-Original-Host`.                                                   |
 
 ### Schemes
 
@@ -70,10 +70,10 @@ Click **Add Scheme** at the bottom of the Schemes section. Fill in:
 
 1. Start with `REMOTE_ADDR` (the address your server sees).
 2. Check if it matches any trusted proxy in an enabled scheme.
-3. If it does, read the corresponding header and extract the next-rightmost
-   address from the chain.
+3. If it does, read the corresponding header and extract the next
+   (rightmost) address from the chain.
 4. Repeat (up to the Forward Limit).
-5. The first untrusted or malformed address is the verified client IP.
+5. The first untrusted address, or if the Forward Limit is reached, is the verified client IP.
 6. If `REMOTE_ADDR` is not a trusted proxy, the plugin does nothing.
 7. If all addresses are trusted, use the outermost (leftmost) address.
 
@@ -86,8 +86,7 @@ the internet.
 **Example**: If your stack is `Client → Cloudflare → Nginx → WordPress`,
 you have 2 proxies, so set Forward Limit to 2.
 
-Setting this too high gives attackers more header slots to spoof. Setting
-it too low means you'll resolve a proxy's IP instead of the client's.
+This is a second layer of defense, as even if an attacker works a way around the verification there is a limit on the number of accepted proxies. However note that setting it too low means you'll resolve a proxy's IP instead of the client's, so make sure it is enough to cover your longest proxy chain.
 
 ## Diagnostics
 
@@ -152,11 +151,65 @@ require_once ABSPATH . 'wp-content/mu-plugins/verified-client-ip/verified-client
 The plugin will run at `muplugins_loaded` priority 0 instead of
 `plugins_loaded`.
 
+## Compatibility with Apache `mod_remoteip` and nginx `set_real_ip_from`
+
+### The conflict
+
+Both Apache and nginx ship with built-in modules that perform IP resolution
+from forwarding headers:
+
+- **Apache** — `mod_remoteip` reads `X-Forwarded-For` (or a configured header)
+  and replaces `REMOTE_ADDR` **before PHP runs**.
+- **nginx** — `ngx_http_realip_module` with `set_real_ip_from` does the same.
+
+When either of these is active and trusts your proxy network, `REMOTE_ADDR`
+will already contain the resolved client IP by the time WordPress (and this
+plugin) starts. The plugin will see `REMOTE_ADDR` as a non-proxy address and
+become a no-op.
+
+### How to tell if this is happening
+
+In the Diagnostics tab, if the **Original IP** column shows the visitor's IP
+(rather than the direct upstream proxy's IP) even before the plugin has
+resolved anything, a web-server-level module is pre-resolving the address.
+
+### Option 1 — Disable the web server module (recommended)
+
+Let this plugin handle all IP resolution. Disable the conflicting module:
+
+**Apache** — remove or override `remoteip.conf`:
+
+```apache
+# /etc/apache2/conf-enabled/remoteip.conf
+# Point mod_remoteip at a non-existent header to effectively disable it.
+RemoteIPHeader X-No-Such-Header
+```
+
+Or disable the module entirely:
+
+```bash
+a2dismod remoteip
+```
+
+**nginx** — remove `set_real_ip_from` and `real_ip_header` directives from
+your nginx configuration.
+
+### Option 2 — Live with the pre-resolution (limited functionality)
+
+If you cannot change the web server configuration, the plugin will still work
+for any remaining hops that the web server module did not resolve. For example,
+if `mod_remoteip` resolves one hop and your Forward Limit is 2, the plugin
+will resolve the next hop.
+
+However, the plugin's step trace in Diagnostics will start from the
+already-resolved address, so the full chain will not be visible.
+
 ## Troubleshooting
 
-| Problem | Solution |
-|---------|----------|
-| Plugin has no effect | Check that `REMOTE_ADDR` matches a trusted proxy in an enabled scheme. Use Diagnostics to verify. |
-| Wrong IP resolved | Check your Forward Limit matches the number of proxies. Use the step trace in Diagnostics. |
-| All requests show proxy IP | The proxy may not be setting the expected header. Check the header name in your scheme matches what the proxy actually sends. |
-| Cloudflare not working | Enable the Cloudflare scheme and add [Cloudflare's IP ranges](https://www.cloudflare.com/ips/) to the trusted proxies list. |
+| Problem                                              | Solution                                                                                                                                                                                         |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Plugin has no effect                                 | Check that `REMOTE_ADDR` matches a trusted proxy in an enabled scheme. Use Diagnostics to verify.                                                                                                |
+| Plugin is a no-op even though proxies are configured | Apache `mod_remoteip` or nginx `set_real_ip_from` may be pre-resolving the IP. See [Compatibility with Apache mod_remoteip](#compatibility-with-apache-mod_remoteip-and-nginx-set_real_ip_from). |
+| Wrong IP resolved                                    | Check your Forward Limit matches the number of proxies. Use the step trace in Diagnostics.                                                                                                       |
+| All requests show proxy IP                           | The proxy may not be setting the expected header. Check the header name in your scheme matches what the proxy actually sends.                                                                    |
+| Cloudflare not working                               | Enable the Cloudflare scheme and add [Cloudflare's IP ranges](https://www.cloudflare.com/ips/) to the trusted proxies list.                                                                      |

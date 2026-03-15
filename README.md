@@ -52,6 +52,31 @@ at the first untrusted hop, which is the true client IP.
 - [Packaging Guide](docs/packaging.md) — building a distributable zip, WordPress submission
 - [Examples Guide](examples/README.md) — local proxy chain testing environment
 
+### Screenshots
+
+**Main settings**
+![Verified Client IP main settings](docs/screen-verified-client-ip-settings.png)
+
+**Settings scheme detail**
+![Verified Client IP scheme settings](docs/screen-settings-detail.png)
+
+**Diagnostics**
+![Verified Client IP diagnostics](docs/screen-diagnostics.png)
+
+**Diagnostics detail**
+![Verified Client IP diagnostics detail](docs/screen-diagnostics-detail.png)
+
+**Comments with verified client IP**
+![Comments with verified client IP](docs/screen-comments-with-verified-ip.png)
+
+## Compatibility Note
+
+If your server uses **Apache `mod_remoteip`** or **nginx `set_real_ip_from`**,
+those modules will pre-resolve `REMOTE_ADDR` from forwarding headers before
+PHP runs. This means the plugin will see an already-resolved IP and become a
+no-op. Disable the web server module and let this plugin handle IP resolution
+instead. See the [User Guide](docs/user-guide.md#compatibility-with-apache-mod_remoteip-and-nginx-set_real_ip_from) for details.
+
 ## Requirements
 
 - PHP 8.1 or later

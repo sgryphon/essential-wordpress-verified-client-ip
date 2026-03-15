@@ -48,7 +48,7 @@ final class Resolver {
 				normalised_address: null,
 				matched_scheme: null,
 				header_used: null,
-				action: 'REMOTE_ADDR is invalid — no-op',
+				action: \sprintf( 'REMOTE_ADDR "%s" is invalid — no-op', $normalised ),
 			);
 
 			return new ResolverResult(
@@ -76,7 +76,7 @@ final class Resolver {
 				normalised_address: $normalised,
 				matched_scheme: null,
 				header_used: null,
-				action: 'REMOTE_ADDR is not a trusted proxy — no-op',
+				action: \sprintf( 'REMOTE_ADDR "%s" is not a trusted proxy — no-op', $normalised ),
 			);
 
 			return new ResolverResult(
@@ -93,7 +93,7 @@ final class Resolver {
 			normalised_address: $normalised,
 			matched_scheme: $matched_scheme->name,
 			header_used: $matched_scheme->header,
-			action: \sprintf( 'REMOTE_ADDR matches scheme "%s"', $matched_scheme->name ),
+			action: \sprintf( 'REMOTE_ADDR "%s" matches scheme "%s"', $normalised, $matched_scheme->name ),
 		);
 
 		// Extract proto/host information from the matched scheme's headers.

@@ -1,0 +1,194 @@
+# Local Development Environment — Verified Client IP
+#
+# Provides WordPress + proxy chains for testing the plugin.
+#
+# Usage (Podman preferred):
+#   podman compose up -d
+#   podman compose down
+#
+# Or with Docker:
+#   docker compose up -d
+#   docker compose down
+#
+# Ports:
+#   8064  — WordPress (direct)
+#   8128  — Proxy A (RFC 7239 Forwarded) → WordPress
+#   8160  — Proxy B (RFC 7239 Forwarded) → Proxy A
+#   8161  — X-Forwarded-For proxy → Proxy A
+#   8162  — Cloudflare-sim proxy → Proxy A
+#   8192  — Proxy C (RFC 7239 Forwarded) → Proxy B
+#   8032  — noVNC Linux desktop (for IPv6 browser testing)
+#
+# Fixed IP addresses:
+#   10.72.39.64   / fd00:72:39:0:4000::64   — WordPress
+#   10.72.39.128  / fd00:72:39:0:8000::128  — Proxy A
+#   10.72.39.160  / fd00:72:39:0:A000::160  — Proxy B
+#   10.72.39.161  / fd00:72:39:0:A100::161  — Proxy XFF
+#   10.72.39.162  / fd00:72:39:0:A200::162  — Proxy CF
+#   10.72.39.192  / fd00:72:39:0:C000::192  — Proxy C
+#   10.72.39.32   / fd00:72:39:0:2000::32   — noVNC desktop
+#
+# The address layout allows testing with different CIDR ranges:
+#   10.72.39.128/25 or fd00:72:39:0:8000::/65 — all proxies
+#   10.72.39.128/26 or fd00:72:39:0:8000::/66 — Proxy A + B/XFF/CF
+#   10.72.39.128/27 or fd00:72:39:0:8000::/67 — Proxy A only
+#
+# Default connections come in from 10.72.39.1.
+
+services:
+  # -----------------------------------------------------------------
+  # WordPress + MariaDB
+  # -----------------------------------------------------------------
+  db:
+    image: docker.io/library/mariadb:11
+    environment:
+      MARIADB_ROOT_PASSWORD: rootpass
+      MARIADB_DATABASE: wordpress
+      MARIADB_USER: wpuser
+      MARIADB_PASSWORD: wppass
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      default:
+        ipv4_address: 10.72.39.10
+        ipv6_address: fd00:72:39::10
+
+  wordpress:
+    image: docker.io/library/wordpress:6.7-php8.3-apache
+    depends_on:
+      - db
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wpuser
+      WORDPRESS_DB_PASSWORD: wppass
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DEBUG: "1"
+      # Dynamic site URL so WordPress stays on whatever proxy port was used.
+      # WP_HOME / WP_SITEURL constants override the database-stored values.
+      # $$ produces a literal $ in Compose (prevents variable substitution).
+      WORDPRESS_CONFIG_EXTRA: |
+        if ( isset( $$_SERVER['HTTP_HOST'] ) ) {
+            define( 'WP_HOME', 'http://' . $$_SERVER['HTTP_HOST'] );
+            define( 'WP_SITEURL', 'http://' . $$_SERVER['HTTP_HOST'] );
+        }
+    ports:
+      - "8064:80"
+    volumes:
+      - wp_data:/var/www/html
+      # Mount the plugin source into the plugins directory.
+      # To mount the built plugin instead, use the following line instead:
+      # ../../build/verified-client-ip:/var/www/html/wp-content/plugins/verified-client-ip:ro
+      - ../..:/var/www/html/wp-content/plugins/verified-client-ip:ro
+      # Disable mod_remoteip so Apache does not pre-resolve REMOTE_ADDR from
+      # X-Forwarded-For before PHP runs.  Without this the plugin becomes a
+      # no-op because REMOTE_ADDR is already the client IP by the time PHP
+      # sees it.  See examples/wp-client-ip/README.md for details.
+      - ./wordpress-apache/disable-remoteip.conf:/etc/apache2/conf-enabled/remoteip.conf:ro
+    networks:
+      default:
+        ipv4_address: 10.72.39.64
+        ipv6_address: fd00:72:39:0:4000::64
+
+  # -----------------------------------------------------------------
+  # RFC 7239 Forwarded proxy chain
+  # -----------------------------------------------------------------
+  proxy-a:
+    image: docker.io/library/caddy:2-alpine
+    depends_on:
+      - wordpress
+    ports:
+      - "8128:80"
+    volumes:
+      - ./proxy-a/Caddyfile:/etc/caddy/Caddyfile:ro
+    networks:
+      default:
+        ipv4_address: 10.72.39.128
+        ipv6_address: fd00:72:39:0:8000::128
+
+  proxy-b:
+    image: docker.io/library/caddy:2-alpine
+    depends_on:
+      - proxy-a
+    ports:
+      - "8160:80"
+    volumes:
+      - ./proxy-b/Caddyfile:/etc/caddy/Caddyfile:ro
+    networks:
+      default:
+        ipv4_address: 10.72.39.160
+        ipv6_address: fd00:72:39:0:A000::160
+
+  proxy-c:
+    image: docker.io/library/caddy:2-alpine
+    depends_on:
+      - proxy-b
+    ports:
+      - "8192:80"
+    volumes:
+      - ./proxy-c/Caddyfile:/etc/caddy/Caddyfile:ro
+    networks:
+      default:
+        ipv4_address: 10.72.39.192
+        ipv6_address: fd00:72:39:0:C000::192
+
+  # -----------------------------------------------------------------
+  # X-Forwarded-For proxy
+  # -----------------------------------------------------------------
+  proxy-xff:
+    image: docker.io/library/caddy:2-alpine
+    depends_on:
+      - proxy-a
+    ports:
+      - "8161:80"
+    volumes:
+      - ./proxy-xff/Caddyfile:/etc/caddy/Caddyfile:ro
+    networks:
+      default:
+        ipv4_address: 10.72.39.161
+        ipv6_address: fd00:72:39:0:A100::161
+
+  # -----------------------------------------------------------------
+  # Cloudflare-sim proxy
+  # -----------------------------------------------------------------
+  proxy-cf:
+    image: docker.io/library/caddy:2-alpine
+    depends_on:
+      - proxy-a
+    ports:
+      - "8162:80"
+    volumes:
+      - ./proxy-cf/Caddyfile:/etc/caddy/Caddyfile:ro
+    networks:
+      default:
+        ipv4_address: 10.72.39.162
+        ipv6_address: fd00:72:39:0:A200::162
+
+  # -----------------------------------------------------------------
+  # noVNC Linux desktop for IPv6 browser testing
+  # -----------------------------------------------------------------
+  desktop:
+    image: docker.io/theasp/novnc:latest
+    ports:
+      - "8032:8080"
+    environment:
+      DISPLAY_WIDTH: 1280
+      DISPLAY_HEIGHT: 720
+    networks:
+      default:
+        ipv4_address: 10.72.39.32
+        ipv6_address: fd00:72:39:0:2000::32
+
+# -------------------------------------------------------------------
+# Network with IPv6 enabled
+# -------------------------------------------------------------------
+networks:
+  default:
+    enable_ipv6: true
+    ipam:
+      config:
+        - subnet: 10.72.39.0/24
+        - subnet: fd00:72:39::/64
+
+volumes:
+  db_data:
+  wp_data:

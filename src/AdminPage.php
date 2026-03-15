@@ -121,12 +121,6 @@ final class AdminPage {
 		<div class="wrap">
 			<h1><?php echo \esc_html__( 'Verified Client IP', 'verified-client-ip' ); ?></h1>
 
-			<?php
-			if ( \function_exists( 'settings_errors' ) ) {
-				\settings_errors( 'vcip_settings' );
-			}
-			?>
-
 			<nav class="nav-tab-wrapper">
 				<a href="?page=<?php echo self::MENU_SLUG; ?>&tab=settings"
 					class="nav-tab <?php echo 'settings' === $active_tab ? 'nav-tab-active' : ''; ?>">
@@ -136,10 +130,16 @@ final class AdminPage {
 					class="nav-tab <?php echo 'diagnostics' === $active_tab ? 'nav-tab-active' : ''; ?>">
 					<?php echo \esc_html__( 'Diagnostics', 'verified-client-ip' ); ?>
 				</a>
+				<a href="?page=<?php echo self::MENU_SLUG; ?>&tab=user-guide"
+					class="nav-tab <?php echo 'user-guide' === $active_tab ? 'nav-tab-active' : ''; ?>">
+					<?php echo \esc_html__( 'User Guide', 'verified-client-ip' ); ?>
+				</a>
 			</nav>
-
+	
 			<?php if ( 'diagnostics' === $active_tab ) : ?>
 				<?php self::render_diagnostics_tab(); ?>
+			<?php elseif ( 'user-guide' === $active_tab ) : ?>
+				<?php self::render_user_guide_tab(); ?>
 			<?php else : ?>
 
 			<form method="post" action="">
@@ -239,7 +239,7 @@ final class AdminPage {
 			<?php endif; ?>
 		</div>
 
-		<?php if ( 'diagnostics' !== $active_tab ) : ?>
+		<?php if ( 'settings' === $active_tab ) : ?>
 			<?php self::render_inline_script(); ?>
 		<?php endif; ?>
 		<?php
@@ -253,23 +253,27 @@ final class AdminPage {
 	 * Render a single scheme configuration panel.
 	 */
 	private static function render_scheme_panel( Scheme $scheme, int $index ): void {
-		$prefix = "vcip_schemes[{$index}]";
+		$prefix    = "vcip_schemes[{$index}]";
+		$header_bg = $scheme->enabled ? 'background-color:#f0f6fc;' : '';
 		?>
 		<div class="vcip-scheme-panel postbox" data-index="<?php echo $index; ?>">
-			<div class="postbox-header">
+			<div class="postbox-header" style="<?php echo \esc_attr( $header_bg ); ?>">
 				<h3 class="hndle">
 					<span class="vcip-scheme-name"><?php echo \esc_html( $scheme->name ? $scheme->name : __( 'New Scheme', 'verified-client-ip' ) ); ?></span>
-					<?php if ( ! $scheme->enabled ) : ?>
-						<span class="vcip-scheme-badge" style="color:#999;font-weight:normal;margin-left:8px;">(<?php echo \esc_html__( 'disabled', 'verified-client-ip' ); ?>)</span>
-					<?php endif; ?>
 				</h3>
-				<div class="vcip-scheme-controls" style="position:absolute;right:10px;top:6px;">
+				<div class="vcip-scheme-controls" style="display:flex;align-items:center;gap:0.375rem;margin-left:auto;padding-right:0.625rem;">
+					<label style="display:flex;align-items:center;gap:0.25rem;font-weight:normal;cursor:pointer;padding-right:0.625rem;">
+						<input type="hidden" name="<?php echo \esc_attr( $prefix ); ?>[enabled]" value="0">
+						<input type="checkbox" name="<?php echo \esc_attr( $prefix ); ?>[enabled]" value="1"
+							class="vcip-enabled-checkbox"
+							<?php echo $scheme->enabled ? 'checked' : ''; ?>>
+						<?php echo \esc_html__( 'Enabled', 'verified-client-ip' ); ?>
+					</label>
 					<button type="button" class="button button-small vcip-move-up" title="<?php echo \esc_attr__( 'Move up', 'verified-client-ip' ); ?>">&uarr;</button>
 					<button type="button" class="button button-small vcip-move-down" title="<?php echo \esc_attr__( 'Move down', 'verified-client-ip' ); ?>">&darr;</button>
-					<button type="button" class="button button-small vcip-delete-scheme" title="<?php echo \esc_attr__( 'Delete', 'verified-client-ip' ); ?>">&times;</button>
 				</div>
 			</div>
-			<div class="inside">
+			<div class="inside" style="display:none;">
 				<table class="form-table" role="presentation">
 					<tr>
 						<th scope="row">
@@ -280,14 +284,6 @@ final class AdminPage {
 									value="<?php echo \esc_attr( $scheme->name ); ?>"
 									class="regular-text vcip-scheme-name-input"
 									maxlength="<?php echo Settings::SCHEME_NAME_MAX_LENGTH; ?>">
-						</td>
-					</tr>
-					<tr>
-						<th scope="row"><?php echo \esc_html__( 'Enabled', 'verified-client-ip' ); ?></th>
-						<td>
-							<input type="hidden" name="<?php echo \esc_attr( $prefix ); ?>[enabled]" value="0">
-							<input type="checkbox" name="<?php echo \esc_attr( $prefix ); ?>[enabled]" value="1"
-								<?php echo $scheme->enabled ? 'checked' : ''; ?>>
 						</td>
 					</tr>
 					<tr>
@@ -339,6 +335,12 @@ final class AdminPage {
 						</td>
 					</tr>
 				</table>
+				<p>
+						<button type="button" class="button-link button-link-delete vcip-delete-scheme"
+								title="<?php echo \esc_attr__( 'Delete this scheme', 'verified-client-ip' ); ?>">
+							<?php echo \esc_html__( 'Delete Scheme', 'verified-client-ip' ); ?>
+						</button>
+					</p>
 			</div>
 		</div>
 		<?php
@@ -371,13 +373,25 @@ final class AdminPage {
 				reindex();
 			});
 
+			// Toggle collapse/expand on header click (but not on controls)
+			container.addEventListener('click', function (e) {
+				var header = e.target.closest('.postbox-header');
+				if (!header) return;
+				// Don't toggle if clicking a button, checkbox, or label inside controls
+				if (e.target.closest('.vcip-scheme-controls')) return;
+	
+				var panel = header.closest('.vcip-scheme-panel');
+				var inside = panel.querySelector('.inside');
+				inside.style.display = inside.style.display === 'none' ? '' : 'none';
+			});
+	
 			// Delegate move / delete
 			container.addEventListener('click', function (e) {
 				var btn = e.target.closest('button');
 				if (!btn) return;
-
+	
 				var panel = btn.closest('.vcip-scheme-panel');
-
+	
 				if (btn.classList.contains('vcip-move-up') && panel.previousElementSibling) {
 					container.insertBefore(panel, panel.previousElementSibling);
 					reindex();
@@ -391,7 +405,17 @@ final class AdminPage {
 					}
 				}
 			});
-
+	
+			// Enabled checkbox: update header background
+			container.addEventListener('change', function (e) {
+				if (e.target.classList.contains('vcip-enabled-checkbox')) {
+					var header = e.target.closest('.postbox-header');
+					if (header) {
+						header.style.backgroundColor = e.target.checked ? '#f0f6fc' : '';
+					}
+				}
+			});
+	
 			// Update live panel title
 			container.addEventListener('input', function (e) {
 				if (e.target.classList.contains('vcip-scheme-name-input')) {
@@ -400,7 +424,7 @@ final class AdminPage {
 					title.textContent = e.target.value || <?php echo \wp_json_encode( __( 'New Scheme', 'verified-client-ip' ) ); ?>;
 				}
 			});
-
+	
 			function reindex() {
 				var panels = container.querySelectorAll('.vcip-scheme-panel');
 				panels.forEach(function (panel, i) {
@@ -411,13 +435,14 @@ final class AdminPage {
 					});
 				});
 			}
-		})();
-		</script>
-		<style>
-			.vcip-scheme-panel { position: relative; margin-bottom: 12px; }
-			.vcip-scheme-panel .postbox-header { display: flex; align-items: center; }
-			.vcip-scheme-controls { display: flex; gap: 4px; }
-		</style>
+			})();
+			</script>
+			<style>
+				.vcip-scheme-panel { position: relative; margin-bottom: 0.75rem; }
+				.vcip-scheme-panel .postbox-header { display: flex; align-items: center; cursor: pointer; }
+				.vcip-scheme-panel .postbox-header .hndle { padding-left: 0.75rem; }
+				.vcip-scheme-panel .postbox-header .vcip-scheme-controls { cursor: default; }
+			</style>
 		<?php
 	}
 
@@ -458,6 +483,14 @@ final class AdminPage {
 	 * @return array<string, mixed>
 	 */
 	public static function parse_form_input( array $post ): array {
+		// WordPress adds magic quotes to $_POST via wp_magic_quotes().
+		// Strip them before processing so that quotes and backslashes in
+		// user-entered text are not double-encoded on each save.
+		if ( \function_exists( 'wp_unslash' ) ) {
+			/** @var array<string, mixed> $post */
+			$post = \wp_unslash( $post );
+		}
+
 		$input = [
 			'enabled'       => ! empty( $post['vcip_enabled'] ),
 			'forward_limit' => $post['vcip_forward_limit'] ?? 1,
@@ -554,7 +587,7 @@ final class AdminPage {
 		?>
 		<h2><?php echo \esc_html__( 'Diagnostics', 'verified-client-ip' ); ?></h2>
 
-		<div class="notice notice-warning inline" style="margin:15px 0;">
+		<div class="notice notice-warning inline" style="margin:0.9375rem 0;">
 			<p>
 				<strong><?php echo \esc_html__( 'Privacy Notice:', 'verified-client-ip' ); ?></strong>
 				<?php echo \esc_html__( 'Diagnostic data contains IP addresses and HTTP headers, which may be considered personal data under GDPR and similar regulations. Clear diagnostics promptly after use.', 'verified-client-ip' ); ?>
@@ -622,6 +655,10 @@ final class AdminPage {
 						<?php echo \esc_html__( 'Clear Diagnostics', 'verified-client-ip' ); ?>
 					</button>
 				<?php endif; ?>
+	
+				<a href="<?php echo \esc_url( \remove_query_arg( 'vcip_diag_action' ) ); ?>" class="button">
+					<?php echo \esc_html__( 'Refresh', 'verified-client-ip' ); ?>
+				</a>
 			</p>
 		</form>
 
@@ -634,8 +671,9 @@ final class AdminPage {
 						<th><?php echo \esc_html__( 'Time', 'verified-client-ip' ); ?></th>
 						<th><?php echo \esc_html__( 'Method', 'verified-client-ip' ); ?></th>
 						<th><?php echo \esc_html__( 'URI', 'verified-client-ip' ); ?></th>
-						<th><?php echo \esc_html__( 'REMOTE_ADDR', 'verified-client-ip' ); ?></th>
+						<th><?php echo \esc_html__( 'Original IP', 'verified-client-ip' ); ?></th>
 						<th><?php echo \esc_html__( 'Resolved IP', 'verified-client-ip' ); ?></th>
+						<th><?php echo \esc_html__( 'Hops', 'verified-client-ip' ); ?></th>
 						<th><?php echo \esc_html__( 'Changed', 'verified-client-ip' ); ?></th>
 					</tr>
 				</thead>
@@ -646,12 +684,13 @@ final class AdminPage {
 							<td><?php echo \esc_html( $entry['timestamp'] ?? '' ); ?></td>
 							<td><?php echo \esc_html( $entry['method'] ?? '' ); ?></td>
 							<td><?php echo \esc_html( $entry['request_uri'] ?? '' ); ?></td>
-							<td><code><?php echo \esc_html( $entry['remote_addr'] ?? '' ); ?></code></td>
+							<td><code><?php echo \esc_html( $entry['original_ip'] ?? $entry['remote_addr'] ?? '' ); ?></code></td>
 							<td><code><?php echo \esc_html( $entry['resolved_ip'] ?? $entry['remote_addr'] ?? '' ); ?></code></td>
+							<td><?php echo \esc_html( (string) \max( 0, \count( $entry['steps'] ?? [] ) - 1 ) ); ?></td>
 							<td><?php echo ! empty( $entry['changed'] ) ? '&#10004;' : '—'; ?></td>
 						</tr>
 						<tr class="vcip-diag-detail" id="vcip-detail-<?php echo $i; ?>" style="display:none;">
-							<td colspan="7">
+							<td colspan="8">
 								<?php self::render_diagnostic_detail( $entry ); ?>
 							</td>
 						</tr>
@@ -681,17 +720,18 @@ final class AdminPage {
 	private static function render_diagnostic_detail( array $entry ): void {
 		// Step trace.
 		if ( ! empty( $entry['steps'] ) && \is_array( $entry['steps'] ) ) {
-			echo '<h4>' . \esc_html__( 'Algorithm Steps', 'verified-client-ip' ) . '</h4>';
+			echo '<h4>' . \esc_html__( 'Client IP calculation', 'verified-client-ip' ) . '</h4>';
 			echo '<ol>';
 			foreach ( $entry['steps'] as $step ) {
 				echo '<li>';
-				echo \esc_html( ( $step['description'] ?? $step['action'] ?? '' ) . ' — ' . ( $step['ip'] ?? '' ) );
+				echo \esc_html( ( $step['description'] ?? $step['action'] ?? '' ) );
 				if ( ! empty( $step['scheme'] ) ) {
 					echo ' <em>(' . \esc_html( $step['scheme'] ) . ')</em>';
 				}
 				echo '</li>';
 			}
 			echo '</ol>';
+			echo '<p>' . \esc_html__( 'Note: If initial REMOTE_ADDR is not as you expect, then it may already be resolved by Apache \'mod_remoteip\' or nginx \'set_real_ip_from\'. See the user guide for details.', 'verified-client-ip' ) . '</p>';
 		}
 
 		// Proto info.
@@ -702,13 +742,83 @@ final class AdminPage {
 
 		// All headers.
 		if ( ! empty( $entry['headers'] ) && \is_array( $entry['headers'] ) ) {
-			echo '<h4>' . \esc_html__( 'Headers', 'verified-client-ip' ) . '</h4>';
-			echo '<table class="widefat" style="max-width:800px;">';
+			echo '<h4>' . \esc_html__( 'Original Headers', 'verified-client-ip' ) . '</h4>';
+			echo '<table class="widefat" style="max-width:50rem;">';
 			foreach ( $entry['headers'] as $key => $value ) {
 				echo '<tr><td><code>' . \esc_html( (string) $key ) . '</code></td>';
 				echo '<td>' . \esc_html( (string) $value ) . '</td></tr>';
 			}
 			echo '</table>';
 		}
+	}
+
+	// ------------------------------------------------------------------
+	// User Guide tab
+	// ------------------------------------------------------------------
+
+	/**
+	 * Render the User Guide tab from the pre-built HTML file.
+	 */
+	private static function render_user_guide_tab(): void {
+		$plugin_file = \dirname( __DIR__ ) . '/verified-client-ip.php';
+		$plugin_uri  = '';
+		$version     = Plugin::version();
+
+		if ( \function_exists( 'get_plugin_data' ) && \file_exists( $plugin_file ) ) {
+			$data       = \get_plugin_data( $plugin_file, false, false );
+			$plugin_uri = $data['PluginURI'] ?? '';
+			if ( '' !== ( $data['Version'] ?? '' ) ) {
+				$version = $data['Version'];
+			}
+		}
+
+		echo '<div class="vcip-user-guide-tab" style="max-width:56.25rem;">';
+		echo '<p style="margin-top:1em;">';
+		// translators: %s is the plugin version number.
+		echo \esc_html( \sprintf( __( 'Version %s', 'verified-client-ip' ), $version ) );
+		if ( '' !== $plugin_uri ) {
+			echo ' &mdash; ';
+			echo \wp_kses(
+				\sprintf(
+					// translators: %1$s is the opening <a> tag, %2$s is the closing </a> tag.
+					__( 'For the latest version of the guide %1$svisit plugin site%2$s.', 'verified-client-ip' ),
+					'<a href="' . \esc_url( $plugin_uri ) . '" target="_blank" rel="noopener noreferrer">',
+					'</a>',
+				),
+				[
+					'a' => [
+						'href'   => [],
+						'target' => [],
+						'rel'    => [],
+					],
+				],
+			);
+		}
+		echo '</p>';
+
+		$html_file = \plugin_dir_path( __DIR__ ) . 'src/user-guide.html';
+
+		if ( ! \file_exists( $html_file ) ) {
+			echo '<div class="notice notice-warning"><p>';
+			echo \esc_html__( 'User guide not available. Run the build script to generate it.', 'verified-client-ip' );
+			echo '</p></div>';
+			echo '</div>';
+			return;
+		}
+
+		$html = \file_get_contents( $html_file );
+		if ( false === $html ) {
+			echo '<div class="notice notice-error"><p>';
+			echo \esc_html__( 'Could not read user guide file.', 'verified-client-ip' );
+			echo '</p></div>';
+			echo '</div>';
+			return;
+		}
+
+		// The HTML was generated from trusted source (docs/user-guide.md) at
+		// build time.  Output it directly inside a scoped wrapper.
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- trusted build-time HTML
+		echo $html;
+		echo '</div>';
 	}
 }

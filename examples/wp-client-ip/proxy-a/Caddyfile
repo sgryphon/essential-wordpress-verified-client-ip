@@ -1,0 +1,14 @@
+# Proxy A — RFC 7239 Forwarded → WordPress
+#
+# Listens on port 80, forwards to wordpress:80.
+# Adds a standard RFC 7239 Forwarded header.
+
+:80 {
+	reverse_proxy wordpress:80 {
+		# Caddy automatically adds X-Forwarded-For, X-Forwarded-Proto,
+		# X-Forwarded-Host.  We append to the RFC 7239 Forwarded header
+		# using +Forwarded so upstream entries from prior proxies are
+		# preserved (RFC 7239 §7.5 allows multiple Forwarded headers).
+		header_up +Forwarded "for={http.request.remote.host};proto={http.request.scheme};host={http.request.host}"
+	}
+}

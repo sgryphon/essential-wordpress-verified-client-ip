@@ -65,6 +65,9 @@ composer.lock
 # Build / packaging output
 /build/
 /dist/
+
+# Generated files (produced by build scripts)
+/src/user-guide.html
 *.zip
 
 # IDE / editor files

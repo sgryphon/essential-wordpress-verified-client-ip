@@ -176,7 +176,7 @@ final class Settings {
 				proxies: $private_proxies,
 				header: 'Forwarded',
 				token: 'for',
-				notes: 'Standard RFC 7239 Forwarded header using the "for" token.',
+				notes: 'Standard RFC 7239 Forwarded header using the \'for\' token.',
 			),
 			new Scheme(
 				name: 'X-Forwarded-For',

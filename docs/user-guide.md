@@ -70,10 +70,10 @@ Click **Add Scheme** at the bottom of the Schemes section. Fill in:
 
 1. Start with `REMOTE_ADDR` (the address your server sees).
 2. Check if it matches any trusted proxy in an enabled scheme.
-3. If it does, read the corresponding header and extract the next-rightmost
-   address from the chain.
+3. If it does, read the corresponding header and extract the next
+   (rightmost) address from the chain.
 4. Repeat (up to the Forward Limit).
-5. The first untrusted or malformed address is the verified client IP.
+5. The first untrusted address, or if the Forward Limit is reached, is the verified client IP.
 6. If `REMOTE_ADDR` is not a trusted proxy, the plugin does nothing.
 7. If all addresses are trusted, use the outermost (leftmost) address.
 
@@ -86,8 +86,7 @@ the internet.
 **Example**: If your stack is `Client → Cloudflare → Nginx → WordPress`,
 you have 2 proxies, so set Forward Limit to 2.
 
-Setting this too high gives attackers more header slots to spoof. Setting
-it too low means you'll resolve a proxy's IP instead of the client's.
+This is a second layer of defense, as even if an attacker works a way around the verification there is a limit on the number of accepted proxies. However note that setting it too low means you'll resolve a proxy's IP instead of the client's, so make sure it is enough to cover your longest proxy chain.
 
 ## Diagnostics
 
@@ -204,12 +203,6 @@ will resolve the next hop.
 
 However, the plugin's step trace in Diagnostics will start from the
 already-resolved address, so the full chain will not be visible.
-
-### Option 3 — Use the plugin as a must-use plugin
-
-Installing as a must-use plugin (see [Advanced Usage](#advanced-usage)) does
-not help with this issue — the web server module runs before PHP regardless of
-when the plugin loads.
 
 ## Troubleshooting
 

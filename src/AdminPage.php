@@ -269,8 +269,8 @@ final class AdminPage {
 				<h3 class="hndle">
 					<span class="vcip-scheme-name"><?php echo \esc_html( $scheme->name ? $scheme->name : __( 'New Scheme', 'verified-client-ip' ) ); ?></span>
 				</h3>
-				<div class="vcip-scheme-controls" style="display:flex;align-items:center;gap:6px;margin-left:auto;padding-right:10px;">
-					<label style="display:flex;align-items:center;gap:4px;font-weight:normal;cursor:pointer;">
+				<div class="vcip-scheme-controls" style="display:flex;align-items:center;gap:0.375rem;margin-left:auto;padding-right:0.625rem;">
+					<label style="display:flex;align-items:center;gap:0.25rem;font-weight:normal;cursor:pointer;padding-right:0.625rem;">
 						<input type="hidden" name="<?php echo \esc_attr( $prefix ); ?>[enabled]" value="0">
 						<input type="checkbox" name="<?php echo \esc_attr( $prefix ); ?>[enabled]" value="1"
 							class="vcip-enabled-checkbox"
@@ -446,9 +446,9 @@ final class AdminPage {
 			})();
 			</script>
 			<style>
-				.vcip-scheme-panel { position: relative; margin-bottom: 12px; }
+				.vcip-scheme-panel { position: relative; margin-bottom: 0.75rem; }
 				.vcip-scheme-panel .postbox-header { display: flex; align-items: center; cursor: pointer; }
-				.vcip-scheme-panel .postbox-header .hndle { padding-left: 12px; }
+				.vcip-scheme-panel .postbox-header .hndle { padding-left: 0.75rem; }
 				.vcip-scheme-panel .postbox-header .vcip-scheme-controls { cursor: default; }
 			</style>
 		<?php
@@ -595,7 +595,7 @@ final class AdminPage {
 		?>
 		<h2><?php echo \esc_html__( 'Diagnostics', 'verified-client-ip' ); ?></h2>
 
-		<div class="notice notice-warning inline" style="margin:15px 0;">
+		<div class="notice notice-warning inline" style="margin:0.9375rem 0;">
 			<p>
 				<strong><?php echo \esc_html__( 'Privacy Notice:', 'verified-client-ip' ); ?></strong>
 				<?php echo \esc_html__( 'Diagnostic data contains IP addresses and HTTP headers, which may be considered personal data under GDPR and similar regulations. Clear diagnostics promptly after use.', 'verified-client-ip' ); ?>
@@ -749,7 +749,7 @@ final class AdminPage {
 		// All headers.
 		if ( ! empty( $entry['headers'] ) && \is_array( $entry['headers'] ) ) {
 			echo '<h4>' . \esc_html__( 'Original Headers', 'verified-client-ip' ) . '</h4>';
-			echo '<table class="widefat" style="max-width:800px;">';
+			echo '<table class="widefat" style="max-width:50rem;">';
 			foreach ( $entry['headers'] as $key => $value ) {
 				echo '<tr><td><code>' . \esc_html( (string) $key ) . '</code></td>';
 				echo '<td>' . \esc_html( (string) $value ) . '</td></tr>';
@@ -778,7 +778,7 @@ final class AdminPage {
 			}
 		}
 
-		echo '<div class="vcip-user-guide-tab" style="max-width:900px;">';
+		echo '<div class="vcip-user-guide-tab" style="max-width:56.25rem;">';
 		echo '<p style="margin-top:1em;">';
 		// translators: %s is the plugin version number.
 		echo \esc_html( \sprintf( __( 'Version %s', 'verified-client-ip' ), $version ) );

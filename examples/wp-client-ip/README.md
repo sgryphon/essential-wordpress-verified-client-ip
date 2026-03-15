@@ -16,7 +16,7 @@ This will load the source code into the plugin directory, so changes to the sour
 
 Activate the plugin via the WordPress admin UI at http://localhost:8064/wp-admin/.
 
-The first time you run the example you will need to create a Wordpress site with an admin account (e.g. admin/P@ssw0rd).
+The first time you run the example you will need to create a WordPress site with an admin account (e.g. admin/P@ssw0rd).
 
 Once activated, to see the plugin in action, you can go to Settings > Verified Client IP, and then on the Diagnostics tab click Start Diagnostics.
 

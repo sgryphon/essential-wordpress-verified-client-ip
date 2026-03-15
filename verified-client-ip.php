@@ -1,10 +1,10 @@
 <?php
 
 /**
- * Plugin Name:       Verified Client IP
+ * Plugin Name:       Essential Verified Client IP
  * Plugin URI:        https://github.com/sgryphon/essential-wordpress-verified-client-ip
- * Description:       Determines the true client IP address by verifying Forwarded-For and similar headers, traversing only trusted proxy hops.
- * Version:           0.1.0
+ * Description:       Determines the true client IP by verifying Forwarded and similar headers, traversing only trusted proxy hops.
+ * Version:           1.0.0
  * Requires at least: 6.4
  * Requires PHP:      8.1
  * Author:            Sly Gryphon
@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Plugin version constant.
-define( 'VCIP_VERSION', '0.1.0' );
+define( 'VCIP_VERSION', '1.0.0' );
 
 // Plugin file constant.
 define( 'VCIP_PLUGIN_FILE', __FILE__ );

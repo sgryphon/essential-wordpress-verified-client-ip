@@ -164,12 +164,13 @@ services:
         ipv6_address: fd00:72:39:0:A200::162
 
   # -----------------------------------------------------------------
-  # noVNC Linux desktop for IPv6 browser testing
+  # noVNC Linux for IPv6 browser testing
   # -----------------------------------------------------------------
-  desktop:
-    image: docker.io/theasp/novnc:latest
+  test-browser:
+    image: lscr.io/linuxserver/firefox:latest
     ports:
-      - "8032:8080"
+      - "8032:3000"
+      - "8033:3001"
     environment:
       DISPLAY_WIDTH: 1280
       DISPLAY_HEIGHT: 720
@@ -177,6 +178,7 @@ services:
       default:
         ipv4_address: 10.72.39.32
         ipv6_address: fd00:72:39:0:2000::32
+    shm_size: "1gb"
 
 # -------------------------------------------------------------------
 # Network with IPv6 enabled

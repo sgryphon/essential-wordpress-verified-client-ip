@@ -766,8 +766,8 @@ final class AdminPage {
 
 		if ( \function_exists( 'get_plugin_data' ) && \file_exists( $plugin_file ) ) {
 			$data       = \get_plugin_data( $plugin_file, false, false );
-			$plugin_uri = $data['PluginURI'] ?? '';
-			if ( '' !== ( $data['Version'] ?? '' ) ) {
+			$plugin_uri = $data['PluginURI'];
+			if ( '' !== $data['Version'] ) {
 				$version = $data['Version'];
 			}
 		}

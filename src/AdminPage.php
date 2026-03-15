@@ -671,7 +671,7 @@ final class AdminPage {
 						<th><?php echo \esc_html__( 'Time', 'verified-client-ip' ); ?></th>
 						<th><?php echo \esc_html__( 'Method', 'verified-client-ip' ); ?></th>
 						<th><?php echo \esc_html__( 'URI', 'verified-client-ip' ); ?></th>
-						<th><?php echo \esc_html__( 'Original IP', 'verified-client-ip' ); ?></th>
+						<th><?php echo \esc_html__( 'Original REMOTE_ADDR', 'verified-client-ip' ); ?></th>
 						<th><?php echo \esc_html__( 'Resolved IP', 'verified-client-ip' ); ?></th>
 						<th><?php echo \esc_html__( 'Hops', 'verified-client-ip' ); ?></th>
 						<th><?php echo \esc_html__( 'Changed', 'verified-client-ip' ); ?></th>

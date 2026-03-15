@@ -33,6 +33,8 @@ Refresh and check the diagnostics to see how the verified client IP is resolved.
 | 8160      | Proxy B      | 10.72.39.160 | fd00:72:39:0:A000::160 | RFC 7239 `Forwarded` → Proxy A                  |
 | 8161      | Proxy XFF    | 10.72.39.161 | fd00:72:39:0:A100::161 | `X-Forwarded-For` → Proxy A → WordPress         |
 | 8162      | Proxy CF     | 10.72.39.162 | fd00:72:39:0:A200::162 | Cloudflare-sim (`CF-Connecting-IP`) → Proxy A   |
+| 8164      | Proxy 64     | 10.72.39.164 | fd00:72:39:0:A400::164 | IPv6→IPv4 converting → Proxy A (IPv4 upstream)  |
+| 8166      | Proxy 46     | 10.72.39.166 | fd00:72:39:0:A600::166 | IPv4→IPv6 converting → Proxy A (IPv6 upstream)  |
 | 8192      | Proxy C      | 10.72.39.192 | fd00:72:39:0:C000::192 | RFC 7239 `Forwarded` → Proxy B → Proxy A → WP   |
 | 8032/8033 | Test Browser | 10.72.39.32  | fd00:72:39:0:2000::32  | Firefox running in noVNC for IPv6 browser tests |
 
@@ -57,6 +59,16 @@ Client → Proxy XFF (:8161) → Proxy A (:8128) → WordPress (:8064)
 
 Uses the `X-Forwarded-For` header. Configure the X-Forwarded-For scheme
 with Forward Limit 2.
+
+### Protocol-translating proxies (ports 8164, 8166)
+
+```
+Client → Proxy 64 (:8164) → Proxy A (:8128, IPv4 upstream) → WordPress
+Client → Proxy 46 (:8166) → Proxy A (:8128, IPv6 upstream) → WordPress
+```
+
+These proxies listen on both IPv4 and IPv6 but always forward to a single
+fixed-protocol upstream, allowing testing of protocol conversion scenarios:
 
 ### Cloudflare simulation (port 8162)
 
@@ -100,7 +112,14 @@ To test IPv6 from a browser, use Firefox noVNC at https://localhost:8033. This a
 with IPv6 connections to containers. In the browser you can connect direct to the IPv6 address,
 `http://[fd00:72:39:0:4000::64]`, or via one of the proxies, `http://[fd00:72:39:0:C000::192]`.
 
-Client IP calcuation will include IPv6 addresses, e.g. resolved IP `fd00:72:39:0:2000::32`.
+The protocol translating proxies can also be used to test protocol conversion scenarios, resolving
+the correct client IP, even when the initial REMOTE_ADDR (closest proxy) is a different protocol:
+
+| URL                               | Proxy    | Original REMOTE_ADDR     | Client IP               |
+| --------------------------------- | -------- | ------------------------ | ----------------------- |
+| `http://[fd00:72:39:0:A000::160]` | Proxy B  | `fd00:72:39:0:A000::128` | `fd00:72:39:0:2000::32` |
+| `http://10.72.39.166`             | Proxy 46 | `fd00:72:39:0:A000::128` | `10.72.39.32`           |
+| `http://[fd00:72:39:0:A400::164]` | Proxy 64 | `10.72.39.128`           | `fd00:72:39:0:2000::32` |
 
 ## Apache `mod_remoteip` and this plugin
 

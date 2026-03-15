@@ -16,6 +16,8 @@
 #   8160  — Proxy B (RFC 7239 Forwarded) → Proxy A
 #   8161  — X-Forwarded-For proxy → Proxy A
 #   8162  — Cloudflare-sim proxy → Proxy A
+#   8164  — Proxy 64 (IPv6→IPv4 converting, always IPv4 upstream) → Proxy A
+#   8166  — Proxy 46 (IPv4→IPv6 converting, always IPv6 upstream) → Proxy A
 #   8192  — Proxy C (RFC 7239 Forwarded) → Proxy B
 #   8032  — noVNC Linux desktop (for IPv6 browser testing)
 #
@@ -162,6 +164,35 @@ services:
       default:
         ipv4_address: 10.72.39.162
         ipv6_address: fd00:72:39:0:A200::162
+
+  # -----------------------------------------------------------------
+  # Protocol-translating proxies (ports 8164, 8166)
+  # -----------------------------------------------------------------
+  proxy-64:
+    image: docker.io/library/caddy:2-alpine
+    depends_on:
+      - proxy-a
+    ports:
+      - "8164:80"
+    volumes:
+      - ./proxy-64/Caddyfile:/etc/caddy/Caddyfile:ro
+    networks:
+      default:
+        ipv4_address: 10.72.39.164
+        ipv6_address: fd00:72:39:0:A400::164
+
+  proxy-46:
+    image: docker.io/library/caddy:2-alpine
+    depends_on:
+      - proxy-a
+    ports:
+      - "8166:80"
+    volumes:
+      - ./proxy-46/Caddyfile:/etc/caddy/Caddyfile:ro
+    networks:
+      default:
+        ipv4_address: 10.72.39.166
+        ipv6_address: fd00:72:39:0:A600::166
 
   # -----------------------------------------------------------------
   # noVNC Linux for IPv6 browser testing

@@ -169,7 +169,7 @@ become a no-op.
 
 ### How to tell if this is happening
 
-In the Diagnostics tab, if the **Original IP** column shows the visitor's IP
+In the Diagnostics tab, if the **Original REMOTE_ADDR** column shows the visitor's IP
 (rather than the direct upstream proxy's IP) even before the plugin has
 resolved anything, a web-server-level module is pre-resolving the address.
 

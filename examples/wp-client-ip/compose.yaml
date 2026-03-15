@@ -19,7 +19,7 @@
 #   8164  — Proxy 64 (IPv6→IPv4 converting, always IPv4 upstream) → Proxy A
 #   8166  — Proxy 46 (IPv4→IPv6 converting, always IPv6 upstream) → Proxy A
 #   8192  — Proxy C (RFC 7239 Forwarded) → Proxy B
-#   8032  — noVNC Linux desktop (for IPv6 browser testing)
+#   8032/8033  — noVNC Firefox browser (for IPv6 testing)
 #
 # Fixed IP addresses:
 #   10.72.39.64   / fd00:72:39:0:4000::64   — WordPress
@@ -28,7 +28,7 @@
 #   10.72.39.161  / fd00:72:39:0:A100::161  — Proxy XFF
 #   10.72.39.162  / fd00:72:39:0:A200::162  — Proxy CF
 #   10.72.39.192  / fd00:72:39:0:C000::192  — Proxy C
-#   10.72.39.32   / fd00:72:39:0:2000::32   — noVNC desktop
+#   10.72.39.32   / fd00:72:39:0:2000::32   — noVNC Firefox test browser
 #
 # The address layout allows testing with different CIDR ranges:
 #   10.72.39.128/25 or fd00:72:39:0:8000::/65 — all proxies

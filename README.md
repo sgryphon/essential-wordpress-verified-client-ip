@@ -64,7 +64,7 @@ at the first untrusted hop, which is the true client IP.
 ![Verified Client IP diagnostics](docs/screen-diagnostics.png)
 
 **IPv6 and protocol translation**
-![IPv6 and protoco translation diagnostics](docs/screen-diagnostics-ipv6.png)
+![IPv6 and protocol translation diagnostics](docs/screen-diagnostics-ipv6.png)
 
 **Diagnostics detail**
 ![Verified Client IP diagnostics detail](docs/screen-diagnostics-detail.png)

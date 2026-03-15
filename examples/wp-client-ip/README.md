@@ -117,8 +117,8 @@ the correct client IP, even when the initial REMOTE_ADDR (closest proxy) is a di
 
 | URL                               | Proxy    | Original REMOTE_ADDR     | Client IP               |
 | --------------------------------- | -------- | ------------------------ | ----------------------- |
-| `http://[fd00:72:39:0:A000::160]` | Proxy B  | `fd00:72:39:0:A000::128` | `fd00:72:39:0:2000::32` |
-| `http://10.72.39.166`             | Proxy 46 | `fd00:72:39:0:A000::128` | `10.72.39.32`           |
+| `http://[fd00:72:39:0:A000::160]` | Proxy B  | `fd00:72:39:0:8000::128` | `fd00:72:39:0:2000::32` |
+| `http://10.72.39.166`             | Proxy 46 | `fd00:72:39:0:8000::128` | `10.72.39.32`           |
 | `http://[fd00:72:39:0:A400::164]` | Proxy 64 | `10.72.39.128`           | `fd00:72:39:0:2000::32` |
 
 ## Apache `mod_remoteip` and this plugin

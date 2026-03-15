@@ -763,15 +763,52 @@ final class AdminPage {
 	// ------------------------------------------------------------------
 
 	/**
-		* Render the User Guide tab from the pre-built HTML file.
-		*/
+	 * Render the User Guide tab from the pre-built HTML file.
+	 */
 	private static function render_user_guide_tab(): void {
+		$plugin_file = \dirname( __DIR__ ) . '/verified-client-ip.php';
+		$plugin_uri  = '';
+		$version     = Plugin::version();
+
+		if ( \function_exists( 'get_plugin_data' ) && \file_exists( $plugin_file ) ) {
+			$data       = \get_plugin_data( $plugin_file, false, false );
+			$plugin_uri = $data['PluginURI'] ?? '';
+			if ( '' !== ( $data['Version'] ?? '' ) ) {
+				$version = $data['Version'];
+			}
+		}
+
+		echo '<div class="vcip-user-guide-tab" style="max-width:900px;">';
+		echo '<p style="margin-top:1em;">';
+		// translators: %s is the plugin version number.
+		echo \esc_html( \sprintf( __( 'Version %s', 'verified-client-ip' ), $version ) );
+		if ( '' !== $plugin_uri ) {
+			echo ' &mdash; ';
+			echo \wp_kses(
+				\sprintf(
+					// translators: %1$s is the opening <a> tag, %2$s is the closing </a> tag.
+					__( 'For the latest version of the guide %1$svisit plugin site%2$s.', 'verified-client-ip' ),
+					'<a href="' . \esc_url( $plugin_uri ) . '" target="_blank" rel="noopener noreferrer">',
+					'</a>',
+				),
+				[
+					'a' => [
+						'href'   => [],
+						'target' => [],
+						'rel'    => [],
+					],
+				],
+			);
+		}
+		echo '</p>';
+
 		$html_file = \plugin_dir_path( __DIR__ ) . 'src/user-guide.html';
 
 		if ( ! \file_exists( $html_file ) ) {
 			echo '<div class="notice notice-warning"><p>';
 			echo \esc_html__( 'User guide not available. Run the build script to generate it.', 'verified-client-ip' );
 			echo '</p></div>';
+			echo '</div>';
 			return;
 		}
 
@@ -780,12 +817,12 @@ final class AdminPage {
 			echo '<div class="notice notice-error"><p>';
 			echo \esc_html__( 'Could not read user guide file.', 'verified-client-ip' );
 			echo '</p></div>';
+			echo '</div>';
 			return;
 		}
 
 		// The HTML was generated from trusted source (docs/user-guide.md) at
 		// build time.  Output it directly inside a scoped wrapper.
-		echo '<div class="vcip-user-guide-tab" style="max-width:900px;">';
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- trusted build-time HTML
 		echo $html;
 		echo '</div>';

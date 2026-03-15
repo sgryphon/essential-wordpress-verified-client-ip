@@ -4,21 +4,15 @@ This directory contains proxy configurations and the Docker Compose file used to
 
 ## Quick Start
 
-First build the plugin, e.g. use the development container:
-
-```bash
-./build.sh
-```
-
-This will publish the component to `build/verified-client-ip/`.
-
-Then on your host run the compose file to start the environment:
+Run the compose file on your host to start the environment:
 
 ```powershell
 # Start all services from the examples folder (Podman preferred)
 cd examples/wp-client-ip
 podman compose up -d
 ```
+
+This will load the source code into the plugin directory, so changes to the source code will be reflected immediately.
 
 Activate the plugin via the WordPress admin UI at http://localhost:8064/wp-admin/.
 
@@ -87,6 +81,16 @@ in the plugin settings:
 
 To test multi-hop resolution, set the trusted proxy range to cover the proxies
 you want to traverse and adjust the Forward Limit accordingly.
+
+## Build package testing
+
+You can use the development container to build the package, which will publish to `build/verified-client-ip/`.
+
+```bash
+./build.sh
+```
+
+You can then change the `compose.yaml` file to mount the built plugin instead of the source code.
 
 ## IPv6 Testing
 

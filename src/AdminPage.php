@@ -121,14 +121,6 @@ final class AdminPage {
 		<div class="wrap">
 			<h1><?php echo \esc_html__( 'Verified Client IP', 'verified-client-ip' ); ?></h1>
 
-			<?php
-			if ( \function_exists( 'settings_errors' ) ) {
-				// Pass true for $sanitize to deduplicate messages that may appear
-				// in both the transient and the in-memory global.
-				\settings_errors( 'vcip_settings', false, true );
-			}
-			?>
-
 			<nav class="nav-tab-wrapper">
 				<a href="?page=<?php echo self::MENU_SLUG; ?>&tab=settings"
 					class="nav-tab <?php echo 'settings' === $active_tab ? 'nav-tab-active' : ''; ?>">

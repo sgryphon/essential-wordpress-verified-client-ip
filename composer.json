@@ -29,7 +29,7 @@
     },
     "scripts": {
         "test": "phpunit",
-        "analyse": "phpstan analyse",
+        "analyse": "phpstan analyse --memory-limit=512M",
         "format": "phpcbf",
         "format-check": "phpcs",
         "build-user-guide": "php bin/build-user-guide.php",

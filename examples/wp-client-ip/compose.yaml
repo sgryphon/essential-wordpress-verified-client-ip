@@ -16,8 +16,10 @@
 #   8160  — Proxy B (RFC 7239 Forwarded) → Proxy A
 #   8161  — X-Forwarded-For proxy → Proxy A
 #   8162  — Cloudflare-sim proxy → Proxy A
+#   8164  — Proxy 64 (IPv6→IPv4 converting, always IPv4 upstream) → Proxy A
+#   8166  — Proxy 46 (IPv4→IPv6 converting, always IPv6 upstream) → Proxy A
 #   8192  — Proxy C (RFC 7239 Forwarded) → Proxy B
-#   8032  — noVNC Linux desktop (for IPv6 browser testing)
+#   8032/8033  — noVNC Firefox browser (for IPv6 testing)
 #
 # Fixed IP addresses:
 #   10.72.39.64   / fd00:72:39:0:4000::64   — WordPress
@@ -26,7 +28,7 @@
 #   10.72.39.161  / fd00:72:39:0:A100::161  — Proxy XFF
 #   10.72.39.162  / fd00:72:39:0:A200::162  — Proxy CF
 #   10.72.39.192  / fd00:72:39:0:C000::192  — Proxy C
-#   10.72.39.32   / fd00:72:39:0:2000::32   — noVNC desktop
+#   10.72.39.32   / fd00:72:39:0:2000::32   — noVNC Firefox test browser
 #
 # The address layout allows testing with different CIDR ranges:
 #   10.72.39.128/25 or fd00:72:39:0:8000::/65 — all proxies
@@ -164,12 +166,42 @@ services:
         ipv6_address: fd00:72:39:0:A200::162
 
   # -----------------------------------------------------------------
-  # noVNC Linux desktop for IPv6 browser testing
+  # Protocol-translating proxies (ports 8164, 8166)
   # -----------------------------------------------------------------
-  desktop:
-    image: docker.io/theasp/novnc:latest
+  proxy-64:
+    image: docker.io/library/caddy:2-alpine
+    depends_on:
+      - proxy-a
     ports:
-      - "8032:8080"
+      - "8164:80"
+    volumes:
+      - ./proxy-64/Caddyfile:/etc/caddy/Caddyfile:ro
+    networks:
+      default:
+        ipv4_address: 10.72.39.164
+        ipv6_address: fd00:72:39:0:A400::164
+
+  proxy-46:
+    image: docker.io/library/caddy:2-alpine
+    depends_on:
+      - proxy-a
+    ports:
+      - "8166:80"
+    volumes:
+      - ./proxy-46/Caddyfile:/etc/caddy/Caddyfile:ro
+    networks:
+      default:
+        ipv4_address: 10.72.39.166
+        ipv6_address: fd00:72:39:0:A600::166
+
+  # -----------------------------------------------------------------
+  # noVNC Linux for IPv6 browser testing
+  # -----------------------------------------------------------------
+  test-browser:
+    image: lscr.io/linuxserver/firefox:latest
+    ports:
+      - "8032:3000"
+      - "8033:3001"
     environment:
       DISPLAY_WIDTH: 1280
       DISPLAY_HEIGHT: 720
@@ -177,6 +209,7 @@ services:
       default:
         ipv4_address: 10.72.39.32
         ipv6_address: fd00:72:39:0:2000::32
+    shm_size: "1gb"
 
 # -------------------------------------------------------------------
 # Network with IPv6 enabled

@@ -26,15 +26,17 @@ Refresh and check the diagnostics to see how the verified client IP is resolved.
 
 ## Services & Ports
 
-| Port | Service       | IPv4         | IPv6                   | Description                                      |
-| ---- | ------------- | ------------ | ---------------------- | ------------------------------------------------ |
-| 8064 | WordPress     | 10.72.39.64  | fd00:72:39:0:4000::64  | Direct access (no proxy)                         |
-| 8128 | Proxy A       | 10.72.39.128 | fd00:72:39:0:8000::128 | RFC 7239 `Forwarded` → WordPress                 |
-| 8160 | Proxy B       | 10.72.39.160 | fd00:72:39:0:A000::160 | RFC 7239 `Forwarded` → Proxy A                   |
-| 8161 | Proxy XFF     | 10.72.39.161 | fd00:72:39:0:A100::161 | `X-Forwarded-For` → Proxy A → WordPress          |
-| 8162 | Proxy CF      | 10.72.39.162 | fd00:72:39:0:A200::162 | Cloudflare-sim (`CF-Connecting-IP`) → Proxy A    |
-| 8192 | Proxy C       | 10.72.39.192 | fd00:72:39:0:C000::192 | RFC 7239 `Forwarded` → Proxy B → Proxy A → WP    |
-| 8032 | noVNC Desktop | 10.72.39.32  | fd00:72:39:0:2000::32  | Lightweight Linux desktop for IPv6 browser tests |
+| Port      | Service      | IPv4         | IPv6                   | Description                                     |
+| --------- | ------------ | ------------ | ---------------------- | ----------------------------------------------- |
+| 8064      | WordPress    | 10.72.39.64  | fd00:72:39:0:4000::64  | Direct access (no proxy)                        |
+| 8128      | Proxy A      | 10.72.39.128 | fd00:72:39:0:8000::128 | RFC 7239 `Forwarded` → WordPress                |
+| 8160      | Proxy B      | 10.72.39.160 | fd00:72:39:0:A000::160 | RFC 7239 `Forwarded` → Proxy A                  |
+| 8161      | Proxy XFF    | 10.72.39.161 | fd00:72:39:0:A100::161 | `X-Forwarded-For` → Proxy A → WordPress         |
+| 8162      | Proxy CF     | 10.72.39.162 | fd00:72:39:0:A200::162 | Cloudflare-sim (`CF-Connecting-IP`) → Proxy A   |
+| 8164      | Proxy 64     | 10.72.39.164 | fd00:72:39:0:A400::164 | IPv6→IPv4 converting → Proxy A (IPv4 upstream)  |
+| 8166      | Proxy 46     | 10.72.39.166 | fd00:72:39:0:A600::166 | IPv4→IPv6 converting → Proxy A (IPv6 upstream)  |
+| 8192      | Proxy C      | 10.72.39.192 | fd00:72:39:0:C000::192 | RFC 7239 `Forwarded` → Proxy B → Proxy A → WP   |
+| 8032/8033 | Test Browser | 10.72.39.32  | fd00:72:39:0:2000::32  | Firefox running in noVNC for IPv6 browser tests |
 
 Default connections come in from `10.72.39.1`.
 
@@ -57,6 +59,16 @@ Client → Proxy XFF (:8161) → Proxy A (:8128) → WordPress (:8064)
 
 Uses the `X-Forwarded-For` header. Configure the X-Forwarded-For scheme
 with Forward Limit 2.
+
+### Protocol-translating proxies (ports 8164, 8166)
+
+```
+Client → Proxy 64 (:8164) → Proxy A (:8128, IPv4 upstream) → WordPress
+Client → Proxy 46 (:8166) → Proxy A (:8128, IPv6 upstream) → WordPress
+```
+
+These proxies listen on both IPv4 and IPv6 but always forward to a single
+fixed-protocol upstream, allowing testing of protocol conversion scenarios:
 
 ### Cloudflare simulation (port 8162)
 
@@ -94,13 +106,20 @@ You can then change the `compose.yaml` file to mount the built plugin instead of
 
 ## IPv6 Testing
 
-The compose network has IPv6 enabled (`fd00:72:39::/48`). Containers
-communicate over both IPv4 and IPv6.
+The compose network has IPv6 enabled (`fd00:72:39::/48`). Containers communicate over both IPv4 and IPv6.
 
-To test IPv6 from a browser, use the noVNC desktop at http://localhost:8032.
-This avoids Windows limitations with IPv6 connections to containers. Open
-Firefox inside the desktop and navigate to `http://wordpress/` or use the
-IPv6 address directly.
+To test IPv6 from a browser, use Firefox noVNC at https://localhost:8033. This avoids Windows limitations
+with IPv6 connections to containers. In the browser you can connect direct to the IPv6 address,
+`http://[fd00:72:39:0:4000::64]`, or via one of the proxies, `http://[fd00:72:39:0:C000::192]`.
+
+The protocol translating proxies can also be used to test protocol conversion scenarios, resolving
+the correct client IP, even when the initial REMOTE_ADDR (closest proxy) is a different protocol:
+
+| URL                               | Proxy    | Original REMOTE_ADDR     | Client IP               |
+| --------------------------------- | -------- | ------------------------ | ----------------------- |
+| `http://[fd00:72:39:0:A000::160]` | Proxy B  | `fd00:72:39:0:8000::128` | `fd00:72:39:0:2000::32` |
+| `http://10.72.39.166`             | Proxy 46 | `fd00:72:39:0:8000::128` | `10.72.39.32`           |
+| `http://[fd00:72:39:0:A400::164]` | Proxy 64 | `10.72.39.128`           | `fd00:72:39:0:2000::32` |
 
 ## Apache `mod_remoteip` and this plugin
 

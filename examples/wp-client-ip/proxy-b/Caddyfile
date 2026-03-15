@@ -1,11 +1,17 @@
 # Proxy B — RFC 7239 Forwarded → Proxy A
 #
-# Listens on port 80, forwards to proxy-a:80.
-# Adds a standard RFC 7239 Forwarded header.
+# Listens on port 80 (all interfaces).
+# IPv4 clients are forwarded to Proxy A's IPv4 address; all other clients
+# (IPv6) are forwarded to Proxy A's IPv6 address, preserving the protocol.
 
 :80 {
-	reverse_proxy proxy-a:80 {
+	@ipv4 remote_ip 0.0.0.0/0
+	reverse_proxy @ipv4 10.72.39.128:80 {
 		# Append this proxy's entry; preserve any Forwarded headers from upstream.
+		header_up +Forwarded "for={http.request.remote.host};proto={http.request.scheme};host={http.request.host}"
+	}
+
+	reverse_proxy [fd00:72:39:0:8000::128]:80 {
 		header_up +Forwarded "for={http.request.remote.host};proto={http.request.scheme};host={http.request.host}"
 	}
 }

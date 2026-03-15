@@ -1,0 +1,16 @@
+# Proxy 64 — Protocol-translating proxy → Proxy A (IPv4 upstream)
+#
+# Listens on port 80 on both IPv4 (10.72.39.164) and IPv6 ([fd00:72:39:0:A400::164]).
+# Always forwards to Proxy A's IPv4 address regardless of the incoming protocol.
+#
+# Use case: test IPv6-to-IPv4 conversion.
+#   - Connect via IPv6: http://[fd00:72:39:0:A400::164]/
+#     The request arrives over IPv6 but is forwarded to Proxy A over IPv4.
+#     The Forwarded header will show the IPv6 client address, but REMOTE_ADDR
+#     at WordPress will be Proxy A's IPv4 address (10.72.39.128).
+
+:80 {
+	reverse_proxy 10.72.39.128:80 {
+		header_up +Forwarded "for={http.request.remote.host};proto={http.request.scheme};host={http.request.host}"
+	}
+}

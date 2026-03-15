@@ -185,7 +185,7 @@ networks:
     ipam:
       config:
         - subnet: 10.72.39.0/24
-        - subnet: fd00:72:39::/48
+        - subnet: fd00:72:39::/64
 
 volumes:
   db_data:

@@ -57,22 +57,22 @@ at the first untrusted hop, which is the true client IP.
 ### Screenshots
 
 **Main settings**
-![Verified Client IP main settings](docs/screen-verified-client-ip-settings.png)
+![Verified Client IP main settings](docs/screenshot-1-verified-client-ip-settings.png)
 
 **Settings scheme detail**
-![Verified Client IP scheme settings](docs/screen-settings-detail.png)
+![Verified Client IP scheme settings](docs/screenshot-2-settings-detail.png)
 
 **Diagnostics**
-![Verified Client IP diagnostics](docs/screen-diagnostics.png)
+![Verified Client IP diagnostics](docs/screenshot-3-diagnostics.png)
 
 **IPv6 and protocol translation**
-![IPv6 and protocol translation diagnostics](docs/screen-diagnostics-ipv6.png)
+![IPv6 and protocol translation diagnostics](docs/screenshot-4-diagnostics-ipv6.png)
 
 **Diagnostics detail**
-![Verified Client IP diagnostics detail](docs/screen-diagnostics-detail.png)
+![Verified Client IP diagnostics detail](docs/screenshot-5-diagnostics-detail.png)
 
 **Comments with verified client IP**
-![Comments with verified client IP](docs/screen-comments-with-verified-ip.png)
+![Comments with verified client IP](docs/screenshot-6-comments-with-verified-ip.png)
 
 ## Compatibility Note
 

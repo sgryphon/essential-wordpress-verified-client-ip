@@ -32,16 +32,16 @@ function vcip_uninstall_site(): void {
 
 // Multisite: iterate all sites.
 if ( is_multisite() ) {
-	/** @var array<int, \WP_Site> $sites */
-	$sites = get_sites(
+	/** @var array<int, \WP_Site> $vcip_sites */
+	$vcip_sites = get_sites(
 		[
 			'fields' => 'ids',
 			'number' => 0,
 		]
 	);
 
-	foreach ( $sites as $site_id ) {
-		switch_to_blog( (int) $site_id );
+	foreach ( $vcip_sites as $vcip_site_id ) {
+		switch_to_blog( (int) $vcip_site_id );
 		vcip_uninstall_site();
 		restore_current_blog();
 	}

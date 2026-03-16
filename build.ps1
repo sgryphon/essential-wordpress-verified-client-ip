@@ -29,7 +29,7 @@ Copy-Item -Path 'verified-client-ip.php' -Destination $DistDir
 Copy-Item -Path 'uninstall.php' -Destination $DistDir
 Copy-Item -Path 'composer.json' -Destination $DistDir
 Copy-Item -Path 'LICENSE' -Destination $DistDir
-Copy-Item -Path 'README.md' -Destination $DistDir
+Copy-Item -Path 'reame.txt' -Destination $DistDir
 Copy-Item -Path 'src\user-guide.html' -Destination (Join-Path $DistDir 'src')
 
 Write-Host '==> Creating zip...'

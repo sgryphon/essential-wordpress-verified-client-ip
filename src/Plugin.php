@@ -111,8 +111,9 @@ final class Plugin {
 		}
 
 		// Apply the result.
-		if ( $result->changed && $resolved_ip !== $_SERVER['REMOTE_ADDR'] ) {
-			$original_ip = (string) $_SERVER['REMOTE_ADDR'];
+		$current_remote_addr = isset( $_SERVER['REMOTE_ADDR'] ) ? \sanitize_text_field( \wp_unslash( (string) $_SERVER['REMOTE_ADDR'] ) ) : '';
+		if ( $result->changed && $resolved_ip !== $current_remote_addr ) {
+			$original_ip = $current_remote_addr;
 
 			$_SERVER['REMOTE_ADDR']                 = $resolved_ip;
 			$_SERVER['HTTP_X_ORIGINAL_REMOTE_ADDR'] = $original_ip;
@@ -143,8 +144,8 @@ final class Plugin {
 	 */
 	private function apply_proto( string $proto ): void {
 		// Store originals.
-		$_SERVER['HTTP_X_ORIGINAL_HTTPS']          = $_SERVER['HTTPS'] ?? '';
-		$_SERVER['HTTP_X_ORIGINAL_REQUEST_SCHEME'] = $_SERVER['REQUEST_SCHEME'] ?? '';
+		$_SERVER['HTTP_X_ORIGINAL_HTTPS']          = isset( $_SERVER['HTTPS'] ) ? \sanitize_text_field( \wp_unslash( (string) $_SERVER['HTTPS'] ) ) : '';
+		$_SERVER['HTTP_X_ORIGINAL_REQUEST_SCHEME'] = isset( $_SERVER['REQUEST_SCHEME'] ) ? \sanitize_text_field( \wp_unslash( (string) $_SERVER['REQUEST_SCHEME'] ) ) : '';
 
 		$proto = \strtolower( $proto );
 
@@ -159,7 +160,7 @@ final class Plugin {
 	 * Apply the forwarded host to $_SERVER.
 	 */
 	private function apply_host( string $host ): void {
-		$_SERVER['HTTP_X_ORIGINAL_HOST'] = $_SERVER['HTTP_HOST'] ?? '';
+		$_SERVER['HTTP_X_ORIGINAL_HOST'] = isset( $_SERVER['HTTP_HOST'] ) ? \sanitize_text_field( \wp_unslash( (string) $_SERVER['HTTP_HOST'] ) ) : '';
 
 		$_SERVER['HTTP_HOST']   = $host;
 		$_SERVER['SERVER_NAME'] = $host;

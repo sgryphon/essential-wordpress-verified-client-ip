@@ -92,3 +92,4 @@ Thumbs.db
 .devcontainer/.postCreateCommandMarker
 .devcontainer/.updateContentCommandMarker
 .phpstan.cache/
+.VSCodeCounter/

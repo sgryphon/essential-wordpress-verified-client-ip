@@ -32,7 +32,7 @@ function vcip_uninstall_site(): void {
 
 // Multisite: iterate all sites.
 if ( is_multisite() ) {
-	/** @var array<int, \WP_Site> $vcip_sites */
+	/** @var array<int, int> $vcip_sites */
 	$vcip_sites = get_sites(
 		[
 			'fields' => 'ids',

@@ -4,7 +4,7 @@ Tags: ip address, client ip, user ip, visitor ip, proxy
 Plugin URI: https://github.com/sgryphon/essential-wordpress-verified-client-ip
 Requires at least: 6.4
 Tested up to: 6.9
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -35,6 +35,20 @@ If your server uses **Apache `mod_remoteip`** or **nginx `set_real_ip_from`**, t
 pre-resolve `REMOTE_ADDR` from forwarding headers before PHP runs. Disable the web server module and 
 let this plugin handle IP resolution instead, or let it pre-resolve and use this plugin for any
 additional proxies not covered by the engine.
+
+== Installation ==
+
+1. Download the plugin zip file.
+2. In WordPress Admin, go to **Plugins → Add New → Upload Plugin**.
+3. Upload the zip and click **Install Now**.
+4. Click **Activate Plugin**.
+
+Or manually upload the `verified-client-ip` folder to
+`wp-content/plugins/` and activate via the Plugins screen.
+
+Navigate to **Settings → Verified Client IP** in the WordPress admin.
+
+Configure with your proxy setup, or accept the defaults if suitable.
 
 == Frequently Asked Questions ==
 
@@ -91,8 +105,10 @@ and clear the data when you are done.
 
 == Changelog ==
 
+= 1.0.1 =
+* Minor fixes for initial release.
+
 = 1.0.0 =
-* Initial release.
 * RFC 7239 `Forwarded`, `X-Forwarded-For`, and Cloudflare `CF-Connecting-IP` schemes.
 * Configurable forward limit and trusted proxy CIDR ranges.
 * Proto and Host processing.
@@ -102,5 +118,5 @@ and clear the data when you are done.
 
 == Upgrade Notice ==
 
-= 1.0.0 =
+= 1.0.1 =
 Initial release.

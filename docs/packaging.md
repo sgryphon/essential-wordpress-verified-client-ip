@@ -43,15 +43,15 @@ cd build && zip -r verified-client-ip.zip verified-client-ip/
 
 ### Files Included in the Zip
 
-| File/Directory           | Purpose                          |
-|--------------------------|----------------------------------|
-| `verified-client-ip.php` | Main plugin entry point          |
-| `uninstall.php`          | Cleanup handler on deletion      |
-| `src/`                   | PHP source classes               |
-| `vendor/`                | Composer autoloader              |
-| `composer.json`          | Dependency manifest              |
-| `LICENSE`                | GPLv2+ license text              |
-| `README.md`              | Plugin overview                  |
+| File/Directory           | Purpose                     |
+| ------------------------ | --------------------------- |
+| `verified-client-ip.php` | Main plugin entry point     |
+| `uninstall.php`          | Cleanup handler on deletion |
+| `src/`                   | PHP source classes          |
+| `vendor/`                | Composer autoloader         |
+| `composer.json`          | Dependency manifest         |
+| `LICENSE`                | GPLv2+ license text         |
+| `readme.txt`             | Plugin overview             |
 
 Files **excluded** from the zip: `tests/`, `examples/`, `specifications/`,
 `docs/`, `compose.yaml`, `.github/`, `phpcs.xml.dist`, `phpstan.neon`,
@@ -75,7 +75,7 @@ The plugin header in `verified-client-ip.php` contains all required fields:
 - Version, Requires at least, Requires PHP
 - Author, Author URI
 - License, License URI
-- Text Domain, Domain Path
+- Text Domain
 
 ## Versioning
 

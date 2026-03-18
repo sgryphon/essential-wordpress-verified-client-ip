@@ -30,7 +30,7 @@ cp verified-client-ip.php "${DIST_DIR}/"
 cp uninstall.php "${DIST_DIR}/"
 cp composer.json "${DIST_DIR}/"
 cp LICENSE "${DIST_DIR}/"
-cp README.md "${DIST_DIR}/"
+cp readme.txt "${DIST_DIR}/"
 cp src/user-guide.html "${DIST_DIR}/src/"
 
 echo "==> Creating zip..."

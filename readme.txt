@@ -1,6 +1,7 @@
-=== Essential Verified Client IP ===
+=== Verified Client IP ===
 Contributors: sgryphon
 Tags: ip address, client ip, user ip, visitor ip, proxy
+Plugin URI: https://github.com/sgryphon/essential-wordpress-verified-client-ip
 Requires at least: 6.4
 Tested up to: 6.9
 Stable tag: 1.0.0

@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace VerifiedClientIp;
 
+// Abort if called directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * WordPress admin page for the "Verified Client IP" plugin.
  *
@@ -116,21 +121,21 @@ final class AdminPage {
 	 */
 	public static function render_page(): void {
 		$settings   = Settings::load();
-		$active_tab = isset( $_GET['tab'] ) ? \sanitize_text_field( $_GET['tab'] ) : 'settings';
+		$active_tab = isset( $_GET['tab'] ) ? \sanitize_text_field( \wp_unslash( $_GET['tab'] ) ) : 'settings'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only tab selection, no action performed
 		?>
 		<div class="wrap">
 			<h1><?php echo \esc_html__( 'Verified Client IP', 'verified-client-ip' ); ?></h1>
 
 			<nav class="nav-tab-wrapper">
-				<a href="?page=<?php echo self::MENU_SLUG; ?>&tab=settings"
+				<a href="?page=<?php echo \esc_attr( self::MENU_SLUG ); ?>&tab=settings"
 					class="nav-tab <?php echo 'settings' === $active_tab ? 'nav-tab-active' : ''; ?>">
 					<?php echo \esc_html__( 'Settings', 'verified-client-ip' ); ?>
 				</a>
-				<a href="?page=<?php echo self::MENU_SLUG; ?>&tab=diagnostics"
+				<a href="?page=<?php echo \esc_attr( self::MENU_SLUG ); ?>&tab=diagnostics"
 					class="nav-tab <?php echo 'diagnostics' === $active_tab ? 'nav-tab-active' : ''; ?>">
 					<?php echo \esc_html__( 'Diagnostics', 'verified-client-ip' ); ?>
 				</a>
-				<a href="?page=<?php echo self::MENU_SLUG; ?>&tab=user-guide"
+				<a href="?page=<?php echo \esc_attr( self::MENU_SLUG ); ?>&tab=user-guide"
 					class="nav-tab <?php echo 'user-guide' === $active_tab ? 'nav-tab-active' : ''; ?>">
 					<?php echo \esc_html__( 'User Guide', 'verified-client-ip' ); ?>
 				</a>
@@ -172,8 +177,8 @@ final class AdminPage {
 						<td>
 							<input type="number" id="vcip_forward_limit" name="vcip_forward_limit"
 									value="<?php echo \esc_attr( (string) $settings->forward_limit ); ?>"
-									min="<?php echo Settings::FORWARD_LIMIT_MIN; ?>"
-									max="<?php echo Settings::FORWARD_LIMIT_MAX; ?>"
+									min="<?php echo (int) Settings::FORWARD_LIMIT_MIN; ?>"
+									max="<?php echo (int) Settings::FORWARD_LIMIT_MAX; ?>"
 									class="small-text">
 							<p class="description">
 								<?php echo \esc_html__( 'Maximum number of trusted proxy hops to traverse (1–20).', 'verified-client-ip' ); ?>
@@ -256,7 +261,7 @@ final class AdminPage {
 		$prefix    = "vcip_schemes[{$index}]";
 		$header_bg = $scheme->enabled ? 'background-color:#f0f6fc;' : '';
 		?>
-		<div class="vcip-scheme-panel postbox" data-index="<?php echo $index; ?>">
+		<div class="vcip-scheme-panel postbox" data-index="<?php echo (int) $index; ?>">
 			<div class="postbox-header" style="<?php echo \esc_attr( $header_bg ); ?>">
 				<h3 class="hndle">
 					<span class="vcip-scheme-name"><?php echo \esc_html( $scheme->name ? $scheme->name : __( 'New Scheme', 'verified-client-ip' ) ); ?></span>
@@ -283,7 +288,7 @@ final class AdminPage {
 							<input type="text" name="<?php echo \esc_attr( $prefix ); ?>[name]"
 									value="<?php echo \esc_attr( $scheme->name ); ?>"
 									class="regular-text vcip-scheme-name-input"
-									maxlength="<?php echo Settings::SCHEME_NAME_MAX_LENGTH; ?>">
+									maxlength="<?php echo (int) Settings::SCHEME_NAME_MAX_LENGTH; ?>">
 						</td>
 					</tr>
 					<tr>
@@ -294,7 +299,7 @@ final class AdminPage {
 							<input type="text" name="<?php echo \esc_attr( $prefix ); ?>[header]"
 									value="<?php echo \esc_attr( $scheme->header ); ?>"
 									class="regular-text"
-									maxlength="<?php echo Settings::HEADER_NAME_MAX_LENGTH; ?>"
+									maxlength="<?php echo (int) Settings::HEADER_NAME_MAX_LENGTH; ?>"
 									placeholder="e.g. X-Forwarded-For">
 						</td>
 					</tr>
@@ -330,7 +335,7 @@ final class AdminPage {
 						<td>
 							<textarea name="<?php echo \esc_attr( $prefix ); ?>[notes]"
 										rows="2" class="large-text"
-										maxlength="<?php echo Settings::NOTES_MAX_LENGTH; ?>"
+										maxlength="<?php echo (int) Settings::NOTES_MAX_LENGTH; ?>"
 							><?php echo \esc_textarea( $scheme->notes ); ?></textarea>
 						</td>
 					</tr>
@@ -551,7 +556,7 @@ final class AdminPage {
 			return;
 		}
 
-		$action = \sanitize_text_field( $_POST['vcip_diag_action'] );
+		$action = isset( $_POST['vcip_diag_action'] ) ? \sanitize_text_field( \wp_unslash( $_POST['vcip_diag_action'] ) ) : '';
 
 		if ( 'start' === $action ) {
 			$count = isset( $_POST['vcip_diag_count'] ) ? (int) $_POST['vcip_diag_count'] : Diagnostics::DEFAULT_REQUEST_COUNT;
@@ -609,7 +614,7 @@ final class AdminPage {
 					<td>
 						<input type="number" id="vcip_diag_count" name="vcip_diag_count"
 								value="<?php echo \esc_attr( (string) $state['max_requests'] ); ?>"
-								min="1" max="<?php echo Diagnostics::MAX_REQUEST_COUNT; ?>"
+								min="1" max="<?php echo (int) Diagnostics::MAX_REQUEST_COUNT; ?>"
 								class="small-text"
 								<?php echo $state['recording'] ? 'disabled' : ''; ?>>
 					</td>
@@ -679,8 +684,8 @@ final class AdminPage {
 				</thead>
 				<tbody>
 					<?php foreach ( $log as $i => $entry ) : ?>
-						<tr class="vcip-diag-row" data-index="<?php echo $i; ?>" style="cursor:pointer;">
-							<td><?php echo $i + 1; ?></td>
+						<tr class="vcip-diag-row" data-index="<?php echo (int) $i; ?>" style="cursor:pointer;">
+							<td><?php echo (int) $i + 1; ?></td>
 							<td><?php echo \esc_html( $entry['timestamp'] ?? '' ); ?></td>
 							<td><?php echo \esc_html( $entry['method'] ?? '' ); ?></td>
 							<td><?php echo \esc_html( $entry['request_uri'] ?? '' ); ?></td>
@@ -689,7 +694,7 @@ final class AdminPage {
 							<td><?php echo \esc_html( (string) \max( 0, \count( $entry['steps'] ?? [] ) - 1 ) ); ?></td>
 							<td><?php echo ! empty( $entry['changed'] ) ? '&#10004;' : '—'; ?></td>
 						</tr>
-						<tr class="vcip-diag-detail" id="vcip-detail-<?php echo $i; ?>" style="display:none;">
+						<tr class="vcip-diag-detail" id="vcip-detail-<?php echo (int) $i; ?>" style="display:none;">
 							<td colspan="8">
 								<?php self::render_diagnostic_detail( $entry ); ?>
 							</td>

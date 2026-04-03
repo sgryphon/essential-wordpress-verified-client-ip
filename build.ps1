@@ -25,8 +25,9 @@ composer install --no-dev --optimize-autoloader --quiet
 Write-Host '==> Copying files...'
 Copy-Item -Recurse -Path 'src' -Destination (Join-Path $DistDir 'src')
 Copy-Item -Recurse -Path 'vendor' -Destination (Join-Path $DistDir 'vendor')
-Copy-Item -Path 'verified-client-ip.php' -Destination $DistDir
+Copy-Item -Path 'essential-verified-client-ip.php' -Destination $DistDir
 Copy-Item -Path 'uninstall.php' -Destination $DistDir
+Copy-Item -Recurse -Path 'assets' -Destination $DistDir
 Copy-Item -Path 'composer.json' -Destination $DistDir
 Copy-Item -Path 'LICENSE' -Destination $DistDir
 Copy-Item -Path 'readme.txt' -Destination $DistDir

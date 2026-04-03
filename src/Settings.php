@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace VerifiedClientIp;
+namespace Essential\VerifiedClientIp;
 
 /**
  * Plugin settings — data model, persistence via the WordPress Options API,

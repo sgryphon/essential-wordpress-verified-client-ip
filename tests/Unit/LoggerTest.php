@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace VerifiedClientIp\Tests\Unit;
+namespace Essential\VerifiedClientIp\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use VerifiedClientIp\Logger;
+use Essential\VerifiedClientIp\Logger;
 
 /**
- * @covers \VerifiedClientIp\Logger
+ * @covers \Essential\VerifiedClientIp\Logger
  */
 final class LoggerTest extends TestCase {
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace VerifiedClientIp;
+namespace Essential\VerifiedClientIp;
 
 /**
  * Result of the IP resolution algorithm.

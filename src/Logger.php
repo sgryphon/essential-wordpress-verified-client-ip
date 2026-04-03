@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace VerifiedClientIp;
+namespace Essential\VerifiedClientIp;
 
 /**
  * Simple logger for Essential Verified Client IP.

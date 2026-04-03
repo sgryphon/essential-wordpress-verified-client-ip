@@ -13,7 +13,7 @@
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       essential-verified-client-ip
  *
- * @package VerifiedClientIp
+ * @package Essential\VerifiedClientIp
  */
 
 declare(strict_types=1);
@@ -38,8 +38,8 @@ if ( file_exists( VCIP_PLUGIN_DIR . 'vendor/autoload.php' ) ) {
 }
 
 // Register IP resolution at the earliest possible hook.
-// For must-use plugins, call VerifiedClientIp\Plugin::boot() directly instead.
-add_action( 'plugins_loaded', [ VerifiedClientIp\Plugin::class, 'boot' ], 0 );
+// For must-use plugins, call Essential\VerifiedClientIp\Plugin::boot() directly instead.
+add_action( 'plugins_loaded', [ Essential\VerifiedClientIp\Plugin::class, 'boot' ], 0 );
 
 // Deactivation hook — flush caches only, do NOT remove data.
 register_deactivation_hook(
@@ -53,5 +53,5 @@ register_deactivation_hook(
 
 // Register admin settings page (only loaded in admin context).
 if ( is_admin() ) {
-	VerifiedClientIp\AdminPage::register();
+	Essential\VerifiedClientIp\AdminPage::register();
 }

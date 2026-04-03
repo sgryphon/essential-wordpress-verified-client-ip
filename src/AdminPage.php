@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace VerifiedClientIp;
+namespace Essential\VerifiedClientIp;
 
 // Abort if called directly.
 if ( ! defined( 'ABSPATH' ) ) {

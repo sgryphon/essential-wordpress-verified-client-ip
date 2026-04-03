@@ -7,7 +7,7 @@
  * admin UI.  Removes all plugin options and diagnostic transients from
  * the database.  In multisite, iterates through all sites.
  *
- * @package VerifiedClientIp
+ * @package Essential\VerifiedClientIp
  */
 
 declare(strict_types=1);

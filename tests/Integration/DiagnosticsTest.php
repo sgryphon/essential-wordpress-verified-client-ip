@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace VerifiedClientIp\Tests\Integration;
+namespace Essential\VerifiedClientIp\Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
-use VerifiedClientIp\Diagnostics;
-use VerifiedClientIp\ResolverResult;
-use VerifiedClientIp\ResolverStep;
+use Essential\VerifiedClientIp\Diagnostics;
+use Essential\VerifiedClientIp\ResolverResult;
+use Essential\VerifiedClientIp\ResolverStep;
 
 /**
- * @covers \VerifiedClientIp\Diagnostics
+ * @covers \Essential\VerifiedClientIp\Diagnostics
  */
 final class DiagnosticsTest extends TestCase {
 

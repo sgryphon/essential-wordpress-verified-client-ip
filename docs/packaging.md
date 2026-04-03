@@ -25,8 +25,8 @@ The script:
 
 1. Runs `composer install --no-dev --optimize-autoloader` to get production
    dependencies only.
-2. Copies the required files into a `build/verified-client-ip/` directory.
-3. Creates `build/verified-client-ip.zip`.
+2. Copies the required files into a `build/essential-verified-client-ip/` directory.
+3. Creates `build/essential-verified-client-ip.zip`.
 
 ### Manual Build
 
@@ -35,17 +35,17 @@ The script:
 composer install --no-dev --optimize-autoloader
 
 # Create the zip
-mkdir -p build/verified-client-ip
-cp -r src/ vendor/ verified-client-ip.php uninstall.php composer.json \
-      LICENSE README.md build/verified-client-ip/
-cd build && zip -r verified-client-ip.zip verified-client-ip/
+mkdir -p build/essential-verified-client-ip
+cp -r src/ vendor/ essential-verified-client-ip.php uninstall.php composer.json \
+      LICENSE README.md build/essential-verified-client-ip/
+cd build && zip -r essential-verified-client-ip.zip essential-verified-client-ip/
 ```
 
 ### Files Included in the Zip
 
-| File/Directory           | Purpose                     |
-| ------------------------ | --------------------------- |
-| `verified-client-ip.php` | Main plugin entry point     |
+| File/Directory               | Purpose                     |
+| --------------------------- | --------------------------- |
+| `essential-verified-client-ip.php` | Main plugin entry point     |
 | `uninstall.php`          | Cleanup handler on deletion |
 | `src/`                   | PHP source classes          |
 | `vendor/`                | Composer autoloader         |
@@ -69,7 +69,7 @@ To submit the plugin to the [WordPress Plugin Directory](https://wordpress.org/p
 
 ### Plugin Header Requirements
 
-The plugin header in `verified-client-ip.php` contains all required fields:
+The plugin header in `essential-verified-client-ip.php` contains all required fields:
 
 - Plugin Name, Plugin URI, Description
 - Version, Requires at least, Requires PHP
@@ -81,6 +81,6 @@ The plugin header in `verified-client-ip.php` contains all required fields:
 
 Update version numbers in these locations when releasing:
 
-1. `verified-client-ip.php` — the `Version:` header and `VCIP_VERSION` constant
+1. `essential-verified-client-ip.php` — the `Version:` header and `VCIP_VERSION` constant
 2. `composer.json` — the `version` field (if present)
 3. Tag the Git commit: `git tag v1.0.0 && git push --tags`

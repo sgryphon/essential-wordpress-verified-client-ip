@@ -1,11 +1,11 @@
-# Build a distributable zip for the Verified Client IP WordPress plugin.
+# Build a distributable zip for the Essential Verified Client IP WordPress plugin.
 #
 # Usage: .\build.ps1
-# Output: build\verified-client-ip.zip
+# Output: build\essential-verified-client-ip.zip
 
 $ErrorActionPreference = 'Stop'
 
-$PluginSlug = 'verified-client-ip'
+$PluginSlug = 'essential-verified-client-ip'
 $BuildDir = 'build'
 $DistDir = Join-Path $BuildDir $PluginSlug
 

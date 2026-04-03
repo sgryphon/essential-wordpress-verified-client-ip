@@ -1,10 +1,10 @@
-# Verified Client IP — Implementation Plan
+# Essential Verified Client IP — Implementation Plan
 
 Progress tracker. Check off items as completed.
 
 ## Step 1 — Project Scaffolding & Tooling
 
-- [x] Create `verified-client-ip.php` with standard WordPress plugin header
+- [x] Create `essential-verified-client-ip.php` with standard WordPress plugin header
 - [x] Create `composer.json` with PHPUnit, PHPStan, PHP-CS-Fixer (WP_Mock deferred to Step 5)
 - [x] Create `phpunit.xml.dist` configuration
 - [x] Create `phpstan.neon` configuration
@@ -109,7 +109,7 @@ Progress tracker. Check off items as completed.
 ## Step 9 — Logging
 
 - [x] Create `src/Logger.php` with error/warning/info/debug levels
-  - [x] Consistent `[Verified Client IP]` prefix
+  - [x] Consistent `[Essential Verified Client IP]` prefix
   - [x] Debug/request-level logging gated by WP_DEBUG / VCIP_LOG_REQUESTS
   - [x] Context parameter for categorisation
 - [x] Add request-level debug logging in Plugin (resolver result)

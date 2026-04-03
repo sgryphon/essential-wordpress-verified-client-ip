@@ -1,4 +1,4 @@
-Verified Client IP - wordpress plugin
+Essential Verified Client IP - wordpress plugin
 =====================================
 
 A WordPress plugin that correctly verifies Forwarded For and other headers, to determine the verified client IP address, accepting only steps through trusted proxies, stopping at the first non-trusted address.
@@ -9,8 +9,8 @@ Requirements
 - **Minimum PHP version:** 8.1
 - **Minimum WordPress version:** 6.4
 - **License:** GPLv2 or later (required for WordPress.org plugin directory)
-- **Plugin slug:** `verified-client-ip`
-- **Text domain:** `verified-client-ip` (for internationalization)
+- **Plugin slug:** `essential-verified-client-ip`
+- **Text domain:** `essential-verified-client-ip` (for internationalization)
 
 Behaviour
 ---------
@@ -64,7 +64,7 @@ If the connection and one proxy are valid, but the second forwarded-for matches 
 Configuration
 -------------
 
-Settings should be configured in the standard WordPress Settings menu, as a sub-menu item 'Verified Client IP'
+Settings should be configured in the standard WordPress Settings menu, as a sub-menu item 'Essential Verified Client IP'
 
 There should be a main switch for enable/disable (so can disable parsing, whilst still having it installed, e.g. for diagnostics). There should also be a maximum number of forwards (Forward Limit), defaulting to 1 (see Behaviour > Forward Limit section for semantics).
 

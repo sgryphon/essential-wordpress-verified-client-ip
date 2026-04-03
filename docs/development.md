@@ -79,7 +79,7 @@ composer check
 ## Project Structure
 
 ```
-verified-client-ip.php        Main plugin entry point
+essential-verified-client-ip.php        Main plugin entry point
 uninstall.php                 Cleanup on plugin deletion
 src/
 ├── AdminPage.php             Admin settings page UI
@@ -115,7 +115,7 @@ docs/                         User and developer documentation
 
 ### Execution Flow
 
-1. WordPress loads `verified-client-ip.php` at `plugins_loaded` priority 0.
+1. WordPress loads `essential-verified-client-ip.php` at `plugins_loaded` priority 0.
 2. `Plugin::boot()` creates the singleton and calls `resolveClientIp()`.
 3. `Settings::load()` reads configuration from `wp_options`.
 4. `Resolver::resolve()` walks the proxy chain using configured schemes.

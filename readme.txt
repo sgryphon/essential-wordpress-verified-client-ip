@@ -1,4 +1,4 @@
-=== Verified Client IP ===
+=== Essential Verified Client IP ===
 Contributors: sgryphon
 Tags: ip address, client ip, user ip, visitor ip, proxy
 Plugin URI: https://github.com/sgryphon/essential-wordpress-verified-client-ip
@@ -43,10 +43,10 @@ additional proxies not covered by the engine.
 3. Upload the zip and click **Install Now**.
 4. Click **Activate Plugin**.
 
-Or manually upload the `verified-client-ip` folder to
+Or manually upload the `essential-verified-client-ip` folder to
 `wp-content/plugins/` and activate via the Plugins screen.
 
-Navigate to **Settings → Verified Client IP** in the WordPress admin.
+Navigate to **Settings → Essential Verified Client IP** in the WordPress admin.
 
 Configure with your proxy setup, or accept the defaults if suitable.
 

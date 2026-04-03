@@ -1,6 +1,6 @@
 # Local Development Environment
 
-This directory contains proxy configurations and the Docker Compose file used to set up a local testing environment for the Verified Client IP plugin.
+This directory contains proxy configurations and the Docker Compose file used to set up a local testing environment for the Essential Verified Client IP plugin.
 
 ## Quick Start
 
@@ -18,7 +18,7 @@ Activate the plugin via the WordPress admin UI at http://localhost:8064/wp-admin
 
 The first time you run the example you will need to create a WordPress site with an admin account (e.g. admin/P@ssw0rd).
 
-Once activated, to see the plugin in action, you can go to Settings > Verified Client IP, and then on the Diagnostics tab click Start Diagnostics.
+Once activated, to see the plugin in action, you can go to Settings > Essential Verified Client IP, and then on the Diagnostics tab click Start Diagnostics.
 
 Access the website directly at http://localhost:8064/ and then via proxies http://localhost:8128/ and http://localhost:8160/. Note that the example configuration is set up with dynamic host detection so that the proxy URL (with the port) is retained, to make testing easier.
 
@@ -96,7 +96,7 @@ you want to traverse and adjust the Forward Limit accordingly.
 
 ## Build package testing
 
-You can use the development container to build the package, which will publish to `build/verified-client-ip/`.
+You can use the development container to build the package, which will publish to `build/essential-verified-client-ip/`.
 
 ```bash
 ./build.sh

@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Build a distributable zip for the Verified Client IP WordPress plugin.
+# Build a distributable zip for the Essential Verified Client IP WordPress plugin.
 #
 # Usage: ./build.sh
-# Output: build/verified-client-ip.zip
+# Output: build/essential-verified-client-ip.zip
 
 set -euo pipefail
 
-PLUGIN_SLUG="verified-client-ip"
+PLUGIN_SLUG="essential-verified-client-ip"
 BUILD_DIR="build"
 DIST_DIR="${BUILD_DIR}/${PLUGIN_SLUG}"
 

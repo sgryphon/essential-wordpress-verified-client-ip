@@ -1,4 +1,4 @@
-# Verified Client IP — Implementation Roadmap
+# Essential Verified Client IP — Implementation Roadmap
 
 Each step is implemented as a separate commit. Every commit must leave the project in a buildable, testable state.
 

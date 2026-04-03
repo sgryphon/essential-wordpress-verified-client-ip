@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace VerifiedClientIp\Tests\Integration;
+namespace Essential\VerifiedClientIp\Tests\Integration;
 
 // Load WordPress function stubs for testing.
 require_once __DIR__ . '/bootstrap.php';
 
 use PHPUnit\Framework\TestCase;
-use VerifiedClientIp\Plugin;
-use VerifiedClientIp\Scheme;
+use Essential\VerifiedClientIp\Plugin;
+use Essential\VerifiedClientIp\Scheme;
 
 /**
  * Integration tests for the WordPress Plugin class.

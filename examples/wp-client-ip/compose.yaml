@@ -79,8 +79,8 @@ services:
       - wp_data:/var/www/html
       # Mount the plugin source into the plugins directory.
       # To mount the built plugin instead, use the following line instead:
-      # ../../build/verified-client-ip:/var/www/html/wp-content/plugins/verified-client-ip:ro
-      - ../..:/var/www/html/wp-content/plugins/verified-client-ip:ro
+      # ../../build/essential-verified-client-ip:/var/www/html/wp-content/plugins/essential-verified-client-ip:ro
+      - ../..:/var/www/html/wp-content/plugins/essential-verified-client-ip:ro
       # Disable mod_remoteip so Apache does not pre-resolve REMOTE_ADDR from
       # X-Forwarded-For before PHP runs.  Without this the plugin becomes a
       # no-op because REMOTE_ADDR is already the client IP by the time PHP

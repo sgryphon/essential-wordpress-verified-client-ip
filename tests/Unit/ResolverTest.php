@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace VerifiedClientIp\Tests\Unit;
+namespace Essential\VerifiedClientIp\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use VerifiedClientIp\Resolver;
-use VerifiedClientIp\Scheme;
+use Essential\VerifiedClientIp\Resolver;
+use Essential\VerifiedClientIp\Scheme;
 
 /**
  * Extensive tests for the core IP resolution algorithm.

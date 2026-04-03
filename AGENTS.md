@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-**Verified Client IP** is a WordPress plugin (slug: `verified-client-ip`) that determines the true client IP address by verifying Forwarded-For and similar headers, traversing only trusted proxy hops. It replaces `$_SERVER['REMOTE_ADDR']` with the verified IP early in the WordPress lifecycle.
+**Essential Verified Client IP** is a WordPress plugin (slug: `essential-verified-client-ip`) that determines the true client IP address by verifying Forwarded-For and similar headers, traversing only trusted proxy hops. It replaces `$_SERVER['REMOTE_ADDR']` with the verified IP early in the WordPress lifecycle.
 
 The full specification is in [specifications/Main Specification.md](specifications/Main%20Specification.md).
 
@@ -11,7 +11,7 @@ The full specification is in [specifications/Main Specification.md](specificatio
 - **Language:** PHP 8.1+
 - **Platform:** WordPress 6.4+
 - **License:** GPLv2 or later
-- **Text domain:** `verified-client-ip`
+- **Text domain:** `essential-verified-client-ip`
 - **Testing:** PHPUnit (pure unit tests), WP_Mock (integration tests)
 - **Static analysis:** PHPStan or Psalm
 - **Formatter:** PHP_CodeSniffer (PHPCS) with WordPress Coding Standards (WPCS) — `WordPress-Core` standard
@@ -137,8 +137,8 @@ IPv6 networking must be explicitly enabled in the compose file. At least one cha
 
 ## File & Naming Conventions
 
-- WordPress plugin slug: `verified-client-ip`
-- Text domain for i18n: `verified-client-ip`
+- WordPress plugin slug: `essential-verified-client-ip`
+- Text domain for i18n: `essential-verified-client-ip`
 - Option keys prefixed: `vcip_`
 - Transient keys prefixed: `vcip_`
 - Hook names prefixed: `vcip_`

@@ -1,6 +1,6 @@
 ![Essential Verified Client IP](docs/verified-ip-logo.png)
 
-# Verified Client IP
+# Essential Verified Client IP
 
 [![CI](https://github.com/sgryphon/essential-wordpress-verified-client-ip/actions/workflows/ci.yml/badge.svg)](https://github.com/sgryphon/essential-wordpress-verified-client-ip/actions/workflows/ci.yml)
 [![PHP 8.1+](https://img.shields.io/badge/PHP-8.1%2B-blue.svg)](https://www.php.net/)
@@ -19,7 +19,7 @@ When WordPress sits behind load balancers, CDNs, or reverse proxies,
 Many plugins solve this by blindly trusting forwarding headers, which is
 **trivially spoofable**.
 
-Verified Client IP walks the forwarding chain **backwards**, only trusting
+Essential Verified Client IP walks the forwarding chain **backwards**, only trusting
 addresses that match your configured proxy networks (by CIDR range). It stops
 at the first untrusted hop, which is the true client IP.
 
@@ -41,9 +41,9 @@ at the first untrusted hop, which is the true client IP.
 
 ## Quick Start
 
-1. Upload the `verified-client-ip` folder to `wp-content/plugins/`.
+1. Upload the `essential-verified-client-ip` folder to `wp-content/plugins/`.
 2. Activate via **Plugins → Installed Plugins**.
-3. Go to **Settings → Verified Client IP**.
+3. Go to **Settings → Essential Verified Client IP**.
 4. Add your proxy's IP address or CIDR range to an enabled scheme.
 5. Set the **Forward Limit** to the number of proxies in your chain.
 

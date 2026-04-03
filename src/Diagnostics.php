@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace VerifiedClientIp;
+namespace Essential\VerifiedClientIp;
 
 /**
- * Diagnostics recorder for Verified Client IP.
+ * Diagnostics recorder for Essential Verified Client IP.
  *
  * Records a configurable number of incoming requests (default 10, max 100)
  * with timestamps, request URI, all $_SERVER headers, and the algorithm's

@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Uninstall handler for Verified Client IP.
+ * Uninstall handler for Essential Verified Client IP.
  *
  * Called when the plugin is deleted (not deactivated) via the WordPress
  * admin UI.  Removes all plugin options and diagnostic transients from
  * the database.  In multisite, iterates through all sites.
  *
- * @package VerifiedClientIp
+ * @package Essential\VerifiedClientIp
  */
 
 declare(strict_types=1);
@@ -18,7 +18,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 }
 
 /**
- * Delete all Verified Client IP data for the current site.
+ * Delete all Essential Verified Client IP data for the current site.
  */
 function vcip_uninstall_site(): void {
 	// Delete settings option.

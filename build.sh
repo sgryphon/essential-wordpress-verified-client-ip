@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Build a distributable zip for the Verified Client IP WordPress plugin.
+# Build a distributable zip for the Essential Verified Client IP WordPress plugin.
 #
 # Usage: ./build.sh
-# Output: build/verified-client-ip.zip
+# Output: build/essential-verified-client-ip.zip
 
 set -euo pipefail
 
-PLUGIN_SLUG="verified-client-ip"
+PLUGIN_SLUG="essential-verified-client-ip"
 BUILD_DIR="build"
 DIST_DIR="${BUILD_DIR}/${PLUGIN_SLUG}"
 
@@ -21,7 +21,7 @@ echo "==> Generating user guide HTML..."
 composer run-script build-user-guide --quiet
 
 echo "==> Cleaning vendor..."
-rm -rf vendor composer.lock
+rm -rf vendor
 
 echo "==> Installing production dependencies..."
 composer install --no-dev --optimize-autoloader --quiet
@@ -29,8 +29,9 @@ composer install --no-dev --optimize-autoloader --quiet
 echo "==> Copying files..."
 cp -r src/ "${DIST_DIR}/src/"
 cp -r vendor/ "${DIST_DIR}/vendor/"
-cp verified-client-ip.php "${DIST_DIR}/"
+cp essential-verified-client-ip.php "${DIST_DIR}/"
 cp uninstall.php "${DIST_DIR}/"
+cp -r assets/ "${DIST_DIR}/assets/"
 cp composer.json "${DIST_DIR}/"
 cp LICENSE "${DIST_DIR}/"
 cp readme.txt "${DIST_DIR}/"

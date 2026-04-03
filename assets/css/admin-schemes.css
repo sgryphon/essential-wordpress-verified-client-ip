@@ -1,0 +1,4 @@
+.vcip-scheme-panel { position: relative; margin-bottom: 0.75rem; }
+.vcip-scheme-panel .postbox-header { display: flex; align-items: center; cursor: pointer; }
+.vcip-scheme-panel .postbox-header .hndle { padding-left: 0.75rem; }
+.vcip-scheme-panel .postbox-header .vcip-scheme-controls { cursor: default; }

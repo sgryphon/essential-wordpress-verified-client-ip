@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace VerifiedClientIp\Tests\Unit;
+namespace Essential\VerifiedClientIp\Tests\Unit;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use VerifiedClientIp\IpUtils;
+use Essential\VerifiedClientIp\IpUtils;
 
 /**
  * Tests for IpUtils: CIDR matching, normalisation, port stripping, validation.

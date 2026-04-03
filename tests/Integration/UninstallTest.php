@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace VerifiedClientIp\Tests\Integration;
+namespace Essential\VerifiedClientIp\Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
 

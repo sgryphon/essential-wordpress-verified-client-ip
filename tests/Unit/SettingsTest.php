@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace VerifiedClientIp\Tests\Unit;
+namespace Essential\VerifiedClientIp\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use VerifiedClientIp\Scheme;
-use VerifiedClientIp\Settings;
+use Essential\VerifiedClientIp\Scheme;
+use Essential\VerifiedClientIp\Settings;
 
 /**
  * Unit tests for the Settings data model and validation.

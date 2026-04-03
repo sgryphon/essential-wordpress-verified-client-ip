@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace VerifiedClientIp\Tests\Unit;
+namespace Essential\VerifiedClientIp\Tests\Unit;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use VerifiedClientIp\HeaderParser;
+use Essential\VerifiedClientIp\HeaderParser;
 
 /**
  * Tests for HeaderParser: RFC 7239, X-Forwarded-For, single-value, multi-header.

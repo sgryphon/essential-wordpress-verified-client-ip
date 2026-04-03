@@ -20,6 +20,9 @@ composer install --optimize-autoloader --quiet
 echo "==> Generating user guide HTML..."
 composer run-script build-user-guide --quiet
 
+echo "==> Cleaning vendor..."
+rm -rf vendor composer.lock
+
 echo "==> Installing production dependencies..."
 composer install --no-dev --optimize-autoloader --quiet
 

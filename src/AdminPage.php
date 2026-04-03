@@ -36,6 +36,37 @@ final class AdminPage {
 
 		\add_action( 'admin_menu', [ self::class, 'add_menu_page' ] );
 		\add_action( 'admin_init', [ self::class, 'handle_form_submission' ] );
+		\add_action( 'admin_enqueue_scripts', [ self::class, 'enqueue_admin_assets' ] );
+	}
+
+	/**
+	 * Enqueue admin assets for the plugin settings page.
+	 *
+	 * @param string $hook_suffix The current admin page hook.
+	 */
+	public static function enqueue_admin_assets( string $hook_suffix ): void {
+		if ( 'settings_page_' . self::MENU_SLUG !== $hook_suffix ) {
+			return;
+		}
+
+		$css_url        = \plugins_url( 'assets/css/admin-schemes.css', \VCIP_PLUGIN_FILE );
+		$js_schemes_url = \plugins_url( 'assets/js/admin-schemes.js', \VCIP_PLUGIN_FILE );
+		$js_diag_url    = \plugins_url( 'assets/js/admin-diagnostics.js', \VCIP_PLUGIN_FILE );
+
+		\wp_enqueue_style( 'vcip-admin-schemes', $css_url, [], \VCIP_VERSION );
+		\wp_enqueue_script( 'vcip-admin-schemes', $js_schemes_url, [], \VCIP_VERSION, true );
+		\wp_enqueue_script( 'vcip-admin-diagnostics', $js_diag_url, [], \VCIP_VERSION, true );
+
+		\wp_add_inline_script(
+			'vcip-admin-schemes',
+			'var vcipI18n = ' . \wp_json_encode(
+				[
+					'deleteConfirm' => \__( 'Delete this scheme?', 'verified-client-ip' ),
+					'newScheme'     => \__( 'New Scheme', 'verified-client-ip' ),
+				]
+			) . '; var vcipSchemeTemplate = ' . \wp_json_encode( self::scheme_template() ) . ';',
+			'before'
+		);
 	}
 
 	/**
@@ -244,9 +275,6 @@ final class AdminPage {
 			<?php endif; ?>
 		</div>
 
-		<?php if ( 'settings' === $active_tab ) : ?>
-			<?php self::render_inline_script(); ?>
-		<?php endif; ?>
 		<?php
 	}
 
@@ -702,17 +730,6 @@ final class AdminPage {
 					<?php endforeach; ?>
 				</tbody>
 			</table>
-
-			<script>
-			(function () {
-				document.querySelectorAll('.vcip-diag-row').forEach(function (row) {
-					row.addEventListener('click', function () {
-						var detail = document.getElementById('vcip-detail-' + row.dataset.index);
-						detail.style.display = detail.style.display === 'none' ? '' : 'none';
-					});
-				});
-			})();
-			</script>
 			<?php
 		endif;
 	}

@@ -4,10 +4,12 @@ schema: spec-driven
 # This is shown to AI when creating artifacts.
 # Add your tech stack, conventions, style guides, domain knowledge, etc.
 # Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+  context: |
+    Language: PHP 8.1+, WordPress 6.4+
+    Testing: PHPUnit (pure unit tests), WP_Mock (integration tests), `composer test`
+    Analysis: PHPStan, `composer analyse`
+    Formatter: PHP_CodeSniffer (PHPCS) with WordPress Coding Standards (WPCS) — `WordPress-Core` standard, `composer format-check`
+    CI: GitHub Actions
 
 # Per-artifact rules (optional)
 # Add custom rules for specific artifacts.

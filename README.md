@@ -43,7 +43,7 @@ at the first untrusted hop, which is the true client IP.
 
 1. Upload the `gryphon-verified-client-ip` folder to `wp-content/plugins/`.
 2. Activate via **Plugins → Installed Plugins**.
-3. Go to **Settings → Gryphon Verified Client IP**.
+3. Go to **Settings → Verified Client IP**.
 4. Add your proxy's IP address or CIDR range to an enabled scheme.
 5. Set the **Forward Limit** to the number of proxies in your chain.
 

@@ -14,7 +14,7 @@ namespace Gryphon\VerifiedClientIp;
 final class Logger {
 
 	/** @var string Log prefix for all messages. */
-	private const PREFIX = 'VCIP';
+	private const PREFIX = 'Gryphon VCIP';
 
 	/**
 	 * Log an error message.

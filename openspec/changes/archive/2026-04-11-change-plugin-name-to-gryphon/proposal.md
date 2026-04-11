@@ -12,7 +12,6 @@ The WordPress Plugin Directory requires plugins to have a distinctive, non-gener
 - **BREAKING**: Composer package name changes from `essential/verified-client-ip` to `gryphon/verified-client-ip`
 - Admin menu slug constant changes from `essential-verified-client-ip` to `gryphon-verified-client-ip`
 - Admin page heading (H1) changes from `Essential Verified Client IP` to `Gryphon Verified Client IP`
-- Plugin URI updated to reflect the new repository name
 - readme.txt and README.md titles updated to `Gryphon Verified Client IP`
 
 **Unchanged**:

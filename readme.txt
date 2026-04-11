@@ -46,7 +46,7 @@ additional proxies not covered by the engine.
 Or manually upload the `gryphon-verified-client-ip` folder to
 `wp-content/plugins/` and activate via the Plugins screen.
 
-Navigate to **Settings → Gryphon Verified Client IP** in the WordPress admin.
+Navigate to **Settings → Verified Client IP** in the WordPress admin.
 
 Configure with your proxy setup, or accept the defaults if suitable.
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Essential\VerifiedClientIp;
+namespace Gryphon\VerifiedClientIp;
 
 /**
  * Result of the IP resolution algorithm.

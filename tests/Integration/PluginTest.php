@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Essential\VerifiedClientIp\Tests\Integration;
+namespace Gryphon\VerifiedClientIp\Tests\Integration;
 
 // Load WordPress function stubs for testing.
 require_once __DIR__ . '/bootstrap.php';
 
 use PHPUnit\Framework\TestCase;
-use Essential\VerifiedClientIp\Plugin;
-use Essential\VerifiedClientIp\Scheme;
+use Gryphon\VerifiedClientIp\Plugin;
+use Gryphon\VerifiedClientIp\Scheme;
 
 /**
  * Integration tests for the WordPress Plugin class.

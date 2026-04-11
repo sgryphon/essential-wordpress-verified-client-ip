@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
-<ruleset name="Essential Verified Client IP">
-    <description>WordPress Coding Standards for the Essential Verified Client IP plugin.</description>
+<ruleset name="Gryphon Verified Client IP">
+    <description>WordPress Coding Standards for the Gryphon Verified Client IP plugin.</description>
 
     <!-- Files and directories to check -->
     <file>src/</file>
     <file>tests/</file>
-    <file>essential-verified-client-ip.php</file>
+    <file>gryphon-verified-client-ip.php</file>
     <file>uninstall.php</file>
 
     <!-- Show progress and sniff codes -->
@@ -30,7 +30,7 @@
     <rule ref="WordPress.WP.I18n">
         <properties>
             <property name="text_domain" type="array">
-                <element value="essential-verified-client-ip"/>
+                <element value="gryphon-verified-client-ip"/>
             </property>
         </properties>
     </rule>

@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Uninstall handler for Essential Verified Client IP.
+ * Uninstall handler for Gryphon Verified Client IP.
  *
  * Called when the plugin is deleted (not deactivated) via the WordPress
  * admin UI.  Removes all plugin options and diagnostic transients from
  * the database.  In multisite, iterates through all sites.
  *
- * @package Essential\VerifiedClientIp
+ * @package Gryphon\VerifiedClientIp
  */
 
 declare(strict_types=1);
@@ -18,7 +18,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 }
 
 /**
- * Delete all Essential Verified Client IP data for the current site.
+ * Delete all Gryphon Verified Client IP data for the current site.
  */
 function vcip_uninstall_site(): void {
 	// Delete settings option.

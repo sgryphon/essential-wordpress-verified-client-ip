@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Essential\VerifiedClientIp;
+namespace Gryphon\VerifiedClientIp;
 
 // Abort if called directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WordPress admin page for the "Essential Verified Client IP" plugin.
+ * WordPress admin page for the "Gryphon Verified Client IP" plugin.
  *
  * Registers a Settings sub-menu, renders the settings form, and processes
  * form submissions with nonce + capability checks.
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class AdminPage {
 
 	/** The menu slug used for the settings page. */
-	public const MENU_SLUG = 'essential-verified-client-ip';
+	public const MENU_SLUG = 'gryphon-verified-client-ip';
 
 	/** Nonce action for the settings form. */
 	private const NONCE_ACTION = 'vcip_save_settings';
@@ -61,8 +61,8 @@ final class AdminPage {
 			'vcip-admin-schemes',
 			'var vcipI18n = ' . \wp_json_encode(
 				[
-					'deleteConfirm' => \__( 'Delete this scheme?', 'essential-verified-client-ip' ),
-					'newScheme'     => \__( 'New Scheme', 'essential-verified-client-ip' ),
+					'deleteConfirm' => \__( 'Delete this scheme?', 'gryphon-verified-client-ip' ),
+					'newScheme'     => \__( 'New Scheme', 'gryphon-verified-client-ip' ),
 				]
 			) . '; var vcipSchemeTemplate = ' . \wp_json_encode( self::scheme_template() ) . ';',
 			'before'
@@ -78,8 +78,8 @@ final class AdminPage {
 		}
 
 		\add_options_page(
-			__( 'Verified Client IP', 'essential-verified-client-ip' ),
-			__( 'Verified Client IP', 'essential-verified-client-ip' ),
+			__( 'Verified Client IP', 'gryphon-verified-client-ip' ),
+			__( 'Verified Client IP', 'gryphon-verified-client-ip' ),
 			'manage_options',
 			self::MENU_SLUG,
 			[ self::class, 'render_page' ],
@@ -112,7 +112,7 @@ final class AdminPage {
 			\add_settings_error(
 				'vcip_settings',
 				'vcip_nonce_error',
-				__( 'Security check failed. Please try again.', 'essential-verified-client-ip' ),
+				__( 'Security check failed. Please try again.', 'gryphon-verified-client-ip' ),
 				'error',
 			);
 
@@ -141,7 +141,7 @@ final class AdminPage {
 			\add_settings_error(
 				'vcip_settings',
 				'vcip_saved',
-				__( 'Settings saved.', 'essential-verified-client-ip' ),
+				__( 'Settings saved.', 'gryphon-verified-client-ip' ),
 				'success',
 			);
 		}
@@ -155,20 +155,20 @@ final class AdminPage {
 		$active_tab = isset( $_GET['tab'] ) ? \sanitize_text_field( \wp_unslash( $_GET['tab'] ) ) : 'settings'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only tab selection, no action performed
 		?>
 		<div class="wrap">
-			<h1><?php echo \esc_html__( 'Essential Verified Client IP', 'essential-verified-client-ip' ); ?></h1>
+			<h1><?php echo \esc_html__( 'Gryphon Verified Client IP', 'gryphon-verified-client-ip' ); ?></h1>
 
 			<nav class="nav-tab-wrapper">
 				<a href="?page=<?php echo \esc_attr( self::MENU_SLUG ); ?>&tab=settings"
 					class="nav-tab <?php echo 'settings' === $active_tab ? 'nav-tab-active' : ''; ?>">
-					<?php echo \esc_html__( 'Settings', 'essential-verified-client-ip' ); ?>
+					<?php echo \esc_html__( 'Settings', 'gryphon-verified-client-ip' ); ?>
 				</a>
 				<a href="?page=<?php echo \esc_attr( self::MENU_SLUG ); ?>&tab=diagnostics"
 					class="nav-tab <?php echo 'diagnostics' === $active_tab ? 'nav-tab-active' : ''; ?>">
-					<?php echo \esc_html__( 'Diagnostics', 'essential-verified-client-ip' ); ?>
+					<?php echo \esc_html__( 'Diagnostics', 'gryphon-verified-client-ip' ); ?>
 				</a>
 				<a href="?page=<?php echo \esc_attr( self::MENU_SLUG ); ?>&tab=user-guide"
 					class="nav-tab <?php echo 'user-guide' === $active_tab ? 'nav-tab-active' : ''; ?>">
-					<?php echo \esc_html__( 'User Guide', 'essential-verified-client-ip' ); ?>
+					<?php echo \esc_html__( 'User Guide', 'gryphon-verified-client-ip' ); ?>
 				</a>
 			</nav>
 	
@@ -185,25 +185,25 @@ final class AdminPage {
 				}
 				?>
 
-				<h2><?php echo \esc_html__( 'General', 'essential-verified-client-ip' ); ?></h2>
+				<h2><?php echo \esc_html__( 'General', 'gryphon-verified-client-ip' ); ?></h2>
 				<table class="form-table" role="presentation">
 					<tr>
-						<th scope="row"><?php echo \esc_html__( 'Enable plugin', 'essential-verified-client-ip' ); ?></th>
+						<th scope="row"><?php echo \esc_html__( 'Enable plugin', 'gryphon-verified-client-ip' ); ?></th>
 						<td>
 							<label>
 								<input type="hidden" name="vcip_enabled" value="0">
 								<input type="checkbox" name="vcip_enabled" value="1"
 									<?php echo $settings->enabled ? 'checked' : ''; ?>>
-								<?php echo \esc_html__( 'Enable IP resolution', 'essential-verified-client-ip' ); ?>
+								<?php echo \esc_html__( 'Enable IP resolution', 'gryphon-verified-client-ip' ); ?>
 							</label>
 							<p class="description">
-								<?php echo \esc_html__( 'When disabled, the plugin calculates the result (for diagnostics) but does not replace REMOTE_ADDR.', 'essential-verified-client-ip' ); ?>
+								<?php echo \esc_html__( 'When disabled, the plugin calculates the result (for diagnostics) but does not replace REMOTE_ADDR.', 'gryphon-verified-client-ip' ); ?>
 							</p>
 						</td>
 					</tr>
 					<tr>
 						<th scope="row">
-							<label for="vcip_forward_limit"><?php echo \esc_html__( 'Forward Limit', 'essential-verified-client-ip' ); ?></label>
+							<label for="vcip_forward_limit"><?php echo \esc_html__( 'Forward Limit', 'gryphon-verified-client-ip' ); ?></label>
 						</th>
 						<td>
 							<input type="number" id="vcip_forward_limit" name="vcip_forward_limit"
@@ -212,40 +212,40 @@ final class AdminPage {
 									max="<?php echo (int) Settings::FORWARD_LIMIT_MAX; ?>"
 									class="small-text">
 							<p class="description">
-								<?php echo \esc_html__( 'Maximum number of trusted proxy hops to traverse (1–20).', 'essential-verified-client-ip' ); ?>
+								<?php echo \esc_html__( 'Maximum number of trusted proxy hops to traverse (1–20).', 'gryphon-verified-client-ip' ); ?>
 							</p>
 						</td>
 					</tr>
 					<tr>
-						<th scope="row"><?php echo \esc_html__( 'Process Proto', 'essential-verified-client-ip' ); ?></th>
+						<th scope="row"><?php echo \esc_html__( 'Process Proto', 'gryphon-verified-client-ip' ); ?></th>
 						<td>
 							<label>
 								<input type="hidden" name="vcip_process_proto" value="0">
 								<input type="checkbox" name="vcip_process_proto" value="1"
 									<?php echo $settings->process_proto ? 'checked' : ''; ?>>
-								<?php echo \esc_html__( 'Set HTTPS and REQUEST_SCHEME from proxy headers', 'essential-verified-client-ip' ); ?>
+								<?php echo \esc_html__( 'Set HTTPS and REQUEST_SCHEME from proxy headers', 'gryphon-verified-client-ip' ); ?>
 							</label>
 						</td>
 					</tr>
 					<tr>
-						<th scope="row"><?php echo \esc_html__( 'Process Host', 'essential-verified-client-ip' ); ?></th>
+						<th scope="row"><?php echo \esc_html__( 'Process Host', 'gryphon-verified-client-ip' ); ?></th>
 						<td>
 							<label>
 								<input type="hidden" name="vcip_process_host" value="0">
 								<input type="checkbox" name="vcip_process_host" value="1"
 									<?php echo $settings->process_host ? 'checked' : ''; ?>>
-								<?php echo \esc_html__( 'Set HTTP_HOST and SERVER_NAME from proxy headers', 'essential-verified-client-ip' ); ?>
+								<?php echo \esc_html__( 'Set HTTP_HOST and SERVER_NAME from proxy headers', 'gryphon-verified-client-ip' ); ?>
 							</label>
 							<p class="description">
-								<?php echo \esc_html__( 'Off by default. Enable only if your reverse proxy reports the original host.', 'essential-verified-client-ip' ); ?>
+								<?php echo \esc_html__( 'Off by default. Enable only if your reverse proxy reports the original host.', 'gryphon-verified-client-ip' ); ?>
 							</p>
 						</td>
 					</tr>
 				</table>
 
-				<h2><?php echo \esc_html__( 'Forwarding Schemes', 'essential-verified-client-ip' ); ?></h2>
+				<h2><?php echo \esc_html__( 'Forwarding Schemes', 'gryphon-verified-client-ip' ); ?></h2>
 				<p class="description">
-					<?php echo \esc_html__( 'Schemes are checked in priority order (top = highest). Use the arrows to reorder.', 'essential-verified-client-ip' ); ?>
+					<?php echo \esc_html__( 'Schemes are checked in priority order (top = highest). Use the arrows to reorder.', 'gryphon-verified-client-ip' ); ?>
 				</p>
 
 				<div id="vcip-schemes">
@@ -258,16 +258,16 @@ final class AdminPage {
 
 				<p>
 					<button type="button" class="button" id="vcip-add-scheme">
-						<?php echo \esc_html__( '+ Add Scheme', 'essential-verified-client-ip' ); ?>
+						<?php echo \esc_html__( '+ Add Scheme', 'gryphon-verified-client-ip' ); ?>
 					</button>
 				</p>
 
 				<?php
 				if ( \function_exists( 'submit_button' ) ) {
-					\submit_button( __( 'Save Settings', 'essential-verified-client-ip' ) );
+					\submit_button( __( 'Save Settings', 'gryphon-verified-client-ip' ) );
 				} else {
 					echo '<p><input type="submit" class="button button-primary" value="'
-						. \esc_attr__( 'Save Settings', 'essential-verified-client-ip' ) . '"></p>';
+						. \esc_attr__( 'Save Settings', 'gryphon-verified-client-ip' ) . '"></p>';
 				}
 				?>
 			</form>
@@ -292,7 +292,7 @@ final class AdminPage {
 		<div class="vcip-scheme-panel postbox" data-index="<?php echo (int) $index; ?>">
 			<div class="postbox-header" style="<?php echo \esc_attr( $header_bg ); ?>">
 				<h3 class="hndle">
-					<span class="vcip-scheme-name"><?php echo \esc_html( $scheme->name ? $scheme->name : __( 'New Scheme', 'essential-verified-client-ip' ) ); ?></span>
+					<span class="vcip-scheme-name"><?php echo \esc_html( $scheme->name ? $scheme->name : __( 'New Scheme', 'gryphon-verified-client-ip' ) ); ?></span>
 				</h3>
 				<div class="vcip-scheme-controls" style="display:flex;align-items:center;gap:0.375rem;margin-left:auto;padding-right:0.625rem;">
 					<label style="display:flex;align-items:center;gap:0.25rem;font-weight:normal;cursor:pointer;padding-right:0.625rem;">
@@ -300,17 +300,17 @@ final class AdminPage {
 						<input type="checkbox" name="<?php echo \esc_attr( $prefix ); ?>[enabled]" value="1"
 							class="vcip-enabled-checkbox"
 							<?php echo $scheme->enabled ? 'checked' : ''; ?>>
-						<?php echo \esc_html__( 'Enabled', 'essential-verified-client-ip' ); ?>
+						<?php echo \esc_html__( 'Enabled', 'gryphon-verified-client-ip' ); ?>
 					</label>
-					<button type="button" class="button button-small vcip-move-up" title="<?php echo \esc_attr__( 'Move up', 'essential-verified-client-ip' ); ?>">&uarr;</button>
-					<button type="button" class="button button-small vcip-move-down" title="<?php echo \esc_attr__( 'Move down', 'essential-verified-client-ip' ); ?>">&darr;</button>
+					<button type="button" class="button button-small vcip-move-up" title="<?php echo \esc_attr__( 'Move up', 'gryphon-verified-client-ip' ); ?>">&uarr;</button>
+					<button type="button" class="button button-small vcip-move-down" title="<?php echo \esc_attr__( 'Move down', 'gryphon-verified-client-ip' ); ?>">&darr;</button>
 				</div>
 			</div>
 			<div class="inside" style="display:none;">
 				<table class="form-table" role="presentation">
 					<tr>
 						<th scope="row">
-							<label><?php echo \esc_html__( 'Name', 'essential-verified-client-ip' ); ?></label>
+							<label><?php echo \esc_html__( 'Name', 'gryphon-verified-client-ip' ); ?></label>
 						</th>
 						<td>
 							<input type="text" name="<?php echo \esc_attr( $prefix ); ?>[name]"
@@ -321,7 +321,7 @@ final class AdminPage {
 					</tr>
 					<tr>
 						<th scope="row">
-							<label><?php echo \esc_html__( 'Header', 'essential-verified-client-ip' ); ?></label>
+							<label><?php echo \esc_html__( 'Header', 'gryphon-verified-client-ip' ); ?></label>
 						</th>
 						<td>
 							<input type="text" name="<?php echo \esc_attr( $prefix ); ?>[header]"
@@ -333,32 +333,32 @@ final class AdminPage {
 					</tr>
 					<tr>
 						<th scope="row">
-							<label><?php echo \esc_html__( 'Token', 'essential-verified-client-ip' ); ?></label>
+							<label><?php echo \esc_html__( 'Token', 'gryphon-verified-client-ip' ); ?></label>
 						</th>
 						<td>
 							<input type="text" name="<?php echo \esc_attr( $prefix ); ?>[token]"
 									value="<?php echo \esc_attr( $scheme->token ?? '' ); ?>"
 									class="regular-text"
-									placeholder="<?php echo \esc_attr__( 'e.g. for (leave blank for plain lists)', 'essential-verified-client-ip' ); ?>">
+									placeholder="<?php echo \esc_attr__( 'e.g. for (leave blank for plain lists)', 'gryphon-verified-client-ip' ); ?>">
 							<p class="description">
-								<?php echo \esc_html__( 'For structured headers like RFC 7239 Forwarded, specify the token (e.g. "for").', 'essential-verified-client-ip' ); ?>
+								<?php echo \esc_html__( 'For structured headers like RFC 7239 Forwarded, specify the token (e.g. "for").', 'gryphon-verified-client-ip' ); ?>
 							</p>
 						</td>
 					</tr>
 					<tr>
 						<th scope="row">
-							<label><?php echo \esc_html__( 'Trusted Proxies', 'essential-verified-client-ip' ); ?></label>
+							<label><?php echo \esc_html__( 'Trusted Proxies', 'gryphon-verified-client-ip' ); ?></label>
 						</th>
 						<td>
 							<textarea name="<?php echo \esc_attr( $prefix ); ?>[proxies]"
 										rows="6" class="large-text code"
-										placeholder="<?php echo \esc_attr__( "One IP or CIDR per line, e.g.\n10.0.0.0/8\n192.168.1.1\n::1/128", 'essential-verified-client-ip' ); ?>"
+										placeholder="<?php echo \esc_attr__( "One IP or CIDR per line, e.g.\n10.0.0.0/8\n192.168.1.1\n::1/128", 'gryphon-verified-client-ip' ); ?>"
 							><?php echo \esc_textarea( \implode( "\n", $scheme->proxies ) ); ?></textarea>
 						</td>
 					</tr>
 					<tr>
 						<th scope="row">
-							<label><?php echo \esc_html__( 'Notes', 'essential-verified-client-ip' ); ?></label>
+							<label><?php echo \esc_html__( 'Notes', 'gryphon-verified-client-ip' ); ?></label>
 						</th>
 						<td>
 							<textarea name="<?php echo \esc_attr( $prefix ); ?>[notes]"
@@ -370,8 +370,8 @@ final class AdminPage {
 				</table>
 				<p>
 						<button type="button" class="button-link button-link-delete vcip-delete-scheme"
-								title="<?php echo \esc_attr__( 'Delete this scheme', 'essential-verified-client-ip' ); ?>">
-							<?php echo \esc_html__( 'Delete Scheme', 'essential-verified-client-ip' ); ?>
+								title="<?php echo \esc_attr__( 'Delete this scheme', 'gryphon-verified-client-ip' ); ?>">
+							<?php echo \esc_html__( 'Delete Scheme', 'gryphon-verified-client-ip' ); ?>
 						</button>
 					</p>
 			</div>
@@ -483,7 +483,7 @@ final class AdminPage {
 			|| ! \wp_verify_nonce( \sanitize_text_field( \wp_unslash( $_POST['vcip_diag_nonce'] ) ), 'vcip_diagnostics' )
 		) {
 			if ( \function_exists( 'add_settings_error' ) ) {
-				\add_settings_error( 'vcip_settings', 'vcip_nonce_error', __( 'Security check failed.', 'essential-verified-client-ip' ), 'error' );
+				\add_settings_error( 'vcip_settings', 'vcip_nonce_error', __( 'Security check failed.', 'gryphon-verified-client-ip' ), 'error' );
 			}
 			return;
 		}
@@ -497,7 +497,7 @@ final class AdminPage {
 			Logger::info( \sprintf( 'Diagnostics recording started (max %d requests)', $count ), 'admin' );
 
 			if ( \function_exists( 'add_settings_error' ) ) {
-				\add_settings_error( 'vcip_settings', 'vcip_diag_started', __( 'Diagnostics recording started.', 'essential-verified-client-ip' ), 'success' );
+				\add_settings_error( 'vcip_settings', 'vcip_diag_started', __( 'Diagnostics recording started.', 'gryphon-verified-client-ip' ), 'success' );
 			}
 		} elseif ( 'clear' === $action ) {
 			Diagnostics::clear();
@@ -505,7 +505,7 @@ final class AdminPage {
 			Logger::info( 'Diagnostic data cleared', 'admin' );
 
 			if ( \function_exists( 'add_settings_error' ) ) {
-				\add_settings_error( 'vcip_settings', 'vcip_diag_cleared', __( 'Diagnostic data cleared.', 'essential-verified-client-ip' ), 'success' );
+				\add_settings_error( 'vcip_settings', 'vcip_diag_cleared', __( 'Diagnostic data cleared.', 'gryphon-verified-client-ip' ), 'success' );
 			}
 		}
 	}
@@ -522,12 +522,12 @@ final class AdminPage {
 		$log   = Diagnostics::get_log();
 
 		?>
-		<h2><?php echo \esc_html__( 'Diagnostics', 'essential-verified-client-ip' ); ?></h2>
+		<h2><?php echo \esc_html__( 'Diagnostics', 'gryphon-verified-client-ip' ); ?></h2>
 
 		<div class="notice notice-warning inline" style="margin:0.9375rem 0;">
 			<p>
-				<strong><?php echo \esc_html__( 'Privacy Notice:', 'essential-verified-client-ip' ); ?></strong>
-				<?php echo \esc_html__( 'Diagnostic data contains IP addresses and HTTP headers, which may be considered personal data under GDPR and similar regulations. Clear diagnostics promptly after use.', 'essential-verified-client-ip' ); ?>
+				<strong><?php echo \esc_html__( 'Privacy Notice:', 'gryphon-verified-client-ip' ); ?></strong>
+				<?php echo \esc_html__( 'Diagnostic data contains IP addresses and HTTP headers, which may be considered personal data under GDPR and similar regulations. Clear diagnostics promptly after use.', 'gryphon-verified-client-ip' ); ?>
 			</p>
 		</div>
 
@@ -541,7 +541,7 @@ final class AdminPage {
 			<table class="form-table" role="presentation">
 				<tr>
 					<th scope="row">
-						<label for="vcip_diag_count"><?php echo \esc_html__( 'Requests to record', 'essential-verified-client-ip' ); ?></label>
+						<label for="vcip_diag_count"><?php echo \esc_html__( 'Requests to record', 'gryphon-verified-client-ip' ); ?></label>
 					</th>
 					<td>
 						<input type="number" id="vcip_diag_count" name="vcip_diag_count"
@@ -552,21 +552,21 @@ final class AdminPage {
 					</td>
 				</tr>
 				<tr>
-					<th scope="row"><?php echo \esc_html__( 'Status', 'essential-verified-client-ip' ); ?></th>
+					<th scope="row"><?php echo \esc_html__( 'Status', 'gryphon-verified-client-ip' ); ?></th>
 					<td>
 						<?php if ( $state['recording'] ) : ?>
-							<span style="color:green;font-weight:bold;">&#9679; <?php echo \esc_html__( 'Recording', 'essential-verified-client-ip' ); ?></span>
+							<span style="color:green;font-weight:bold;">&#9679; <?php echo \esc_html__( 'Recording', 'gryphon-verified-client-ip' ); ?></span>
 							<?php
 							// translators: %1$d is the number of recorded requests, %2$d is the recording limit.
-							$recorded_text = \sprintf( __( '%1$d / %2$d requests recorded', 'essential-verified-client-ip' ), \count( $log ), $state['max_requests'] );
+							$recorded_text = \sprintf( __( '%1$d / %2$d requests recorded', 'gryphon-verified-client-ip' ), \count( $log ), $state['max_requests'] );
 							?>
 						— <?php echo \esc_html( $recorded_text ); ?>
 						<?php else : ?>
-							<span style="color:#999;">&#9679; <?php echo \esc_html__( 'Stopped', 'essential-verified-client-ip' ); ?></span>
+							<span style="color:#999;">&#9679; <?php echo \esc_html__( 'Stopped', 'gryphon-verified-client-ip' ); ?></span>
 							<?php if ( [] !== $log ) : ?>
 								<?php
 								// translators: %d is the number of recorded requests.
-								$recorded_text = \sprintf( __( '%d requests recorded', 'essential-verified-client-ip' ), \count( $log ) );
+								$recorded_text = \sprintf( __( '%d requests recorded', 'gryphon-verified-client-ip' ), \count( $log ) );
 								?>
 							— <?php echo \esc_html( $recorded_text ); ?>
 							<?php endif; ?>
@@ -578,40 +578,40 @@ final class AdminPage {
 			<p>
 				<?php if ( ! $state['recording'] ) : ?>
 					<button type="submit" name="vcip_diag_action" value="start" class="button button-primary">
-						<?php echo \esc_html__( 'Start Diagnostics', 'essential-verified-client-ip' ); ?>
+						<?php echo \esc_html__( 'Start Diagnostics', 'gryphon-verified-client-ip' ); ?>
 					</button>
 				<?php else : ?>
 					<button type="submit" name="vcip_diag_action" value="start" class="button button-primary" disabled>
-						<?php echo \esc_html__( 'Start Diagnostics', 'essential-verified-client-ip' ); ?>
+						<?php echo \esc_html__( 'Start Diagnostics', 'gryphon-verified-client-ip' ); ?>
 					</button>
 				<?php endif; ?>
 
 				<?php if ( [] !== $log ) : ?>
 					<button type="submit" name="vcip_diag_action" value="clear" class="button"
-							onclick="return confirm(<?php echo \esc_attr( (string) \wp_json_encode( __( 'Clear all diagnostic data?', 'essential-verified-client-ip' ) ) ); ?>);">
-						<?php echo \esc_html__( 'Clear Diagnostics', 'essential-verified-client-ip' ); ?>
+							onclick="return confirm(<?php echo \esc_attr( (string) \wp_json_encode( __( 'Clear all diagnostic data?', 'gryphon-verified-client-ip' ) ) ); ?>);">
+						<?php echo \esc_html__( 'Clear Diagnostics', 'gryphon-verified-client-ip' ); ?>
 					</button>
 				<?php endif; ?>
 	
 				<a href="<?php echo \esc_url( \remove_query_arg( 'vcip_diag_action' ) ); ?>" class="button">
-					<?php echo \esc_html__( 'Refresh', 'essential-verified-client-ip' ); ?>
+					<?php echo \esc_html__( 'Refresh', 'gryphon-verified-client-ip' ); ?>
 				</a>
 			</p>
 		</form>
 
 		<?php if ( [] !== $log ) : ?>
-			<h3><?php echo \esc_html__( 'Recorded Requests', 'essential-verified-client-ip' ); ?></h3>
+			<h3><?php echo \esc_html__( 'Recorded Requests', 'gryphon-verified-client-ip' ); ?></h3>
 			<table class="wp-list-table widefat striped">
 				<thead>
 					<tr>
 						<th>#</th>
-						<th><?php echo \esc_html__( 'Time', 'essential-verified-client-ip' ); ?></th>
-						<th><?php echo \esc_html__( 'Method', 'essential-verified-client-ip' ); ?></th>
-						<th><?php echo \esc_html__( 'URI', 'essential-verified-client-ip' ); ?></th>
-						<th><?php echo \esc_html__( 'Original REMOTE_ADDR', 'essential-verified-client-ip' ); ?></th>
-						<th><?php echo \esc_html__( 'Resolved IP', 'essential-verified-client-ip' ); ?></th>
-						<th><?php echo \esc_html__( 'Hops', 'essential-verified-client-ip' ); ?></th>
-						<th><?php echo \esc_html__( 'Changed', 'essential-verified-client-ip' ); ?></th>
+						<th><?php echo \esc_html__( 'Time', 'gryphon-verified-client-ip' ); ?></th>
+						<th><?php echo \esc_html__( 'Method', 'gryphon-verified-client-ip' ); ?></th>
+						<th><?php echo \esc_html__( 'URI', 'gryphon-verified-client-ip' ); ?></th>
+						<th><?php echo \esc_html__( 'Original REMOTE_ADDR', 'gryphon-verified-client-ip' ); ?></th>
+						<th><?php echo \esc_html__( 'Resolved IP', 'gryphon-verified-client-ip' ); ?></th>
+						<th><?php echo \esc_html__( 'Hops', 'gryphon-verified-client-ip' ); ?></th>
+						<th><?php echo \esc_html__( 'Changed', 'gryphon-verified-client-ip' ); ?></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -646,7 +646,7 @@ final class AdminPage {
 	private static function render_diagnostic_detail( array $entry ): void {
 		// Step trace.
 		if ( ! empty( $entry['steps'] ) && \is_array( $entry['steps'] ) ) {
-			echo '<h4>' . \esc_html__( 'Client IP calculation', 'essential-verified-client-ip' ) . '</h4>';
+			echo '<h4>' . \esc_html__( 'Client IP calculation', 'gryphon-verified-client-ip' ) . '</h4>';
 			echo '<ol>';
 			foreach ( $entry['steps'] as $step ) {
 				echo '<li>';
@@ -657,18 +657,18 @@ final class AdminPage {
 				echo '</li>';
 			}
 			echo '</ol>';
-			echo '<p>' . \esc_html__( 'Note: If initial REMOTE_ADDR is not as you expect, then it may already be resolved by Apache \'mod_remoteip\' or nginx \'set_real_ip_from\'. See the user guide for details.', 'essential-verified-client-ip' ) . '</p>';
+			echo '<p>' . \esc_html__( 'Note: If initial REMOTE_ADDR is not as you expect, then it may already be resolved by Apache \'mod_remoteip\' or nginx \'set_real_ip_from\'. See the user guide for details.', 'gryphon-verified-client-ip' ) . '</p>';
 		}
 
 		// Proto info.
 		if ( ! empty( $entry['proto'] ) && \is_array( $entry['proto'] ) ) {
-			echo '<h4>' . \esc_html__( 'Proto / Host', 'essential-verified-client-ip' ) . '</h4>';
+			echo '<h4>' . \esc_html__( 'Proto / Host', 'gryphon-verified-client-ip' ) . '</h4>';
 			echo '<pre>' . \esc_html( (string) \wp_json_encode( $entry['proto'], \JSON_PRETTY_PRINT ) ) . '</pre>';
 		}
 
 		// All headers.
 		if ( ! empty( $entry['headers'] ) && \is_array( $entry['headers'] ) ) {
-			echo '<h4>' . \esc_html__( 'Original Headers', 'essential-verified-client-ip' ) . '</h4>';
+			echo '<h4>' . \esc_html__( 'Original Headers', 'gryphon-verified-client-ip' ) . '</h4>';
 			echo '<table class="widefat" style="max-width:50rem;">';
 			foreach ( $entry['headers'] as $key => $value ) {
 				echo '<tr><td><code>' . \esc_html( (string) $key ) . '</code></td>';
@@ -686,7 +686,7 @@ final class AdminPage {
 	 * Render the User Guide tab from the pre-built HTML file.
 	 */
 	private static function render_user_guide_tab(): void {
-		$plugin_file = \dirname( __DIR__ ) . '/essential-verified-client-ip.php';
+		$plugin_file = \dirname( __DIR__ ) . '/gryphon-verified-client-ip.php';
 		$plugin_uri  = '';
 		$version     = Plugin::version();
 
@@ -701,13 +701,13 @@ final class AdminPage {
 		echo '<div class="vcip-user-guide-tab" style="max-width:56.25rem;">';
 		echo '<p style="margin-top:1em;">';
 		// translators: %s is the plugin version number.
-		echo \esc_html( \sprintf( __( 'Version %s', 'essential-verified-client-ip' ), $version ) );
+		echo \esc_html( \sprintf( __( 'Version %s', 'gryphon-verified-client-ip' ), $version ) );
 		if ( '' !== $plugin_uri ) {
 			echo ' &mdash; ';
 			echo \wp_kses(
 				\sprintf(
 					// translators: %1$s is the opening <a> tag, %2$s is the closing </a> tag.
-					__( 'For the latest version of the guide %1$svisit plugin site%2$s.', 'essential-verified-client-ip' ),
+					__( 'For the latest version of the guide %1$svisit plugin site%2$s.', 'gryphon-verified-client-ip' ),
 					'<a href="' . \esc_url( $plugin_uri ) . '" target="_blank" rel="noopener noreferrer">',
 					'</a>',
 				),
@@ -726,7 +726,7 @@ final class AdminPage {
 
 		if ( ! \file_exists( $html_file ) ) {
 			echo '<div class="notice notice-warning"><p>';
-			echo \esc_html__( 'User guide not available. Run the build script to generate it.', 'essential-verified-client-ip' );
+			echo \esc_html__( 'User guide not available. Run the build script to generate it.', 'gryphon-verified-client-ip' );
 			echo '</p></div>';
 			echo '</div>';
 			return;
@@ -735,7 +735,7 @@ final class AdminPage {
 		$html = \file_get_contents( $html_file );
 		if ( false === $html ) {
 			echo '<div class="notice notice-error"><p>';
-			echo \esc_html__( 'Could not read user guide file.', 'essential-verified-client-ip' );
+			echo \esc_html__( 'Could not read user guide file.', 'gryphon-verified-client-ip' );
 			echo '</p></div>';
 			echo '</div>';
 			return;

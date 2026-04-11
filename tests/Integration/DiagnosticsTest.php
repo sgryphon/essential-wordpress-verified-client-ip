@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Essential\VerifiedClientIp\Tests\Integration;
+namespace Gryphon\VerifiedClientIp\Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
-use Essential\VerifiedClientIp\Diagnostics;
-use Essential\VerifiedClientIp\ResolverResult;
-use Essential\VerifiedClientIp\ResolverStep;
+use Gryphon\VerifiedClientIp\Diagnostics;
+use Gryphon\VerifiedClientIp\ResolverResult;
+use Gryphon\VerifiedClientIp\ResolverStep;
 
 /**
- * @covers \Essential\VerifiedClientIp\Diagnostics
+ * @covers \Gryphon\VerifiedClientIp\Diagnostics
  */
 final class DiagnosticsTest extends TestCase {
 

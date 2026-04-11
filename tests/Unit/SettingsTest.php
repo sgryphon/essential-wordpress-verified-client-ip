@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Essential\VerifiedClientIp\Tests\Unit;
+namespace Gryphon\VerifiedClientIp\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Essential\VerifiedClientIp\Scheme;
-use Essential\VerifiedClientIp\Settings;
+use Gryphon\VerifiedClientIp\Scheme;
+use Gryphon\VerifiedClientIp\Settings;
 
 /**
  * Unit tests for the Settings data model and validation.

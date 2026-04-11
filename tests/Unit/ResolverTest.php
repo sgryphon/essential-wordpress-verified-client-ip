@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Essential\VerifiedClientIp\Tests\Unit;
+namespace Gryphon\VerifiedClientIp\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Essential\VerifiedClientIp\Resolver;
-use Essential\VerifiedClientIp\Scheme;
+use Gryphon\VerifiedClientIp\Resolver;
+use Gryphon\VerifiedClientIp\Scheme;
 
 /**
  * Extensive tests for the core IP resolution algorithm.

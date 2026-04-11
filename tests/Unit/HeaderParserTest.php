@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Essential\VerifiedClientIp\Tests\Unit;
+namespace Gryphon\VerifiedClientIp\Tests\Unit;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Essential\VerifiedClientIp\HeaderParser;
+use Gryphon\VerifiedClientIp\HeaderParser;
 
 /**
  * Tests for HeaderParser: RFC 7239, X-Forwarded-For, single-value, multi-header.

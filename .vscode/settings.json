@@ -36,5 +36,9 @@
   "phpSniffer.autoDetect": false,
   "[php]": {
     "editor.defaultFormatter": "wongjn.php-sniffer"
+  },
+  "chat.tools.terminal.autoApprove": {
+    "git mv": true,
+    "composer": true
   }
 }

@@ -41,7 +41,7 @@ final class Plugin {
 	 * Plugin version string.
 	 */
 	public static function version(): string {
-		return \defined( 'VCIP_VERSION' ) ? (string) \constant( 'VCIP_VERSION' ) : '1.0.1';
+		return \defined( 'VCIP_VERSION' ) ? (string) \constant( 'VCIP_VERSION' ) : '0.1.0';
 	}
 
 	/**

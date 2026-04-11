@@ -4,7 +4,7 @@ Tags: ip address, client ip, user ip, visitor ip, proxy
 Plugin URI: https://github.com/sgryphon/essential-wordpress-verified-client-ip
 Requires at least: 6.4
 Tested up to: 6.9
-Stable tag: 1.0.1
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -103,7 +103,17 @@ and clear the data when you are done.
 5. Diagnostics detail — full step trace showing each hop evaluated by the algorithm.
 6. Comments page — WordPress comments showing the verified client IP for each commenter.
 
+== Upgrade Notice ==
+
+= 1.1.0 =
+* Update plugin display name and slug
+* Update namespace and package names
+
 == Changelog ==
+
+= 1.1.0 =
+* Update plugin display name and slug
+* Update namespace and package names
 
 = 1.0.1 =
 * Minor fixes for initial release.
@@ -116,7 +126,3 @@ and clear the data when you are done.
 * Must-use plugin support.
 * WordPress hooks: `vcip_resolved_ip`, `vcip_trusted_proxies`, `vcip_ip_resolved`.
 
-== Upgrade Notice ==
-
-= 1.0.1 =
-Initial release.

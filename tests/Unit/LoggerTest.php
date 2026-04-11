@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Essential\VerifiedClientIp\Tests\Unit;
+namespace Gryphon\VerifiedClientIp\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Essential\VerifiedClientIp\Logger;
+use Gryphon\VerifiedClientIp\Logger;
 
 /**
- * @covers \Essential\VerifiedClientIp\Logger
+ * @covers \Gryphon\VerifiedClientIp\Logger
  */
 final class LoggerTest extends TestCase {
 

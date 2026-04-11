@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Essential\VerifiedClientIp\Tests\Unit;
+namespace Gryphon\VerifiedClientIp\Tests\Unit;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Essential\VerifiedClientIp\IpUtils;
+use Gryphon\VerifiedClientIp\IpUtils;
 
 /**
  * Tests for IpUtils: CIDR matching, normalisation, port stripping, validation.

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Essential\VerifiedClientIp;
+namespace Gryphon\VerifiedClientIp;
 
 /**
- * Simple logger for Essential Verified Client IP.
+ * Simple logger for Gryphon Verified Client IP.
  *
  * Wraps PHP's error_log() with severity levels and a consistent prefix.
  * Request-level logging is controlled by the WP_DEBUG / VCIP_LOG_REQUESTS
@@ -14,7 +14,7 @@ namespace Essential\VerifiedClientIp;
 final class Logger {
 
 	/** @var string Log prefix for all messages. */
-	private const PREFIX = 'Essential Verified Client IP';
+	private const PREFIX = 'Gryphon VCIP';
 
 	/**
 	 * Log an error message.

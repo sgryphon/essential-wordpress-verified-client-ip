@@ -1,4 +1,4 @@
-=== Essential Verified Client IP ===
+=== Gryphon Verified Client IP ===
 Contributors: sgryphon
 Tags: ip address, client ip, user ip, visitor ip, proxy
 Plugin URI: https://github.com/sgryphon/essential-wordpress-verified-client-ip
@@ -12,7 +12,7 @@ Determines the true client IP by verifying Forwarded and similar headers, traver
 
 == Description ==
 
-Essential Verified Client IP determines the client IP by walking the forwarding chain, only trusting addresses
+Gryphon Verified Client IP determines the client IP by walking the forwarding chain, only trusting addresses
 that match your configured proxy networks (by CIDR range). It stops at the first untrusted hop, which is the 
 true client IP. The resolved address replaces `REMOTE_ADDR` early in the WordPress lifecycle, allowing other Plugins
 to use it.
@@ -27,7 +27,7 @@ The component includes a diagnostics panel that can be enabled to recording inco
 full header dumps and algorithm step traces for debugging.
 
 For more detail see the Github project site
-[Essential WordPress Verified Client IP](https://github.com/sgryphon/essential-wordpress-verified-client-ip)
+[Gryphon WordPress Verified Client IP](https://github.com/sgryphon/essential-wordpress-verified-client-ip)
 
 = Compatibility Note =
 
@@ -43,10 +43,10 @@ additional proxies not covered by the engine.
 3. Upload the zip and click **Install Now**.
 4. Click **Activate Plugin**.
 
-Or manually upload the `essential-verified-client-ip` folder to
+Or manually upload the `gryphon-verified-client-ip` folder to
 `wp-content/plugins/` and activate via the Plugins screen.
 
-Navigate to **Settings → Essential Verified Client IP** in the WordPress admin.
+Navigate to **Settings → Verified Client IP** in the WordPress admin.
 
 Configure with your proxy setup, or accept the defaults if suitable.
 

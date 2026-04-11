@@ -2,7 +2,7 @@
 
 ## Overview
 
-Essential Verified Client IP determines the true IP address of visitors to your
+Gryphon Verified Client IP determines the true IP address of visitors to your
 WordPress site. When your site sits behind proxies, load balancers, or CDNs,
 the standard `REMOTE_ADDR` server variable contains the proxy's IP rather
 than the visitor's. This plugin walks the forwarding header chain and
@@ -16,12 +16,12 @@ at the first untrusted address — the real client IP.
 3. Upload the zip and click **Install Now**.
 4. Click **Activate Plugin**.
 
-Or manually upload the `essential-verified-client-ip` folder to
+Or manually upload the `gryphon-verified-client-ip` folder to
 `wp-content/plugins/` and activate via the Plugins screen.
 
 ## Configuration
 
-Navigate to **Settings → Essential Verified Client IP** in the WordPress admin.
+Navigate to **Settings → Verified Client IP** in the WordPress admin.
 
 ### General Settings
 
@@ -139,13 +139,13 @@ need, and clear the data as soon as you're done debugging.
 
 For the earliest possible execution, install as a must-use plugin:
 
-1. Copy `essential-verified-client-ip.php` and the `src/` directory to
-   `wp-content/mu-plugins/essential-verified-client-ip/`.
-2. Create `wp-content/mu-plugins/essential-verified-client-ip-loader.php`:
+1. Copy `gryphon-verified-client-ip.php` and the `src/` directory to
+   `wp-content/mu-plugins/gryphon-verified-client-ip/`.
+2. Create `wp-content/mu-plugins/gryphon-verified-client-ip-loader.php`:
 
 ```php
 <?php
-require_once ABSPATH . 'wp-content/mu-plugins/essential-verified-client-ip/essential-verified-client-ip.php';
+require_once ABSPATH . 'wp-content/mu-plugins/gryphon-verified-client-ip/gryphon-verified-client-ip.php';
 ```
 
 The plugin will run at `muplugins_loaded` priority 0 instead of

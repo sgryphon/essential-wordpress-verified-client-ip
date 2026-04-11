@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Build a distributable zip for the Essential Verified Client IP WordPress plugin.
+# Build a distributable zip for the Gryphon Verified Client IP WordPress plugin.
 #
 # Usage: ./build.sh
-# Output: build/essential-verified-client-ip.zip
+# Output: build/gryphon-verified-client-ip.zip
 
 set -euo pipefail
 
-PLUGIN_SLUG="essential-verified-client-ip"
+PLUGIN_SLUG="gryphon-verified-client-ip"
 BUILD_DIR="build"
 DIST_DIR="${BUILD_DIR}/${PLUGIN_SLUG}"
 
@@ -29,7 +29,7 @@ composer install --no-dev --optimize-autoloader --quiet
 echo "==> Copying files..."
 cp -r src/ "${DIST_DIR}/src/"
 cp -r vendor/ "${DIST_DIR}/vendor/"
-cp essential-verified-client-ip.php "${DIST_DIR}/"
+cp gryphon-verified-client-ip.php "${DIST_DIR}/"
 cp uninstall.php "${DIST_DIR}/"
 cp -r assets/ "${DIST_DIR}/assets/"
 cp composer.json "${DIST_DIR}/"

@@ -1,11 +1,11 @@
-# Build a distributable zip for the Essential Verified Client IP WordPress plugin.
+# Build a distributable zip for the Gryphon Verified Client IP WordPress plugin.
 #
 # Usage: .\build.ps1
-# Output: build\essential-verified-client-ip.zip
+# Output: build\gryphon-verified-client-ip.zip
 
 $ErrorActionPreference = 'Stop'
 
-$PluginSlug = 'essential-verified-client-ip'
+$PluginSlug = 'gryphon-verified-client-ip'
 $BuildDir = 'build'
 $DistDir = Join-Path $BuildDir $PluginSlug
 
@@ -25,7 +25,7 @@ composer install --no-dev --optimize-autoloader --quiet
 Write-Host '==> Copying files...'
 Copy-Item -Recurse -Path 'src' -Destination (Join-Path $DistDir 'src')
 Copy-Item -Recurse -Path 'vendor' -Destination (Join-Path $DistDir 'vendor')
-Copy-Item -Path 'essential-verified-client-ip.php' -Destination $DistDir
+Copy-Item -Path 'gryphon-verified-client-ip.php' -Destination $DistDir
 Copy-Item -Path 'uninstall.php' -Destination $DistDir
 Copy-Item -Recurse -Path 'assets' -Destination $DistDir
 Copy-Item -Path 'composer.json' -Destination $DistDir

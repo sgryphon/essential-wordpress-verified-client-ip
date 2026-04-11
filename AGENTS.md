@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-**Essential Verified Client IP** is a WordPress plugin (slug: `essential-verified-client-ip`) that determines the true client IP address by verifying Forwarded-For and similar headers, traversing only trusted proxy hops. It replaces `$_SERVER['REMOTE_ADDR']` with the verified IP early in the WordPress lifecycle.
+**Gryphon Verified Client IP** is a WordPress plugin (slug: `gryphon-verified-client-ip`) that determines the true client IP address by verifying Forwarded-For and similar headers, traversing only trusted proxy hops. It replaces `$_SERVER['REMOTE_ADDR']` with the verified IP early in the WordPress lifecycle.
 
 The full specification is in [specifications/Main Specification.md](specifications/Main%20Specification.md).
 
@@ -11,7 +11,7 @@ The full specification is in [specifications/Main Specification.md](specificatio
 - **Language:** PHP 8.1+
 - **Platform:** WordPress 6.4+
 - **License:** GPLv2 or later
-- **Text domain:** `essential-verified-client-ip`
+- **Text domain:** `gryphon-verified-client-ip`
 - **Testing:** PHPUnit (pure unit tests), WP_Mock (integration tests)
 - **Static analysis:** PHPStan or Psalm
 - **Formatter:** PHP_CodeSniffer (PHPCS) with WordPress Coding Standards (WPCS) — `WordPress-Core` standard
@@ -20,9 +20,11 @@ The full specification is in [specifications/Main Specification.md](specificatio
 ## Key Architecture Decisions
 
 ### Execution Timing
+
 The IP resolution hook must fire as early as possible: `muplugins_loaded` (must-use plugin) or `plugins_loaded` at priority 0 (regular plugin). REMOTE_ADDR must be replaced before any other plugin or WordPress core reads it. Admin UI uses later hooks (`admin_init`, `admin_menu`).
 
 ### Core Algorithm
+
 1. Start with `REMOTE_ADDR`.
 2. If it matches a trusted proxy in any enabled scheme (by priority order), read the corresponding header and extract the next address (rightmost first).
 3. Repeat, traversing the chain backwards, up to the configured **Forward Limit** (default: 1).
@@ -32,6 +34,7 @@ The IP resolution hook must fire as early as possible: `muplugins_loaded` (must-
 7. Replace `REMOTE_ADDR` and store the original in `X-Original-Remote-Addr`.
 
 ### Important Behaviours
+
 - **Malformed values** (non-IP strings, empty values) are treated as untrusted — never skipped.
 - **IPv4-mapped IPv6** addresses (e.g. `::ffff:10.0.0.1`) must normalise and match their IPv4 equivalent.
 - **Port numbers** are stripped before matching.
@@ -39,16 +42,19 @@ The IP resolution hook must fire as early as possible: `muplugins_loaded` (must-
 - **Scheme priority**: first matching enabled scheme wins; only one scheme applies per hop.
 
 ### Storage
+
 - All settings stored via WordPress Options API (`wp_options`), prefixed `vcip_` (e.g. `vcip_settings`).
 - Diagnostic data stored as WordPress transients with 24-hour expiry.
 - Per-site in multisite (not network-wide).
 
 ### WordPress Hooks Exposed
+
 - **Filter `vcip_resolved_ip`**: modify the final IP before it is set (receives resolved IP + step trace).
 - **Filter `vcip_trusted_proxies`**: dynamically add proxy addresses before matching.
 - **Action `vcip_ip_resolved`**: fired after replacement (receives new IP, original IP, step trace).
 
 ### Permissions
+
 - Settings and diagnostics require `manage_options` capability.
 - All forms use WordPress nonces (CSRF protection).
 - All inputs must be sanitised and validated.
@@ -64,6 +70,7 @@ Three default schemes ship with the plugin:
 Custom schemes can be added with: Name, Enabled toggle, Proxy addresses/CIDR ranges, Header name, optional Token, optional Notes.
 
 ### Proto & Host Processing
+
 - **Proto** (configurable, default on): sets `$_SERVER['HTTPS']` and `$_SERVER['REQUEST_SCHEME']` from proxy headers. Originals stored in `X-Original-HTTPS` and `X-Original-Request-Scheme`.
 - **Host** (configurable, default off): sets `HTTP_HOST` and `SERVER_NAME`. Original stored in `X-Original-Host`.
 
@@ -78,7 +85,9 @@ Custom schemes can be added with: Name, Enabled toggle, Proxy addresses/CIDR ran
 ## Testing Guidelines
 
 ### Test Organisation
+
 Tests are split across multiple files by concern:
+
 - Algorithm / IP resolution tests (majority of tests)
 - Header parsing tests (RFC 7239 `Forwarded`, `X-Forwarded-For`, etc.)
 - CIDR matching and IPv4/IPv6 normalisation tests
@@ -87,6 +96,7 @@ Tests are split across multiple files by concern:
 - Security / spoofing tests
 
 ### Test Principles
+
 - **Pure unit tests** for the core algorithm — mock `$_SERVER` and WordPress functions. No full WordPress installation required.
 - **Integration tests** via WP_Mock for hook wiring.
 - Include IPv4, IPv6, and IPv4-mapped IPv6 scenarios.
@@ -127,6 +137,7 @@ composer run-script test
 ### Container Compose Environment (Examples Only)
 
 A container compose file under `examples/` provides a local example environment with:
+
 - WordPress on port 8100
 - Proxy chains on ports 8101–8103 (RFC 7239 `Forwarded` headers)
 - X-Forwarded-For proxy on port 8112
@@ -137,8 +148,8 @@ IPv6 networking must be explicitly enabled in the compose file. At least one cha
 
 ## File & Naming Conventions
 
-- WordPress plugin slug: `essential-verified-client-ip`
-- Text domain for i18n: `essential-verified-client-ip`
+- WordPress plugin slug: `gryphon-verified-client-ip`
+- Text domain for i18n: `gryphon-verified-client-ip`
 - Option keys prefixed: `vcip_`
 - Transient keys prefixed: `vcip_`
 - Hook names prefixed: `vcip_`

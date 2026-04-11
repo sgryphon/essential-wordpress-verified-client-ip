@@ -1,5 +1,5 @@
 {
-    "name": "essential/verified-client-ip",
+    "name": "gryphon/verified-client-ip",
     "description": "WordPress plugin that determines the true client IP by verifying forwarded headers through trusted proxy hops.",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
@@ -19,12 +19,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Essential\\VerifiedClientIp\\": "src/"
+            "Gryphon\\VerifiedClientIp\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Essential\\VerifiedClientIp\\Tests\\": "tests/"
+            "Gryphon\\VerifiedClientIp\\Tests\\": "tests/"
         }
     },
     "scripts": {

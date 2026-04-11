@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Essential\VerifiedClientIp\Tests\Integration;
+namespace Gryphon\VerifiedClientIp\Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
 

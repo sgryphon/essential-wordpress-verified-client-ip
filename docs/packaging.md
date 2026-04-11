@@ -25,8 +25,8 @@ The script:
 
 1. Runs `composer install --no-dev --optimize-autoloader` to get production
    dependencies only.
-2. Copies the required files into a `build/essential-verified-client-ip/` directory.
-3. Creates `build/essential-verified-client-ip.zip`.
+2. Copies the required files into a `build/gryphon-verified-client-ip/` directory.
+3. Creates `build/gryphon-verified-client-ip.zip`.
 
 ### Manual Build
 
@@ -35,23 +35,23 @@ The script:
 composer install --no-dev --optimize-autoloader
 
 # Create the zip
-mkdir -p build/essential-verified-client-ip
-cp -r src/ vendor/ essential-verified-client-ip.php uninstall.php composer.json \
-      LICENSE README.md build/essential-verified-client-ip/
-cd build && zip -r essential-verified-client-ip.zip essential-verified-client-ip/
+mkdir -p build/gryphon-verified-client-ip
+cp -r src/ vendor/ gryphon-verified-client-ip.php uninstall.php composer.json \
+      LICENSE README.md build/gryphon-verified-client-ip/
+cd build && zip -r gryphon-verified-client-ip.zip gryphon-verified-client-ip/
 ```
 
 ### Files Included in the Zip
 
-| File/Directory               | Purpose                     |
-| --------------------------- | --------------------------- |
-| `essential-verified-client-ip.php` | Main plugin entry point     |
-| `uninstall.php`          | Cleanup handler on deletion |
-| `src/`                   | PHP source classes          |
-| `vendor/`                | Composer autoloader         |
-| `composer.json`          | Dependency manifest         |
-| `LICENSE`                | GPLv2+ license text         |
-| `readme.txt`             | Plugin overview             |
+| File/Directory                   | Purpose                     |
+| -------------------------------- | --------------------------- |
+| `gryphon-verified-client-ip.php` | Main plugin entry point     |
+| `uninstall.php`                  | Cleanup handler on deletion |
+| `src/`                           | PHP source classes          |
+| `vendor/`                        | Composer autoloader         |
+| `composer.json`                  | Dependency manifest         |
+| `LICENSE`                        | GPLv2+ license text         |
+| `readme.txt`                     | Plugin overview             |
 
 Files **excluded** from the zip: `tests/`, `examples/`, `specifications/`,
 `docs/`, `compose.yaml`, `.github/`, `phpcs.xml.dist`, `phpstan.neon`,
@@ -69,7 +69,7 @@ To submit the plugin to the [WordPress Plugin Directory](https://wordpress.org/p
 
 ### Plugin Header Requirements
 
-The plugin header in `essential-verified-client-ip.php` contains all required fields:
+The plugin header in `gryphon-verified-client-ip.php` contains all required fields:
 
 - Plugin Name, Plugin URI, Description
 - Version, Requires at least, Requires PHP
@@ -81,6 +81,6 @@ The plugin header in `essential-verified-client-ip.php` contains all required fi
 
 Update version numbers in these locations when releasing:
 
-1. `essential-verified-client-ip.php` — the `Version:` header and `VCIP_VERSION` constant
+1. `gryphon-verified-client-ip.php` — the `Version:` header and `VCIP_VERSION` constant
 2. `composer.json` — the `version` field (if present)
 3. Tag the Git commit: `git tag v1.0.0 && git push --tags`

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Plugin Name:       Essential Verified Client IP
+ * Plugin Name:       Gryphon Verified Client IP
  * Plugin URI:        https://github.com/sgryphon/essential-wordpress-verified-client-ip
  * Description:       Determines the true client IP by verifying Forwarded and similar headers, traversing only trusted proxy hops.
  * Version:           1.1.0
@@ -11,9 +11,9 @@
  * Author URI:        https://github.com/sgryphon
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:       essential-verified-client-ip
+ * Text Domain:       gryphon-verified-client-ip
  *
- * @package Essential\VerifiedClientIp
+ * @package Gryphon\VerifiedClientIp
  */
 
 declare(strict_types=1);
@@ -38,8 +38,8 @@ if ( file_exists( VCIP_PLUGIN_DIR . 'vendor/autoload.php' ) ) {
 }
 
 // Register IP resolution at the earliest possible hook.
-// For must-use plugins, call Essential\VerifiedClientIp\Plugin::boot() directly instead.
-add_action( 'plugins_loaded', [ Essential\VerifiedClientIp\Plugin::class, 'boot' ], 0 );
+// For must-use plugins, call Gryphon\VerifiedClientIp\Plugin::boot() directly instead.
+add_action( 'plugins_loaded', [ Gryphon\VerifiedClientIp\Plugin::class, 'boot' ], 0 );
 
 // Deactivation hook — flush caches only, do NOT remove data.
 register_deactivation_hook(
@@ -53,5 +53,5 @@ register_deactivation_hook(
 
 // Register admin settings page (only loaded in admin context).
 if ( is_admin() ) {
-	Essential\VerifiedClientIp\AdminPage::register();
+	Gryphon\VerifiedClientIp\AdminPage::register();
 }

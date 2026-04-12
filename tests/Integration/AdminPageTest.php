@@ -206,7 +206,7 @@ final class AdminPageTest extends TestCase {
 	// Plugin action links
 	// ------------------------------------------------------------------
 
-	public function testAddActionLinksPrependsSettingsAndGuideLinks(): void {
+	public function testAddActionLinksAppendsSettingsAndGuideLinks(): void {
 		$existing = [
 			'deactivate' => '<a href="#">Deactivate</a>',
 			'edit'       => '<a href="#">Edit</a>',
@@ -214,12 +214,12 @@ final class AdminPageTest extends TestCase {
 
 		$result = AdminPage::add_action_links( $existing );
 
-		// Settings and Guide should be prepended before existing links.
+		// Settings and Guide should be appended after existing links.
 		$keys = array_keys( $result );
-		$this->assertSame( 'settings', $keys[0] );
-		$this->assertSame( 'guide', $keys[1] );
-		$this->assertSame( 'deactivate', $keys[2] );
-		$this->assertSame( 'edit', $keys[3] );
+		$this->assertSame( 'deactivate', $keys[0] );
+		$this->assertSame( 'edit', $keys[1] );
+		$this->assertSame( 'settings', $keys[2] );
+		$this->assertSame( 'guide', $keys[3] );
 		$this->assertCount( 4, $result );
 	}
 

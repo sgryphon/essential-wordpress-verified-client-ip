@@ -7,7 +7,7 @@ The plugin SHALL add a "Settings" action link to its row on the WordPress Plugin
 #### Scenario: Settings link is present
 
 - **WHEN** an administrator views the WordPress Plugins page
-- **THEN** the plugin's row SHALL display a "Settings" action link before the default action links
+- **THEN** the plugin's row SHALL display a "Settings" action link after the default action links
 
 #### Scenario: Settings link navigates to settings page
 
@@ -21,7 +21,7 @@ The plugin SHALL add a "Guide" action link to its row on the WordPress Plugins p
 #### Scenario: Guide link is present
 
 - **WHEN** an administrator views the WordPress Plugins page
-- **THEN** the plugin's row SHALL display a "Guide" action link after the "Settings" link and before the default action links
+- **THEN** the plugin's row SHALL display a "Guide" action link after the "Settings" link and after the default action links
 
 #### Scenario: Guide link navigates to user guide tab
 

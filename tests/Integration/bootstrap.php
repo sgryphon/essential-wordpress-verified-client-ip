@@ -19,6 +19,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', '/tmp/wordpress/' );
 }
 
+if ( ! defined( 'VCIP_PLUGIN_FILE' ) ) {
+	define( 'VCIP_PLUGIN_FILE', dirname( __DIR__, 2 ) . '/gryphon-verified-client-ip.php' );
+}
+
 /** @var array<string, mixed> Simulated wp_options storage. */
 $GLOBALS['_vcip_test_options'] = [];
 
@@ -257,5 +261,29 @@ if ( ! function_exists( 'wp_cache_flush' ) ) {
 if ( ! function_exists( 'plugin_dir_path' ) ) {
 	function plugin_dir_path( string $file ): string {
 		return dirname( $file ) . '/';
+	}
+}
+
+if ( ! function_exists( 'add_filter' ) ) {
+	function add_filter( string $hook_name, callable $callback, int $priority = 10, int $accepted_args = 1 ): bool {
+		return true;
+	}
+}
+
+if ( ! function_exists( 'plugin_basename' ) ) {
+	function plugin_basename( string $file ): string {
+		return basename( dirname( $file ) ) . '/' . basename( $file );
+	}
+}
+
+if ( ! function_exists( 'admin_url' ) ) {
+	function admin_url( string $path = '', string $scheme = '' ): string {
+		return 'https://example.com/wp-admin/' . ltrim( $path, '/' );
+	}
+}
+
+if ( ! function_exists( 'esc_url' ) ) {
+	function esc_url( string $url, ?array $protocols = null, string $_context = 'display' ): string {
+		return $url;
 	}
 }

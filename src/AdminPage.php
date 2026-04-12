@@ -37,6 +37,11 @@ final class AdminPage {
 		\add_action( 'admin_menu', [ self::class, 'add_menu_page' ] );
 		\add_action( 'admin_init', [ self::class, 'handle_form_submission' ] );
 		\add_action( 'admin_enqueue_scripts', [ self::class, 'enqueue_admin_assets' ] );
+
+		\add_filter(
+			'plugin_action_links_' . \plugin_basename( \VCIP_PLUGIN_FILE ),
+			[ self::class, 'add_action_links' ]
+		);
 	}
 
 	/**
@@ -746,5 +751,23 @@ final class AdminPage {
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- trusted build-time HTML
 		echo $html;
 		echo '</div>';
+	}
+
+	/**
+	 * Add Settings and Guide action links to the plugin row on the Plugins page.
+	 *
+	 * @param array<string, string> $links Existing action links.
+	 * @return array<string, string> Modified action links with Settings and Guide appended.
+	 */
+	public static function add_action_links( array $links ): array {
+		$settings_url = \admin_url( 'options-general.php?page=' . self::MENU_SLUG );
+		$guide_url    = \admin_url( 'options-general.php?page=' . self::MENU_SLUG . '&tab=user-guide' );
+
+		$custom_links = [
+			'settings' => '<a href="' . \esc_url( $settings_url ) . '">' . \esc_html__( 'Settings', 'gryphon-verified-client-ip' ) . '</a>',
+			'guide'    => '<a href="' . \esc_url( $guide_url ) . '">' . \esc_html__( 'Guide', 'gryphon-verified-client-ip' ) . '</a>',
+		];
+
+		return \array_merge( $links, $custom_links );
 	}
 }

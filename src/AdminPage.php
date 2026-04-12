@@ -757,7 +757,7 @@ final class AdminPage {
 	 * Add Settings and Guide action links to the plugin row on the Plugins page.
 	 *
 	 * @param array<string, string> $links Existing action links.
-	 * @return array<string, string> Modified action links with Settings and Guide prepended.
+	 * @return array<string, string> Modified action links with Settings and Guide appended.
 	 */
 	public static function add_action_links( array $links ): array {
 		$settings_url = \admin_url( 'options-general.php?page=' . self::MENU_SLUG );

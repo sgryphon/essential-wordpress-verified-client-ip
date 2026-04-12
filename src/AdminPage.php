@@ -768,6 +768,6 @@ final class AdminPage {
 			'guide'    => '<a href="' . \esc_url( $guide_url ) . '">' . \esc_html__( 'Guide', 'gryphon-verified-client-ip' ) . '</a>',
 		];
 
-		return \array_merge( $custom_links, $links );
+		return \array_merge( $links, $custom_links );
 	}
 }

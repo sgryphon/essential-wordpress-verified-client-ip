@@ -41,6 +41,8 @@
     "git mv": true,
     "composer": true,
     "vendor/bin/phpstan": true,
-    "mv": true
+    "mv": true,
+    "git add": true,
+    "git commit": true
   }
 }

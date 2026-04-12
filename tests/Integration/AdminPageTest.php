@@ -201,4 +201,51 @@ final class AdminPageTest extends TestCase {
 		// Valid proxies are kept, invalid one is flagged.
 		$this->assertCount( 2, $result['settings']->schemes[0]->proxies );
 	}
+
+	// ------------------------------------------------------------------
+	// Plugin action links
+	// ------------------------------------------------------------------
+
+	public function testAddActionLinksPrependsSettingsAndGuideLinks(): void {
+		$existing = [
+			'deactivate' => '<a href="#">Deactivate</a>',
+			'edit'       => '<a href="#">Edit</a>',
+		];
+
+		$result = AdminPage::add_action_links( $existing );
+
+		// Settings and Guide should be prepended before existing links.
+		$keys = array_keys( $result );
+		$this->assertSame( 'settings', $keys[0] );
+		$this->assertSame( 'guide', $keys[1] );
+		$this->assertSame( 'deactivate', $keys[2] );
+		$this->assertSame( 'edit', $keys[3] );
+		$this->assertCount( 4, $result );
+	}
+
+	public function testAddActionLinksSettingsUrlPointsToSettingsPage(): void {
+		$result = AdminPage::add_action_links( [] );
+
+		$this->assertStringContainsString(
+			'options-general.php?page=gryphon-verified-client-ip',
+			$result['settings']
+		);
+	}
+
+	public function testAddActionLinksGuideUrlPointsToUserGuideTab(): void {
+		$result = AdminPage::add_action_links( [] );
+
+		$this->assertStringContainsString(
+			'options-general.php?page=gryphon-verified-client-ip&tab=user-guide',
+			$result['guide']
+		);
+	}
+
+	public function testAddActionLinksLabelsAreTranslatable(): void {
+		$result = AdminPage::add_action_links( [] );
+
+		// esc_html__ stub returns htmlspecialchars of input, so labels should appear.
+		$this->assertStringContainsString( 'Settings', $result['settings'] );
+		$this->assertStringContainsString( 'Guide', $result['guide'] );
+	}
 }

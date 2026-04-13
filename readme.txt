@@ -12,15 +12,15 @@ Determines the true client IP by verifying Forwarded and similar headers, traver
 
 == Description ==
 
-Gryphon Verified Client IP determines the client IP by walking the forwarding chain, only trusting addresses that match your configured proxy networks (by CIDR range). It stops at the first untrusted hop, which is the  true client IP. The resolved address replaces `REMOTE_ADDR` early in the WordPress lifecycle, allowing other Plugins to use it.
+Gryphon Verified Client IP determines the client IP by walking the forwarding chain, only trusting addresses that match your configured proxy networks (by CIDR range). It stops at the first untrusted hop, which is the true client IP. The resolved address replaces `REMOTE_ADDR` early in the WordPress lifecycle, allowing other plugins to use it.
 
 The component is secure by default and only trusted proxies are traversed; spoofed headers are ignored. Both IPv4 and IPv6 are fully supported, including protocol translation.
 
-Multiple header formats are supported including standard RFC 7239 `Forwarded`, common `X-Forwarded-For`,  Cloudflare `CF-Connecting-IP`, or any custom header.
+Multiple header formats are supported including standard RFC 7239 `Forwarded`, common `X-Forwarded-For`, Cloudflare `CF-Connecting-IP`, or any custom header.
 
-The component includes a diagnostics panel that can be enabled to recording incoming requests with full header dumps and algorithm step traces for debugging.
+The component includes a diagnostics panel that can be enabled to record incoming requests with full header dumps and algorithm step traces for debugging.
 
-For more detail see the Github project site [Gryphon WordPress Verified Client IP](https://github.com/sgryphon/essential-wordpress-verified-client-ip)
+For more detail, see the GitHub project site [Gryphon WordPress Verified Client IP](https://github.com/sgryphon/essential-wordpress-verified-client-ip).
 
 = Compatibility Note =
 
@@ -33,7 +33,7 @@ If your server uses **Apache `mod_remoteip`** or **nginx `set_real_ip_from`**, t
 1. Go to **Site Admin → Plugins → Add Plugin**
 2. Search Plugins for "Gryphon Verified Client IP"
 3. Click **Install Now**
-4. Click **Activate → Activate**
+4. Click **Activate**
 
 Navigate to **Settings → Verified Client IP** in the WordPress admin.
 
@@ -100,19 +100,24 @@ No. Diagnostic records are stored as WordPress transients with a 24-hour expiry 
 == Upgrade Notice ==
 
 = 1.2.0 =
-* Update plugin display name and slug, again
-* Update namespace and package names
+* Update plugin display name and slug, again, to Gryphon Verified Client IP.
+* Update namespace and package names to Gryphon Verified Client IP.
 
 == Changelog ==
 
+= 1.2.0 =
+* Update plugin display name and slug, again, to Gryphon Verified Client IP.
+* Update namespace and package names to Gryphon Verified Client IP.
+
 = 1.1.0 =
-* Update plugin display name and slug
-* Update namespace and package names
+* Update plugin display name and slug, for WordPress plugin naming requirements, to Essential Verified Client IP.
+* Update namespace and package names to Essential Verified Client IP.
 
 = 1.0.1 =
 * Minor fixes for initial release.
 
 = 1.0.0 =
+* Initial release of Verified Client IP plugin.
 * RFC 7239 `Forwarded`, `X-Forwarded-For`, and Cloudflare `CF-Connecting-IP` schemes.
 * Configurable forward limit and trusted proxy CIDR ranges.
 * Proto and Host processing.

@@ -88,19 +88,21 @@ mkdir gryphon-verified-client-ip
 svn co https://plugins.svn.wordpress.org/gryphon-verified-client-ip gryphon-verified-client-ip
 ```
 
-Copy files into trunk:
-
-```sh
-ls essential-wordpress-verified-client-ip/build/gryphon-verified-client-ip/
-cp -r essential-wordpress-verified-client-ip/build/gryphon-verified-client-ip/* gryphon-verified-client-ip/trunk/
-ls gryphon-verified-client-ip/trunk/
-```
-
-Push:
+Copy files into trunk (replace path to source repo build folder as necessary):
 
 ```sh
 cd gryphon-verified-client-ip
-svn add trunk/*
+ls ../essential-wordpress-verified-client-ip/build/gryphon-verified-client-ip/
+rm -rf trunk/*
+cp -r ../essential-wordpress-verified-client-ip/build/gryphon-verified-client-ip/* trunk/
+ls trunk/
+```
+
+Add all the changes (and remove deletes), and then push (replace version number as necessary):
+
+```sh
+svn add --force trunk/
+svn status | grep '^!' | awk '{print $2}' | xargs svn rm
 svn ci -m 'Adding version 1.2.0 of plugin'
 ```
 

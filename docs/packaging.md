@@ -77,6 +77,46 @@ The plugin header in `gryphon-verified-client-ip.php` contains all required fiel
 - License, License URI
 - Text Domain
 
+### WordPress Subversion
+
+Subversion Guide: https://developer.wordpress.org/plugins/wordpress-org/how-to-use-subversion/
+
+Initial checkout:
+
+```sh
+mkdir gryphon-verified-client-ip
+svn co https://plugins.svn.wordpress.org/gryphon-verified-client-ip gryphon-verified-client-ip
+```
+
+Copy files into trunk (replace path to source repo build folder as necessary):
+
+```sh
+cd gryphon-verified-client-ip
+ls ../essential-wordpress-verified-client-ip/build/gryphon-verified-client-ip/
+rm -rf trunk/*
+cp -r ../essential-wordpress-verified-client-ip/build/gryphon-verified-client-ip/* trunk/
+ls trunk/
+```
+
+Add all the changes (and remove deletes), and then push (replace version number as necessary):
+
+```sh
+svn add --force trunk/
+svn status | grep '^!' | awk '{print $2}' | xargs svn rm
+svn ci -m 'Adding version 1.2.0 of plugin'
+```
+
+Tag version:
+
+```sh
+svn cp trunk tags/1.2.0
+svn ci -m "Tagging version 1.2.0"
+```
+
+### Subversion Assets
+
+Assets Guide: https://developer.wordpress.org/plugins/wordpress-org/plugin-assets/
+
 ## Versioning
 
 Update version numbers in these locations when releasing:

@@ -4,7 +4,7 @@ Tags: ip address, client ip, user ip, visitor ip, proxy
 Plugin URI: https://github.com/sgryphon/essential-wordpress-verified-client-ip
 Requires at least: 6.4
 Tested up to: 6.9
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -99,11 +99,15 @@ No. Diagnostic records are stored as WordPress transients with a 24-hour expiry 
 
 == Upgrade Notice ==
 
-= 1.2.0 =
-* Update plugin display name and slug, again, to Gryphon Verified Client IP.
-* Update namespace and package names to Gryphon Verified Client IP.
+= 1.2.1 =
+* Reformat readme.txt to display properly in WordPress plugin library.
+* Add Settings and Guide links to plugins page
 
 == Changelog ==
+
+= 1.2.1 =
+* Reformat readme.txt to display properly in WordPress plugin library.
+* Add Settings and Guide links to plugins page
 
 = 1.2.0 =
 * Update plugin display name and slug, again, to Gryphon Verified Client IP.

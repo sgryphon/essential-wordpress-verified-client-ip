@@ -10,5 +10,5 @@ if ( ! defined( 'VCIP_PLUGIN_FILE' ) ) {
 }
 
 if ( ! defined( 'VCIP_VERSION' ) ) {
-	define( 'VCIP_VERSION', '1.2.0' );
+	define( 'VCIP_VERSION', '1.2.1' );
 }

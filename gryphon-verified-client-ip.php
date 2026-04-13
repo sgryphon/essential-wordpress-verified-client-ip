@@ -4,7 +4,7 @@
  * Plugin Name:       Gryphon Verified Client IP
  * Plugin URI:        https://github.com/sgryphon/essential-wordpress-verified-client-ip
  * Description:       Determines the true client IP by verifying Forwarded and similar headers, traversing only trusted proxy hops.
- * Version:           1.2.0
+ * Version:           1.2.1
  * Requires at least: 6.4
  * Requires PHP:      8.1
  * Author:            Sly Gryphon
@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Plugin version constant.
-define( 'VCIP_VERSION', '1.2.0' );
+define( 'VCIP_VERSION', '1.2.1' );
 
 // Plugin file constant.
 define( 'VCIP_PLUGIN_FILE', __FILE__ );

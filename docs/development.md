@@ -26,7 +26,7 @@ This will start a PHP 8.3 CLI container for development. Use Terminal > New Term
 composer install
 ```
 
-## Running Tests
+## Running All Tests
 
 ```powershell
 composer test
@@ -34,28 +34,10 @@ composer test
 
 ## Running BDD Tests (Gherkin)
 
+Behat/Gherkin files are in `features/`.
+
 ```powershell
 composer test:bdd
-```
-
-This repository includes a pilot Behat/Gherkin scenario under `tests/BDD/features/` to validate BDD wiring independently from the PHPUnit suites.
-
-### Running Specific Tests
-
-For running a specific subset, file, or test method, pass arguments directly to PHPUnit:
-
-```powershell
-# Run only unit tests
-vendor/bin/phpunit tests/Unit
-
-# Run only integration tests
-vendor/bin/phpunit tests/Integration
-
-# Run a specific test file
-vendor/bin/phpunit tests/Unit/ResolverTest.php
-
-# Run a specific test method
-vendor/bin/phpunit --filter testSingleProxyXff tests/Unit/ResolverTest.php
 ```
 
 ## Code Quality

@@ -6,7 +6,7 @@ schema: spec-driven
 # Example:
 context: |
   Language: PHP 8.1+, WordPress 6.4+
-  Testing: Behat/Gherkin BDD for new tests (`composer test:bdd`); existing PHPUnit/WP_Mock tests remain (`composer test`)
+  Testing: Behat/Gherkin BDD for new tests (`composer test:bdd`); existing PHPUnit tests remain (`composer test`)
   Analysis: PHPStan, `composer analyse`
   Formatter: PHP_CodeSniffer (PHPCS) with WordPress Coding Standards (WPCS) — `WordPress-Core` standard, `composer format-check`
   CI: GitHub Actions

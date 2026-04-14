@@ -17,9 +17,9 @@
 
 ## Testing
 
-- All new tests are Gherkin `.feature` files with step definitions in `features/bootstrap/`
+- Tests are Gherkin `.feature` files with step definitions in `features/bootstrap/`
 - Feature files live under `features/<topic>/` — one subdirectory per capability area
-- Step definitions must call production code; never assert hardcoded literals
+- Step definitions must call production code
 - Cover happy paths, edge cases, error/malformed inputs, and security/spoofing scenarios
 - Tests must pass in CI before merging
 

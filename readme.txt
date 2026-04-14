@@ -12,7 +12,7 @@ Determines the true client IP by verifying Forwarded and similar headers, traver
 
 == Description ==
 
-Gryphon Verified Client IP determines the client IP by walking the forwarding chain, only trusting addresses that match your configured proxy networks (by CIDR range). It stops at the first untrusted hop, which is the true client IP. The resolved address replaces `REMOTE_ADDR` early in the WordPress lifecycle, allowing other plugins to use it.
+**Gryphon Verified Client IP** determines the client IP by walking the forwarding chain, only trusting addresses that match your configured proxy networks (by CIDR range). It stops at the first untrusted hop, which is the true client IP. The resolved address replaces `REMOTE_ADDR` early in the WordPress lifecycle, allowing other plugins to use it.
 
 The component is secure by default and only trusted proxies are traversed; spoofed headers are ignored. Both IPv4 and IPv6 are fully supported, including protocol translation.
 

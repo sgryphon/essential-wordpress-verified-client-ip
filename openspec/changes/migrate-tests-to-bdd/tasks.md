@@ -17,9 +17,9 @@
 
 ## 4. Admin Page — Action Links
 
-- [ ] 4.1 Create `features/admin-page/action-links.feature` with scenarios: settings and guide appended after existing links, settings URL targets settings page, guide URL targets user-guide tab, labels contain "Settings" and "Guide"
-- [ ] 4.2 Add step definitions for the action-links scenarios to `AdminPageContext`
-- [ ] 4.3 Run `composer test:bdd`, then `composer check`, then commit
+- [x] 4.1 Create `features/admin-page/action-links.feature` with scenarios: settings and guide appended after existing links, settings URL targets settings page, guide URL targets user-guide tab, labels contain "Settings" and "Guide"
+- [x] 4.2 Add step definitions for the action-links scenarios to `AdminPageContext`
+- [x] 4.3 Run `composer test:bdd`, then `composer check`, then commit
 
 ## 5. Diagnostics — State Management
 

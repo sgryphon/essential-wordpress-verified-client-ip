@@ -4,24 +4,18 @@
 
 **Gryphon Verified Client IP** is a WordPress plugin (slug: `gryphon-verified-client-ip`) that determines the true client IP address by verifying Forwarded-For and similar headers, traversing only trusted proxy hops. It replaces `$_SERVER['REMOTE_ADDR']` with the verified IP early in the WordPress lifecycle.
 
-The full specification is in [specifications/Main Specification.md](specifications/Main%20Specification.md).
-
 ## Tech Stack
 
 - **Language:** PHP 8.1+
 - **Platform:** WordPress 6.4+
 - **License:** GPLv2 or later
 - **Text domain:** `gryphon-verified-client-ip`
-- **Testing:** PHPUnit (pure unit tests), WP_Mock (integration tests)
+- **Testing:** Behat/Gherkin BDD (`composer test:bdd`); existing PHPUnit/WP_Mock tests remain but are not extended
 - **Static analysis:** PHPStan or Psalm
 - **Formatter:** PHP_CodeSniffer (PHPCS) with WordPress Coding Standards (WPCS) — `WordPress-Core` standard
 - **CI:** GitHub Actions
 
 ## Key Architecture Decisions
-
-### Execution Timing
-
-The IP resolution hook must fire as early as possible: `muplugins_loaded` (must-use plugin) or `plugins_loaded` at priority 0 (regular plugin). REMOTE_ADDR must be replaced before any other plugin or WordPress core reads it. Admin UI uses later hooks (`admin_init`, `admin_menu`).
 
 ### Core Algorithm
 
@@ -86,19 +80,12 @@ Custom schemes can be added with: Name, Enabled toggle, Proxy addresses/CIDR ran
 
 ### Test Organisation
 
-Tests are split across multiple files by concern:
-
-- Algorithm / IP resolution tests (majority of tests)
-- Header parsing tests (RFC 7239 `Forwarded`, `X-Forwarded-For`, etc.)
-- CIDR matching and IPv4/IPv6 normalisation tests
-- Configuration / settings tests
-- Diagnostics tests
-- Security / spoofing tests
+New tests are written in Behat/Gherkin BDD style. Feature files live under `features/` organised by topic.
 
 ### Test Principles
 
-- **Pure unit tests** for the core algorithm — mock `$_SERVER` and WordPress functions. No full WordPress installation required.
-- **Integration tests** via WP_Mock for hook wiring.
+- All tests MUST be written as Gherkin `.feature` files with matching step definitions in `features/bootstrap/`.
+- Step definitions MUST call production code — never assert hardcoded literals that pass regardless of implementation.
 - Include IPv4, IPv6, and IPv4-mapped IPv6 scenarios.
 - Include multi-hop chains (e.g. client → Cloudflare → proxy1 → proxy2 → server).
 - Include attack/spoofing scenarios (injected headers, extra headers before proxies).
@@ -130,8 +117,8 @@ composer update --no-interaction --prefer-dist
 # Run the full check suite (format, analyse, test)
 composer run-script check
 
-# Run tests only
-composer run-script test
+# Run BDD tests only
+composer test:bdd
 ```
 
 ### Container Compose Environment (Examples Only)

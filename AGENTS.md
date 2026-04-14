@@ -3,7 +3,7 @@
 ## Overview
 
 - PHP 8.1+ WordPress 6.4+ plugin, GPLv2 or later
-- Testing: Behat/Gherkin BDD (`composer test:bdd`)
+- Testing: Behat/Gherkin BDD (`composer test:bdd`, warning: may take 70s+ to execute, so be patient and don't assume it failed)
 - Static analysis: PHPStan (`composer analyse`)
 - Formatter: PHP_CodeSniffer with WordPress Coding Standards — `WordPress-Core` standard (`composer format-check`, `composer format`)
 - CI: GitHub Actions — format, analyse, and test must all pass before merging

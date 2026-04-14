@@ -23,8 +23,8 @@
 
 ## 5. Replace Pilot Scenario with IpUtils-Based BDD Test
 
-- [ ] 5.1 Create a Gherkin `.feature` file for IP address normalisation that describes `IpUtils::normalise()` behaviour in natural language.
-- [ ] 5.2 Implement a Behat context class that calls `IpUtils::normalise()` in step definitions (no hardcoded assertions — the production class provides the answer).
-- [ ] 5.3 Update the Behat suite configuration to wire the new context class.
-- [ ] 5.4 Run `composer test:bdd` locally and confirm the new scenario passes.
-- [ ] 5.5 Run `composer check` to confirm no formatting or analysis regressions from the new files.
+- [x] 5.1 Create a Gherkin `.feature` file for IP address normalisation that describes `IpUtils::normalise()` behaviour in natural language.
+- [x] 5.2 Implement a Behat context class that calls `IpUtils::normalise()` in step definitions (no hardcoded assertions — the production class provides the answer).
+- [x] 5.3 Update the Behat suite configuration to wire the new context class.
+- [x] 5.4 Run `composer test:bdd` locally and confirm the new scenario passes.
+- [x] 5.5 Run `composer check` to confirm no formatting or analysis regressions from the new files.

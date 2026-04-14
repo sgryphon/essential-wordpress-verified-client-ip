@@ -37,6 +37,6 @@
 
     <!-- Exclude test bootstrap stubs from some checks -->
     <rule ref="WordPress.WP.GlobalVariablesOverride">
-        <exclude-pattern>tests/Integration/bootstrap\.php</exclude-pattern>
+        <exclude-pattern>features/bootstrap/wordpress-stubs\.php</exclude-pattern>
     </rule>
 </ruleset>

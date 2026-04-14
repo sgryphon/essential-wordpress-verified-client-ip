@@ -8,7 +8,7 @@ use Gryphon\VerifiedClientIp\Diagnostics;
 use Gryphon\VerifiedClientIp\ResolverResult;
 use Gryphon\VerifiedClientIp\ResolverStep;
 
-require_once __DIR__ . '/../../tests/Integration/bootstrap.php';
+require_once __DIR__ . '/wordpress-stubs.php';
 
 final class DiagnosticsContext implements Context {
 

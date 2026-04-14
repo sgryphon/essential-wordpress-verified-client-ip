@@ -7,7 +7,7 @@ use Behat\Gherkin\Node\TableNode;
 use Gryphon\VerifiedClientIp\AdminPage;
 use Gryphon\VerifiedClientIp\Settings;
 
-require_once __DIR__ . '/../../tests/Integration/bootstrap.php';
+require_once __DIR__ . '/wordpress-stubs.php';
 
 final class AdminPageContext implements Context {
 

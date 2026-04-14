@@ -7,7 +7,7 @@ use Behat\Gherkin\Node\TableNode;
 use Gryphon\VerifiedClientIp\Plugin;
 use Gryphon\VerifiedClientIp\Scheme;
 
-require_once __DIR__ . '/../../tests/Integration/bootstrap.php';
+require_once __DIR__ . '/wordpress-stubs.php';
 
 final class PluginBootContext implements Context {
 

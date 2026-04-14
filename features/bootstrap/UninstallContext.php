@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Behat\Behat\Context\Context;
 
-require_once __DIR__ . '/../../tests/Integration/bootstrap.php';
+require_once __DIR__ . '/wordpress-stubs.php';
 
 final class UninstallContext implements Context {
 

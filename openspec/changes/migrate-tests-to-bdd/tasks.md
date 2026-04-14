@@ -11,9 +11,9 @@
 
 ## 3. Admin Page — Settings Validation
 
-- [ ] 3.1 Create `features/admin-page/settings-validation.feature` with scenarios: full valid input round-trips through parse and validate, one invalid proxy produces errors and retains valid proxies
-- [ ] 3.2 Add step definitions for the settings-validation scenarios to `AdminPageContext`
-- [ ] 3.3 Run `composer test:bdd`, then `composer check`, then commit
+- [x] 3.1 Create `features/admin-page/settings-validation.feature` with scenarios: full valid input round-trips through parse and validate, one invalid proxy produces errors and retains valid proxies
+- [x] 3.2 Add step definitions for the settings-validation scenarios to `AdminPageContext`
+- [x] 3.3 Run `composer test:bdd`, then `composer check`, then commit
 
 ## 4. Admin Page — Action Links
 

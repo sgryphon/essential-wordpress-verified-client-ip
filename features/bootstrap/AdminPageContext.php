@@ -353,4 +353,69 @@ sprintf( 'Expected validated scheme[%d] to have %d proxies, got %d.', $index, $c
 );
 }
 }
+
+// ------------------------------------------------------------------
+// Action links
+// ------------------------------------------------------------------
+
+/** @var array<string, string> */
+private array $existing_links = [];
+
+/** @var array<string, string> */
+private array $action_links = [];
+
+/**
+ * @Given the existing plugin action links are:
+ */
+public function the_existing_plugin_action_links_are( TableNode $table ): void {
+foreach ( $table->getHash() as $row ) {
+$this->existing_links[ $row['key'] ] = $row['html'];
+}
+}
+
+/**
+ * @When the action links are generated
+ */
+public function the_action_links_are_generated(): void {
+$this->action_links = AdminPage::add_action_links( $this->existing_links );
+}
+
+/**
+ * @Then the action links should contain :count entries
+ */
+public function the_action_links_should_contain_entries( int $count ): void {
+$actual = count( $this->action_links );
+if ( $actual !== $count ) {
+throw new RuntimeException(
+sprintf( 'Expected %d action links, got %d.', $count, $actual )
+);
+}
+}
+
+/**
+ * @Then the action link keys should be :keys
+ */
+public function the_action_link_keys_should_be( string $keys ): void {
+$expected = array_map( 'trim', explode( ',', $keys ) );
+$actual   = array_keys( $this->action_links );
+if ( $expected !== $actual ) {
+throw new RuntimeException(
+sprintf( 'Expected keys [%s], got [%s].', implode( ', ', $expected ), implode( ', ', $actual ) )
+);
+}
+}
+
+/**
+ * @Then the action link :key should contain :text
+ */
+public function the_action_link_should_contain( string $key, string $text ): void {
+if ( ! isset( $this->action_links[ $key ] ) ) {
+throw new RuntimeException( sprintf( 'Action link "%s" not found.', $key ) );
+}
+if ( false === strpos( $this->action_links[ $key ], $text ) ) {
+throw new RuntimeException(
+sprintf( 'Action link "%s" does not contain "%s". Got: %s', $key, $text, $this->action_links[ $key ] )
+);
+}
+}
 }

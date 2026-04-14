@@ -3,3 +3,7 @@ default:
     default:
       contexts:
         - IpNormalisationContext
+        - AdminPageContext
+        - DiagnosticsContext
+        - PluginBootContext
+        - UninstallContext

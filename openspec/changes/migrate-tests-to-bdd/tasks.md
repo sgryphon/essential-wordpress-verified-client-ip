@@ -1,13 +1,13 @@
 ## 1. Shared Infrastructure
 
-- [ ] 1.1 Add `AdminPageContext`, `DiagnosticsContext`, `PluginBootContext`, and `UninstallContext` to the `contexts` list in `behat.yml.dist`
-- [ ] 1.2 Run `composer test:bdd` to confirm the existing IP normalisation scenario still passes with the updated config, then run `composer check` and commit
+- [x] 1.1 Add `AdminPageContext`, `DiagnosticsContext`, `PluginBootContext`, and `UninstallContext` to the `contexts` list in `behat.yml.dist`
+- [x] 1.2 Run `composer test:bdd` to confirm the existing IP normalisation scenario still passes with the updated config, then run `composer check` and commit
 
 ## 2. Admin Page — Form Input Parsing
 
-- [ ] 2.1 Create `features/admin-page/form-input-parsing.feature` with scenarios: basic settings fields parsed, absent checkboxes treated as disabled, two schemes with proxies parsed, no schemes key produces no schemes, empty proxies textarea, blank lines in proxies filtered
-- [ ] 2.2 Create `features/bootstrap/AdminPageContext.php` implementing all step definitions for the form-parsing feature, loading `tests/Integration/bootstrap.php` via `require_once` and resetting globals in `@BeforeScenario`
-- [ ] 2.3 Run `composer test:bdd`, then `composer check`, then commit
+- [x] 2.1 Create `features/admin-page/form-input-parsing.feature` with scenarios: basic settings fields parsed, absent checkboxes treated as disabled, two schemes with proxies parsed, no schemes key produces no schemes, empty proxies textarea, blank lines in proxies filtered
+- [x] 2.2 Create `features/bootstrap/AdminPageContext.php` implementing all step definitions for the form-parsing feature, loading `tests/Integration/bootstrap.php` via `require_once` and resetting globals in `@BeforeScenario`
+- [x] 2.3 Run `composer test:bdd`, then `composer check`, then commit
 
 ## 3. Admin Page — Settings Validation
 

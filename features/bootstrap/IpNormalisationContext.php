@@ -2,11 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Gryphon\VerifiedClientIp\Tests\BDD\Context;
-
 use Behat\Behat\Context\Context;
 use Gryphon\VerifiedClientIp\IpUtils;
-use RuntimeException;
 
 final class IpNormalisationContext implements Context {
 

@@ -1,9 +1,5 @@
 default:
-  autoload:
-    '': '%paths.base%/tests'
   suites:
     default:
-      paths:
-        - '%paths.base%/tests/BDD/features'
       contexts:
-        - Gryphon\VerifiedClientIp\Tests\BDD\Context\IpNormalisationContext
+        - IpNormalisationContext

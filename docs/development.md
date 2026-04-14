@@ -32,6 +32,14 @@ composer install
 composer test
 ```
 
+## Running BDD Tests (Gherkin)
+
+```powershell
+composer test:bdd
+```
+
+This repository includes a pilot Behat/Gherkin scenario under `tests/BDD/features/` to validate BDD wiring independently from the PHPUnit suites.
+
 ### Running Specific Tests
 
 For running a specific subset, file, or test method, pass arguments directly to PHPUnit:

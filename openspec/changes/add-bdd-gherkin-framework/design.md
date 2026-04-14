@@ -26,9 +26,10 @@ The plugin currently uses PHPUnit and WP_Mock for unit and integration-style ver
    - Rationale: clear separation from PHPUnit tests simplifies maintenance and avoids accidental coupling of runners.
    - Alternative considered: mixing feature files into current PHPUnit directories. Rejected to prevent tooling confusion and ambiguous ownership.
 
-3. Use a minimal scenario that validates plugin identity expectations from the existing spec language.
-   - Rationale: this proves end-to-end BDD wiring with low risk while aligning with an already defined capability (`plugin-identity`).
-   - Alternative considered: multi-hop proxy resolution scenario. Rejected for first step because it requires heavier fixtures and more setup.
+3. Use a scenario that exercises a real production class (`IpUtils`) rather than asserting a hardcoded constant.
+   - Rationale: step definitions that only verify a hard-coded literal provide no signal about the code under test. `IpUtils` is a pure PHP class with no WordPress dependency, making it the simplest meaningful entry point. The chosen scenario — normalising an IPv4-mapped IPv6 address to its IPv4 form — reimplements a behaviour already covered by `IpUtilsTest`, giving a documented precedent for correctness.
+   - Alternative considered: asserting plugin slug or metadata constants. Rejected because those tests would pass even if the parser class was deleted entirely.
+   - Alternative considered: multi-hop proxy `Resolver` scenario. Out of scope for the pilot — requires setting up `Scheme` instances and `$_SERVER` state and is better suited to a second BDD iteration.
 
 4. Execute BDD through a Composer script (for example, `composer test:bdd`) and keep it callable in CI.
    - Rationale: consistent command discovery and straightforward pipeline integration with existing checks.
@@ -63,5 +64,5 @@ Rollback strategy: remove BDD dependencies, configuration, and feature/context f
 
 - BDD execution will run in the main CI pipeline from the initial rollout.
 - Long-term direction is to move toward BDD replacing unit-test coverage, but this change remains a pilot with one scenario and does not remove PHPUnit/WP_Mock now.
-- The first scenario remains the initial simple plugin-identity validation approach.
+- The first scenario exercises `IpUtils::normalise()` with an IPv4-mapped IPv6 address, replacing the original hardcoded plugin-slug approach.
 - Shared assertion utilities between PHPUnit and Behat are out of scope; BDD tests stay independent for simplicity.

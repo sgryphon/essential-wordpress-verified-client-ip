@@ -14,9 +14,15 @@ The project's main CI pipeline SHALL execute the BDD test command as part of sta
 - **WHEN** the main CI workflow runs for a change
 - **THEN** the workflow executes the project BDD command and fails the pipeline if the BDD scenario fails
 
-### Requirement: Repository includes one executable pilot scenario
-The project SHALL include at least one simple Gherkin scenario with implemented step definitions to validate BDD wiring end-to-end.
+### Requirement: Repository includes one executable pilot scenario that exercises production code
+The project SHALL include at least one Gherkin scenario whose step definitions call a real production class, not a hardcoded constant or inline value.
 
-#### Scenario: Pilot scenario passes
-- **WHEN** the BDD test command runs against the pilot scenario
-- **THEN** the scenario executes all matching step definitions and passes without requiring a full WordPress runtime bootstrap
+The pilot scenario SHALL exercise `IpUtils::normalise()` by passing an IPv4-mapped IPv6 address and asserting the returned value is the normalised IPv4 address.
+
+#### Scenario: IPv4-mapped IPv6 address normalises to IPv4
+- **WHEN** `IpUtils::normalise()` is called with `::ffff:192.168.1.1`
+- **THEN** the result SHALL be `192.168.1.1`
+
+#### Scenario: Pilot scenario passes without WordPress bootstrap
+- **WHEN** the BDD test command runs the pilot scenario
+- **THEN** the scenario executes and passes without requiring a WordPress runtime or database connection

@@ -6,16 +6,16 @@ The project currently relies on PHPUnit and WP_Mock only, which makes behavior-l
 
 - Add a PHP BDD framework that supports Gherkin feature files (e.g., Behat) as a development and CI test dependency.
 - Add baseline BDD test infrastructure (configuration, context class, and test bootstrap integration) so feature files can execute reliably in this repository.
-- Add one simple, end-to-end validation scenario in Gherkin and implement matching step definitions to prove the framework is wired correctly.
+- Add one simple, end-to-end validation scenario in Gherkin that exercises a real production class (`IpUtils`) and implement matching step definitions to prove the framework is wired correctly.
 - Document the command used to run BDD tests alongside existing test tooling.
 
 ## Capabilities
 
 ### New Capabilities
-- `bdd-gherkin-testing`: Provide executable Gherkin-based behavior tests with at least one working scenario to validate framework integration.
+- `bdd-gherkin-testing`: Provide executable Gherkin-based behavior tests with at least one working scenario that exercises production code to validate framework integration.
 
 ### Modified Capabilities
-- `plugin-identity`: Add a behavior-level scenario that validates a plugin identity expectation through Gherkin execution.
+<!-- None for this pilot slice -->
 
 ## Impact
 

@@ -9,6 +9,7 @@
         "php": ">=8.1"
     },
     "require-dev": {
+        "behat/behat": "^3.15",
         "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
         "erusev/parsedown": "^1.8",
         "php-stubs/wordpress-stubs": "^6.9",
@@ -29,6 +30,7 @@
     },
     "scripts": {
         "test": "phpunit",
+        "test:bdd": "behat --colors",
         "analyse": "phpstan analyse --memory-limit=512M",
         "format": "phpcbf",
         "format-check": "phpcs",
@@ -36,7 +38,8 @@
         "check": [
             "@format-check",
             "@analyse",
-            "@test"
+            "@test",
+            "@test:bdd"
         ]
     },
     "config": {

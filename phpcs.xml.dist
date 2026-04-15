@@ -5,8 +5,11 @@
     <!-- Files and directories to check -->
     <file>src/</file>
     <file>tests/</file>
+    <file>features/bootstrap/</file>
+    <file>tools/</file>
     <file>gryphon-verified-client-ip.php</file>
     <file>uninstall.php</file>
+    <file>phpstan-bootstrap.php</file>
 
     <!-- Show progress and sniff codes -->
     <arg value="sp"/>

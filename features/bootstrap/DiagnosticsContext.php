@@ -154,7 +154,7 @@ final class DiagnosticsContext implements Context {
 	 * @When a diagnostic entry is recorded with a two-step trace
 	 */
 	public function a_diagnostic_entry_is_recorded_with_two_step_trace(): void {
-		$steps = [
+		$steps  = [
 			new ResolverStep( 1, '10.0.0.1', '10.0.0.1', 'X-Forwarded-For', 'HTTP_X_FORWARDED_FOR', 'trusted_proxy' ),
 			new ResolverStep( 2, '203.0.113.50', '203.0.113.50', null, null, 'untrusted_stop' ),
 		];
@@ -270,7 +270,7 @@ final class DiagnosticsContext implements Context {
 	public function the_diagnostics_state_max_requests_should_be_default(): void {
 		$state  = Diagnostics::get_state();
 		$actual = $state['max_requests'];
-		if ( $actual !== Diagnostics::DEFAULT_REQUEST_COUNT ) {
+		if ( Diagnostics::DEFAULT_REQUEST_COUNT !== $actual ) {
 			throw new RuntimeException(
 				sprintf( 'Expected max_requests %d, got %d.', Diagnostics::DEFAULT_REQUEST_COUNT, $actual )
 			);
@@ -283,7 +283,7 @@ final class DiagnosticsContext implements Context {
 	public function the_diagnostics_state_max_requests_should_be_max(): void {
 		$state  = Diagnostics::get_state();
 		$actual = $state['max_requests'];
-		if ( $actual !== Diagnostics::MAX_REQUEST_COUNT ) {
+		if ( Diagnostics::MAX_REQUEST_COUNT !== $actual ) {
 			throw new RuntimeException(
 				sprintf( 'Expected max_requests %d, got %d.', Diagnostics::MAX_REQUEST_COUNT, $actual )
 			);

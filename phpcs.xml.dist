@@ -5,8 +5,11 @@
     <!-- Files and directories to check -->
     <file>src/</file>
     <file>tests/</file>
+    <file>features/bootstrap/</file>
+    <file>tools/</file>
     <file>gryphon-verified-client-ip.php</file>
     <file>uninstall.php</file>
+    <file>phpstan-bootstrap.php</file>
 
     <!-- Show progress and sniff codes -->
     <arg value="sp"/>
@@ -37,6 +40,6 @@
 
     <!-- Exclude test bootstrap stubs from some checks -->
     <rule ref="WordPress.WP.GlobalVariablesOverride">
-        <exclude-pattern>tests/Integration/bootstrap\.php</exclude-pattern>
+        <exclude-pattern>features/bootstrap/wordpress-stubs\.php</exclude-pattern>
     </rule>
 </ruleset>

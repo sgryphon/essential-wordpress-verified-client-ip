@@ -43,6 +43,7 @@
     "vendor/bin/phpstan": true,
     "mv": true,
     "git add": true,
-    "git commit": true
+    "git commit": true,
+    "vendor/bin/behat": true
   }
 }

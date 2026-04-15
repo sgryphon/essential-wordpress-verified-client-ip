@@ -17,17 +17,19 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
-/**
- * Delete all Gryphon Verified Client IP data for the current site.
- */
-function vcip_uninstall_site(): void {
-	// Delete settings option.
-	delete_option( 'vcip_settings' );
+if ( ! function_exists( 'vcip_uninstall_site' ) ) {
+	/**
+	 * Delete all Gryphon Verified Client IP data for the current site.
+	 */
+	function vcip_uninstall_site(): void {
+		// Delete settings option.
+		delete_option( 'vcip_settings' );
 
-	// Delete diagnostic transients.
-	delete_transient( 'vcip_diagnostic_log' );
-	delete_transient( 'vcip_diagnostic_state' );
-	delete_transient( 'vcip_diagnostic_lock' );
+		// Delete diagnostic transients.
+		delete_transient( 'vcip_diagnostic_log' );
+		delete_transient( 'vcip_diagnostic_state' );
+		delete_transient( 'vcip_diagnostic_lock' );
+	}
 }
 
 // Multisite: iterate all sites.

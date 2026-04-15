@@ -18,11 +18,36 @@ final class UninstallContext implements Context {
 		$GLOBALS['_vcip_test_is_multisite']    = false;
 
 		$this->define_uninstall_stubs();
+		$this->ensure_uninstall_loaded();
 	}
 
 	// ------------------------------------------------------------------
 	// Helpers
 	// ------------------------------------------------------------------
+
+	/**
+	 * Include uninstall.php once so vcip_uninstall_site() is always available.
+	 *
+	 * The include executes the main body as a side effect, so globals are
+	 * repopulated afterwards to give the scenario a clean starting state.
+	 */
+	private function ensure_uninstall_loaded(): void {
+		if ( function_exists( 'vcip_uninstall_site' ) ) {
+			return;
+		}
+
+		if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+			define( 'WP_UNINSTALL_PLUGIN', true );
+		}
+
+		include dirname( __DIR__, 2 ) . '/uninstall.php';
+
+		// Repopulate globals cleared by the include's side effects.
+		$GLOBALS['_vcip_test_options']         = [];
+		$GLOBALS['_vcip_test_transients']      = [];
+		$GLOBALS['_vcip_test_uninstall_blogs'] = [];
+		$GLOBALS['_vcip_test_is_multisite']    = false;
+	}
 
 	/**
 	 * Define stubs needed by uninstall.php that aren't in the bootstrap.
@@ -82,16 +107,6 @@ final class UninstallContext implements Context {
 	 * @When vcip_uninstall_site is called
 	 */
 	public function vcip_uninstall_site_is_called(): void {
-		// Ensure the function is defined (from a previous uninstall include).
-		if ( ! function_exists( 'vcip_uninstall_site' ) ) {
-			if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
-				define( 'WP_UNINSTALL_PLUGIN', true );
-			}
-			include dirname( __DIR__, 2 ) . '/uninstall.php';
-			// Reset to repopulate for 'When' step.
-			return;
-		}
-
 		vcip_uninstall_site();
 	}
 

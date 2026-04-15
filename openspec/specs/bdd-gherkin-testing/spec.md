@@ -1,26 +1,26 @@
+## MODIFIED Requirements
+
 ### Requirement: Execute Gherkin feature files in project test workflow
 The project SHALL provide a BDD test runner that executes Gherkin `.feature` files from the repository and returns non-zero exit status when any scenario fails.
+
+The runner SHALL execute all feature files across all capability subdirectories under `features/`, including the integration test coverage added by this change.
 
 #### Scenario: BDD runner executes feature suite
 - **WHEN** a contributor runs the project BDD test command
 - **THEN** the configured Gherkin test runner executes repository feature files and reports pass/fail status for each scenario
 
-### Requirement: Main CI pipeline runs BDD tests
-The project's main CI pipeline SHALL execute the BDD test command as part of standard quality checks.
+## ADDED Requirements
 
-#### Scenario: CI includes BDD command
-- **WHEN** the main CI workflow runs for a change
-- **THEN** the workflow executes the project BDD command and fails the pipeline if the BDD scenario fails
+### Requirement: behat.yml.dist registers all context classes for the default suite
+The `behat.yml.dist` configuration file SHALL list all context classes — `IpNormalisationContext`, `AdminPageContext`, `DiagnosticsContext`, `PluginBootContext`, and `UninstallContext` — under the default suite so Behat discovers their step definitions.
 
-### Requirement: Repository includes one executable pilot scenario that exercises production code
-The project SHALL include at least one Gherkin scenario whose step definitions call a real production class, not a hardcoded constant or inline value.
+#### Scenario: All context classes are registered in behat.yml.dist
+- **WHEN** `behat.yml.dist` is read
+- **THEN** the default suite contexts SHALL include IpNormalisationContext, AdminPageContext, DiagnosticsContext, PluginBootContext, and UninstallContext
 
-The pilot scenario SHALL exercise `IpUtils::normalise()` by passing an IPv4-mapped IPv6 address and asserting the returned value is the normalised IPv4 address.
+### Requirement: Feature files are organised under capability subdirectories
+The `features/` directory SHALL contain subdirectories for each converted capability area: `admin-page/`, `diagnostics/`, `plugin/`, and `uninstall/`, each containing one `.feature` file per capability.
 
-#### Scenario: IPv4-mapped IPv6 address normalises to IPv4
-- **WHEN** `IpUtils::normalise()` is called with `::ffff:192.168.1.1`
-- **THEN** the result SHALL be `192.168.1.1`
-
-#### Scenario: Pilot scenario passes without WordPress bootstrap
-- **WHEN** the BDD test command runs the pilot scenario
-- **THEN** the scenario executes and passes without requiring a WordPress runtime or database connection
+#### Scenario: Feature files exist under their capability subdirectories
+- **WHEN** the features directory is inspected
+- **THEN** feature files SHALL exist at the paths defined in the design document's feature layout

@@ -31,8 +31,10 @@ $GLOBALS['_vcip_test_settings_errors'] = [];
 $this->post                            = [];
 $this->parsed                          = [];
 $this->validation_result               = null;
+$this->existing_links                  = [];
+$this->action_links                    = [];
 }
-
+ 
 // ------------------------------------------------------------------
 // Given steps
 // ------------------------------------------------------------------

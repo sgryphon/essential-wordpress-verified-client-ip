@@ -5,8 +5,9 @@
 - PHP 8.1+ WordPress 6.4+ plugin, GPLv2 or later
 - Testing: Behat/Gherkin BDD (`composer test:bdd`, warning: may take 70s+ to execute, so be patient and don't assume it failed)
 - Static analysis: PHPStan (`composer analyse`)
-- Formatter: PHP_CodeSniffer with WordPress Coding Standards — `WordPress-Core` standard (`composer format-check`, `composer format`)
+- Formatter: PHP_CodeSniffer with WordPress Coding Standards — `WordPress-Core` standard (`composer format-check`, `composer format`); make sure to add new files/folders to the PHPCS config if need.
 - CI: GitHub Actions — format, analyse, and test must all pass before merging
+- openspec/changes/archive contains archived changes that may be out of date; the current spec is in openspec/specs
 
 ## Architecture
 

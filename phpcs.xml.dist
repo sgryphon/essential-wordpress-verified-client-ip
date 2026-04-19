@@ -11,6 +11,9 @@
     <file>uninstall.php</file>
     <file>phpstan-bootstrap.php</file>
 
+    <!-- Exclude exit() call in export handler from forbidden-functions check -->
+    <!-- (it is required to terminate the response after sending the JSON download) -->
+
     <!-- Show progress and sniff codes -->
     <arg value="sp"/>
     <arg name="colors"/>

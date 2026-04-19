@@ -287,3 +287,9 @@ if ( ! function_exists( 'esc_url' ) ) {
 		return $url;
 	}
 }
+
+if ( ! function_exists( 'site_url' ) ) {
+	function site_url( string $path = '', ?string $scheme = null ): string {
+		return $GLOBALS['_vcip_test_site_url'] ?? 'https://example.com';
+	}
+}

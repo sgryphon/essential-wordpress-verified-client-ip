@@ -26,6 +26,12 @@ final class AdminPage {
 	/** Nonce field name. */
 	private const NONCE_FIELD = 'vcip_nonce';
 
+	/** Nonce action for the export settings form. */
+	private const EXPORT_NONCE_ACTION = 'vcip_export_settings';
+
+	/** Nonce field name for the export form. */
+	private const EXPORT_NONCE_FIELD = 'vcip_export_nonce';
+
 	/**
 	 * Register hooks.  Call this from the main plugin file or Plugin class.
 	 */
@@ -35,6 +41,7 @@ final class AdminPage {
 		}
 
 		\add_action( 'admin_menu', [ self::class, 'add_menu_page' ] );
+		\add_action( 'admin_init', [ self::class, 'handle_export_settings' ] );
 		\add_action( 'admin_init', [ self::class, 'handle_form_submission' ] );
 		\add_action( 'admin_enqueue_scripts', [ self::class, 'enqueue_admin_assets' ] );
 
@@ -150,6 +157,54 @@ final class AdminPage {
 				'success',
 			);
 		}
+	}
+
+	/**
+	 * Handle the Export Settings form submission.
+	 *
+	 * Sends a JSON file download and terminates execution.
+	 * Must run before any output is sent (registered on admin_init).
+	 */
+	public static function handle_export_settings(): void {
+		if ( ! isset( $_POST[ self::EXPORT_NONCE_FIELD ] ) ) {
+			return;
+		}
+
+		if ( ! \function_exists( 'current_user_can' ) || ! \current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		if ( ! \function_exists( 'wp_verify_nonce' )
+			|| ! \wp_verify_nonce( \sanitize_text_field( \wp_unslash( $_POST[ self::EXPORT_NONCE_FIELD ] ) ), self::EXPORT_NONCE_ACTION )
+		) {
+			\add_settings_error(
+				'vcip_settings',
+				'vcip_nonce_error',
+				__( 'Security check failed. Please try again.', 'gryphon-verified-client-ip' ),
+				'error',
+			);
+			return;
+		}
+
+		$settings = Settings::load();
+
+		$site_url  = \function_exists( 'site_url' ) ? \site_url() : '';
+		$timestamp = \gmdate( 'c' );
+
+		$export_data = $settings->to_export_array( $site_url, $timestamp );
+
+		$json = \wp_json_encode( $export_data, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES );
+
+		$filename = 'vcip-settings-' . \gmdate( 'Ymd-His' ) . '.json';
+
+		\header( 'Content-Type: application/json; charset=utf-8' );
+		\header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
+		\header( 'Cache-Control: no-store, no-cache, must-revalidate' );
+		\header( 'Pragma: no-cache' );
+
+		echo $json; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON export file download, not HTML context.
+
+		exit;
 	}
 
 	/**
@@ -275,6 +330,17 @@ final class AdminPage {
 						. \esc_attr__( 'Save Settings', 'gryphon-verified-client-ip' ) . '"></p>';
 				}
 				?>
+			</form>
+
+			<form method="post" action="" style="margin-top:0;">
+				<?php
+				if ( \function_exists( 'wp_nonce_field' ) ) {
+					\wp_nonce_field( self::EXPORT_NONCE_ACTION, self::EXPORT_NONCE_FIELD );
+				}
+				?>
+				<p>
+					<input type="submit" class="button" value="<?php echo \esc_attr__( 'Export Settings', 'gryphon-verified-client-ip' ); ?>">
+				</p>
 			</form>
 
 			<?php endif; ?>

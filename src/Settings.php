@@ -142,6 +142,48 @@ final class Settings {
 	}
 
 	/**
+	 * Serialise to an associative array suitable for JSON export.
+	 *
+	 * Includes metadata (source site, timestamp), general settings, and
+	 * a schemes array with forwarding-specific data nested under a
+	 * `forwarding_scheme` key for future scheme-type extensibility.
+	 *
+	 * @param string $site_url  The site URL to record in metadata.
+	 * @param string $timestamp ISO 8601 UTC timestamp for the export.
+	 *
+	 * @return array<string, mixed>
+	 */
+	public function to_export_array( string $site_url, string $timestamp ): array {
+		$schemes = [];
+		foreach ( $this->schemes as $scheme ) {
+			$schemes[] = [
+				'name'              => $scheme->name,
+				'enabled'           => $scheme->enabled,
+				'forwarding_scheme' => [
+					'header'  => $scheme->header,
+					'token'   => $scheme->token,
+					'proxies' => $scheme->proxies,
+					'notes'   => $scheme->notes,
+				],
+			];
+		}
+
+		return [
+			'metadata' => [
+				'exported_from' => $site_url,
+				'exported_at'   => $timestamp,
+			],
+			'general'  => [
+				'enabled'       => $this->enabled,
+				'forward_limit' => $this->forward_limit,
+				'process_proto' => $this->process_proto,
+				'process_host'  => $this->process_host,
+			],
+			'schemes'  => $schemes,
+		];
+	}
+
+	/**
 	 * Persist current settings to the WordPress Options API.
 	 */
 	public function save(): void {
